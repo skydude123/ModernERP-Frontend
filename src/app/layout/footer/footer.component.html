@@ -1,0 +1,27 @@
+<footer class="footer">
+  <div class="footer__inner">
+    <div class="footer__item">
+      <span class="footer__label">Logged in as:</span>
+      <span class="footer__value">{{ auth.displayName() | titlecase }}</span>
+    </div>
+
+    <div class="footer__item">
+      <span class="footer__label">Branch:</span>
+      <span class="footer__value">{{ auth.branch()  || 'Main / Cebu' }}</span>
+    </div>
+
+    <div class="footer__item">
+      <span class="footer__label">Department:</span>
+      <span class="footer__value">{{ auth.department() || 'N/A' }}</span>
+    </div>
+
+    <div class="footer__item">
+      <span class="footer__label">API status:</span>
+      <span class="footer__status footer__status--ok">{{ apiStatus }}</span>
+    </div>
+
+    <div class="footer__item">
+      <span class="footer__value">{{ companyCopyright }}</span>
+    </div>
+  </div>
+</footer>

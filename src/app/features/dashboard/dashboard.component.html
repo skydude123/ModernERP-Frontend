@@ -1,0 +1,131 @@
+<section class="dashboard-page">
+  <section class="dashboard-hero">
+    <div class="hero-content">
+      <div class="hero-watermark">
+        <kendo-svgicon [icon]="calendarIcon"></kendo-svgicon>
+      </div>
+
+      <span class="eyebrow">TwinBee HRIS Biometrix</span>
+
+      <h1>Welcome, {{ userName() }}</h1>
+
+      <p>
+        Manage biometric attendance logs, process DTR records, and prepare
+        payroll-ready attendance reports in one workspace.
+      </p>
+
+      <div class="hero-status-row">
+        @for (status of statusItems; track status.label) {
+          <div
+            class="status-chip"
+            [class.status-chip--success]="status.type === 'success'"
+            [class.status-chip--warning]="status.type === 'warning'">
+            <span>{{ status.label }}</span>
+            <strong>{{ status.value }}</strong>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="hero-panel">
+      <div class="panel-title">
+        <kendo-svgicon [icon]="infoIcon"></kendo-svgicon>
+        <span>Session Details</span>
+      </div>
+
+      <div class="session-list">
+        @for (item of infoCards(); track item.label) {
+          <div class="session-item">
+            <span>{{ item.label }}</span>
+            <strong>{{ item.value }}</strong>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ADDED: Section heading para dili kalit ang cards after hero -->
+  <section class="module-section-heading">
+    <div>
+      <span class="eyebrow">Workspace</span>
+      <h2>Biometrix Modules</h2>
+      <p>Choose the module you want to open and continue your attendance workflow.</p>
+    </div>
+  </section>
+
+  <section class="module-grid">
+    @for (card of moduleCards; track card.title) {
+      <article class="module-card">
+        <div class="module-card-top">
+          <div class="module-icon">
+            <kendo-svgicon [icon]="card.svgIcon"></kendo-svgicon>
+          </div>
+
+          <span class="module-badge">{{ card.badge }}</span>
+        </div>
+
+        <h2>{{ card.title }}</h2>
+
+        <p>{{ card.description }}</p>
+
+        <!-- ADDED: Feature chips para mas dashboard/professional tan-awon -->
+        <div class="module-feature-list">
+          @for (feature of card.features; track feature) {
+            <span>{{ feature }}</span>
+          }
+        </div>
+
+        <button
+          kendoButton
+          class="module-action-btn"
+          type="button"
+          [routerLink]="card.route">
+          {{ card.actionText }}
+        </button>
+      </article>
+    }
+  </section>
+
+  <section class="dashboard-bottom-grid">
+    <article class="guide-card">
+      <div class="section-heading">
+        <span class="eyebrow">Quick Guide</span>
+        <h2>Daily attendance workflow</h2>
+      </div>
+
+      <div class="guide-list">
+        @for (step of guideSteps; track step.number) {
+          <div class="guide-item">
+            <div class="guide-number">{{ step.number }}</div>
+
+            <div class="guide-icon">
+              <kendo-svgicon [icon]="step.svgIcon"></kendo-svgicon>
+            </div>
+
+            <div>
+              <h3>{{ step.title }}</h3>
+              <p>{{ step.description }}</p>
+            </div>
+          </div>
+        }
+      </div>
+    </article>
+
+    <article class="notice-card">
+      <div class="section-heading">
+        <span class="eyebrow">Reminder</span>
+        <h2>Before exporting DTR</h2>
+      </div>
+
+      <!-- MODIFIED: div role=list para walay VS Code <ul> warning with Angular @for -->
+      <div class="reminder-list" role="list">
+        @for (item of reminderItems; track item) {
+          <div class="reminder-item" role="listitem">
+            <kendo-svgicon [icon]="checkIcon"></kendo-svgicon>
+            <span>{{ item }}</span>
+          </div>
+        }
+      </div>
+    </article>
+  </section>
+</section>

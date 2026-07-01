@@ -1,0 +1,34 @@
+<!--
+  OLD MANUAL SIDEBAR COMMENTED OUT:
+  Reason: Manual <aside> dili mo-use og Kendo Drawer, APP_DRAWER_ITEMS,
+  MenuAccessService, ug Kendo SVG icons.
+
+<aside class="app-side-menu">
+  <nav class="app-side-menu-nav" aria-label="Main menu">
+    ...
+  </nav>
+</aside>
+-->
+
+<kendo-drawer-container
+  class="drawer-wrap"
+  [class.drawer-collapsed]="!auth.drawerExpanded()">
+
+  <kendo-drawer
+    #drawer
+    [items]="items()"
+    [expanded]="auth.drawerExpanded()"
+    [mode]="mode()"
+    [mini]="mini()"
+    position="start"
+    class="app-drawer"
+    [autoCollapse]="false"
+    [animation]="true"
+    [isItemExpanded]="isItemExpanded"
+    (select)="onSelect($event)">
+  </kendo-drawer>
+
+  <kendo-drawer-content class="drawer-content-wrap">
+    <ng-content />
+  </kendo-drawer-content>
+</kendo-drawer-container>

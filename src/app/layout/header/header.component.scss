@@ -1,0 +1,230 @@
+:host {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.app-header {
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 18px;
+  color: #ffffff;
+  border-bottom: 2px solid rgba(255, 121, 0, 0.92);
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.22),
+    0 1px 0 rgba(255, 255, 255, 0.04);
+
+  /* MODIFIED: premium dark header with TwinBee honeycomb accent */
+  background:
+    radial-gradient(circle at 82% -30%, rgba(255, 121, 0, 0.35), transparent 26%),
+    radial-gradient(circle at 92% 20%, rgba(255, 176, 0, 0.16), transparent 24%),
+    linear-gradient(135deg, #111111 0%, #1f1f1f 55%, #111111 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.app-header::after {
+  content: '';
+  position: absolute;
+  right: 210px;
+  top: -30px;
+  width: 290px;
+  height: 120px;
+  opacity: 0.25;
+  pointer-events: none;
+  background-image:
+    linear-gradient(30deg, rgba(255, 121, 0, 0.5) 12%, transparent 12.5%, transparent 87%, rgba(255, 121, 0, 0.5) 87.5%, rgba(255, 121, 0, 0.5)),
+    linear-gradient(150deg, rgba(255, 121, 0, 0.5) 12%, transparent 12.5%, transparent 87%, rgba(255, 121, 0, 0.5) 87.5%, rgba(255, 121, 0, 0.5)),
+    linear-gradient(30deg, rgba(255, 121, 0, 0.5) 12%, transparent 12.5%, transparent 87%, rgba(255, 121, 0, 0.5) 87.5%, rgba(255, 121, 0, 0.5)),
+    linear-gradient(150deg, rgba(255, 121, 0, 0.5) 12%, transparent 12.5%, transparent 87%, rgba(255, 121, 0, 0.5) 87.5%, rgba(255, 121, 0, 0.5));
+  background-size: 38px 66px;
+  background-position: 0 0, 0 0, 19px 33px, 19px 33px;
+}
+
+.header-left,
+.header-right {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.brand-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  padding-left: 8px;
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.brand-logo {
+  width: 148px;
+  height: 56px;
+  object-fit: contain;
+  border-radius: 12px;
+  display: block;
+  padding: 4px;
+  background: rgba(255, 121, 0, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 121, 0, 0.16);
+}
+
+.brand-meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.brand-name {
+  font-size: 1.12rem;
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
+}
+
+.brand-module {
+  margin-top: 3px;
+  font-size: 0.92rem;
+  color: #ffb000;
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 0;
+  padding-left: 14px;
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.user-name {
+  font-size: 0.96rem;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.1;
+}
+
+.user-meta {
+  margin-top: 2px;
+  font-size: 0.8rem;
+  color: #e5e7eb;
+  white-space: nowrap;
+}
+
+.icon-btn {
+  position: relative;
+  min-width: 42px;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border-radius: 13px;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.icon-btn:hover {
+  background: rgba(255, 121, 0, 0.18);
+  border-color: rgba(255, 121, 0, 0.42);
+  color: #ffb000;
+}
+
+.icon-btn .k-svg-icon {
+  width: 21px;
+  height: 21px;
+}
+
+.notification-btn {
+  margin-right: 4px;
+}
+
+.notif-badge {
+  position: absolute;
+  top: -5px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: 0 0 0 3px #1a1a1a;
+}
+
+.logout-btn:hover {
+  background: rgba(239, 68, 68, 0.16);
+  color: #fecaca;
+  border-color: rgba(239, 68, 68, 0.34);
+}
+
+@media (max-width: 920px) {
+  .app-header {
+    height: auto;
+    min-height: 76px;
+    flex-wrap: wrap;
+    padding: 10px 14px;
+  }
+
+  .header-left,
+  .header-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .brand-logo {
+    width: 126px;
+    height: 48px;
+  }
+
+  .brand-wrap {
+    flex: 1;
+  }
+
+  .user-panel {
+    align-items: flex-start;
+    border-left: 0;
+    padding-left: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .brand-logo {
+    width: 105px;
+    height: 44px;
+  }
+
+  .brand-name {
+    font-size: 0.95rem;
+  }
+
+  .brand-module {
+    font-size: 0.82rem;
+  }
+
+  .user-meta {
+    font-size: 0.75rem;
+  }
+
+  .icon-btn {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+  }
+}

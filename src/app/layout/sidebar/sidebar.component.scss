@@ -1,0 +1,312 @@
+:host {
+  display: block;
+  height: 100%;
+  min-height: 0;
+  background: #171717;
+  transition:
+    width 180ms ease,
+    min-width 180ms ease,
+    max-width 180ms ease;
+}
+
+.drawer-wrap {
+  height: 100%;
+  min-height: 0;
+  width: 220px;
+  min-width: 220px;
+  max-width: 220px;
+  background: #171717;
+  overflow: hidden;
+  transition:
+    width 180ms ease,
+    min-width 180ms ease,
+    max-width 180ms ease;
+}
+
+.app-drawer {
+  height: 100%;
+  width: 220px;
+  min-width: 220px;
+  max-width: 220px;
+  background: #171717;
+  border-right: 1px solid rgba(255, 121, 0, 0.22);
+  transition:
+    width 180ms ease,
+    min-width 180ms ease,
+    max-width 180ms ease;
+}
+
+.drawer-content-wrap {
+  display: none;
+}
+
+/* Main Kendo Drawer panel */
+:host ::ng-deep .app-drawer .k-drawer {
+  height: 100%;
+  background:
+    radial-gradient(circle at bottom left, rgba(255, 121, 0, 0.13), transparent 38%),
+    linear-gradient(180deg, #1c1c1c 0%, #111111 100%);
+  border-right: 1px solid rgba(255, 121, 0, 0.24);
+}
+
+/* Expanded drawer width */
+:host ::ng-deep .app-drawer .k-drawer-wrapper {
+  width: 220px;
+}
+
+/* Drawer items container */
+:host ::ng-deep .app-drawer .k-drawer-items {
+  height: 100%;
+  padding: 14px 8px 14px 8px;
+  background:
+    radial-gradient(circle at bottom left, rgba(255, 121, 0, 0.14), transparent 36%),
+    linear-gradient(180deg, #1c1c1c 0%, #111111 100%);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Base Kendo drawer item */
+:host ::ng-deep .app-drawer .k-drawer-item {
+  width: calc(100% - 8px);
+  min-height: 42px;
+  margin: 7px 8px 7px 0;
+  padding: 0 12px;
+  border-radius: 0 14px 14px 0;
+  border: 1px solid transparent;
+  border-left: 5px solid transparent;
+  box-sizing: border-box;
+
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #f8fafc;
+
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+/* Kendo SVG icon inside drawer */
+:host ::ng-deep .app-drawer .k-drawer-item .k-svg-icon,
+:host ::ng-deep .app-drawer .k-drawer-item .k-icon {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  margin-right: 10px;
+  color: inherit;
+}
+
+/* Drawer text */
+:host ::ng-deep .app-drawer .k-drawer-item .k-item-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Dashboard */
+:host ::ng-deep .app-drawer .k-drawer-item:nth-child(1) {
+  background: rgba(255, 255, 255, 0.045);
+  color: #f8fafc;
+  border-color: rgba(255, 121, 0, 0.12);
+  border-left-color: transparent;
+}
+
+/* BIOMETRIX parent - group header only, not active page */
+:host ::ng-deep .app-drawer .k-drawer-item:nth-child(2) {
+  background: linear-gradient(135deg, rgba(255, 121, 0, 0.18), rgba(255, 176, 0, 0.06));
+  color: #ffffff;
+  border-color: rgba(255, 121, 0, 0.28);
+  border-left-color: #ff7900;
+  box-shadow:
+    0 8px 18px rgba(255, 121, 0, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* HRIS Biometrix child */
+:host ::ng-deep .app-drawer .k-drawer-item:nth-child(3) {
+  background: linear-gradient(135deg, rgba(255, 121, 0, 0.26), rgba(255, 176, 0, 0.12));
+  color: #ffb000;
+  border-color: rgba(255, 121, 0, 0.34);
+  border-left-color: #ff7900;
+  box-shadow: 0 8px 18px rgba(255, 121, 0, 0.13);
+
+  margin-left: 22px;
+  margin-right: 8px;
+  width: calc(100% - 30px);
+  min-height: 38px;
+  font-size: 13px;
+  border-radius: 0 12px 12px 0;
+}
+
+/* DTR Listing child */
+:host ::ng-deep .app-drawer .k-drawer-item:nth-child(4) {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffb000;
+  border-color: rgba(255, 121, 0, 0.18);
+  border-left-color: #ff7900;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.14);
+
+  margin-left: 22px;
+  margin-right: 8px;
+  width: calc(100% - 30px);
+  min-height: 38px;
+  font-size: 13px;
+  border-radius: 0 12px 12px 0;
+}
+
+/* Dashboard selected */
+:host ::ng-deep .app-drawer .k-drawer-item:nth-child(1).k-selected {
+  background: linear-gradient(135deg, #ff7900 0%, #ffb000 100%);
+  color: #ffffff;
+  border-color: rgba(255, 121, 0, 0.50);
+  border-left-color: #ffb000;
+  box-shadow:
+    0 10px 20px rgba(255, 121, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+/* Parent selected fallback - keep parent subtle, not full orange */
+:host ::ng-deep .app-drawer .k-drawer-item:nth-child(2).k-selected {
+  background: linear-gradient(135deg, rgba(255, 121, 0, 0.18), rgba(255, 176, 0, 0.06));
+  color: #ffffff;
+  border-color: rgba(255, 121, 0, 0.28);
+  border-left-color: #ff7900;
+  box-shadow:
+    0 8px 18px rgba(255, 121, 0, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Selected child page only */
+:host ::ng-deep .app-drawer .k-drawer-item:nth-child(3).k-selected,
+:host ::ng-deep .app-drawer .k-drawer-item:nth-child(4).k-selected {
+  background: linear-gradient(135deg, #ff7900 0%, #ffb000 100%);
+  color: #ffffff;
+  border-color: rgba(255, 121, 0, 0.50);
+  border-left-color: #ffb000;
+  box-shadow:
+    0 10px 20px rgba(255, 121, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+/* Hover */
+:host ::ng-deep .app-drawer .k-drawer-item:hover {
+  transform: translateX(2px);
+  background-color: rgba(255, 121, 0, 0.14);
+}
+
+:host ::ng-deep .app-drawer .k-drawer-item:nth-child(2):hover {
+  background: linear-gradient(135deg, rgba(255, 121, 0, 0.26), rgba(255, 176, 0, 0.10));
+}
+
+/* Chevron / expand icon alignment */
+:host ::ng-deep .app-drawer .k-drawer-item .k-drawer-toggle {
+  margin-left: auto;
+  color: inherit;
+}
+
+/* FULL CLOSE FIX:
+   Kung drawerExpanded() = false, taguon jud ang whole drawer.
+   Dili mini rail, dili icon rail.
+*/
+.drawer-wrap.drawer-collapsed {
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  overflow: hidden !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+
+.drawer-wrap.drawer-collapsed .app-drawer {
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  overflow: hidden !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+:host ::ng-deep .drawer-wrap.drawer-collapsed .k-drawer,
+:host ::ng-deep .drawer-wrap.drawer-collapsed .k-drawer-wrapper,
+:host ::ng-deep .drawer-wrap.drawer-collapsed .k-drawer-items {
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+  visibility: hidden !important;
+}
+
+/* Remove old mini behavior completely */
+:host ::ng-deep .app-drawer.k-drawer-mini .k-drawer-wrapper,
+:host ::ng-deep .app-drawer.k-drawer-mini .k-drawer-items,
+:host ::ng-deep .app-drawer.k-drawer-mini .k-drawer-item {
+  width: unset;
+}
+
+/* Scrollbar styling */
+:host ::ng-deep .app-drawer .k-drawer-items::-webkit-scrollbar {
+  width: 6px;
+}
+
+:host ::ng-deep .app-drawer .k-drawer-items::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+:host ::ng-deep .app-drawer .k-drawer-items::-webkit-scrollbar-thumb {
+  background: rgba(255, 121, 0, 0.35);
+  border-radius: 999px;
+}
+
+:host ::ng-deep .app-drawer .k-drawer-items::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 121, 0, 0.55);
+}
+
+/* Mobile */
+@media (max-width: 840px) {
+  :host {
+    position: relative;
+    z-index: 40;
+  }
+
+  .drawer-wrap,
+  .app-drawer {
+    width: 230px;
+    min-width: 230px;
+    max-width: 230px;
+  }
+
+  :host ::ng-deep .app-drawer .k-drawer-wrapper {
+    width: 230px;
+  }
+
+  :host ::ng-deep .app-drawer .k-drawer-items {
+    padding: 12px 8px;
+  }
+
+  :host ::ng-deep .app-drawer .k-drawer-item {
+    min-height: 40px;
+    font-size: 13px;
+    width: calc(100% - 8px);
+    margin-right: 8px;
+  }
+
+  :host ::ng-deep .app-drawer .k-drawer-item:nth-child(3),
+  :host ::ng-deep .app-drawer .k-drawer-item:nth-child(4) {
+    margin-left: 20px;
+    margin-right: 8px;
+    width: calc(100% - 28px);
+  }
+
+  .drawer-wrap.drawer-collapsed,
+  .drawer-wrap.drawer-collapsed .app-drawer {
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+  }
+}

@@ -1,0 +1,101 @@
+/* You can add global styles to this file, and also import other style files */
+@use "@progress/kendo-theme-bootstrap/scss/all" as *;
+
+:root {
+  /* MODIFIED: TwinBee brand colors */
+  --tb-orange: #ff7900;
+  --tb-orange-dark: #e85f00;
+  --tb-amber: #ffb000;
+  --tb-yellow: #ffd166;
+  --tb-black: #111111;
+  --tb-charcoal: #1a1a1a;
+  --tb-charcoal-2: #242424;
+
+  --tb-bg: #f7f8fb;
+  --tb-surface: #ffffff;
+  --tb-surface-warm: #fffaf5;
+  --tb-border: rgba(255, 121, 0, 0.18);
+  --tb-text: #171717;
+  --tb-muted: #64748b;
+  --tb-shadow: 0 16px 38px rgba(15, 23, 42, 0.08);
+  --tb-orange-shadow: 0 12px 24px rgba(255, 121, 0, 0.18);
+
+  --tb-radius-xl: 22px;
+  --tb-radius-lg: 18px;
+  --tb-radius-md: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--tb-text);
+  background:
+    radial-gradient(circle at top left, rgba(255, 121, 0, 0.08), transparent 30%),
+    linear-gradient(180deg, #fffaf5 0%, #f4f6fa 48%, #eef2f7 100%);
+}
+
+.page-shell {
+  min-height: 100vh;
+}
+
+.tb-card {
+  background: linear-gradient(180deg, #ffffff 0%, #fffaf5 100%);
+  border: 1px solid var(--tb-border);
+  border-radius: var(--tb-radius-xl);
+  box-shadow: var(--tb-shadow);
+}
+
+.tb-title {
+  margin: 0;
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+
+.tb-subtitle {
+  color: var(--tb-muted);
+}
+
+.tb-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.tb-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.tb-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ADDED: Kendo global TwinBee focus color */
+.k-button:focus,
+.k-input:focus,
+.k-picker:focus,
+.k-dropdownlist:focus,
+.k-textbox:focus {
+  box-shadow: 0 0 0 3px rgba(255, 121, 0, 0.16);
+}
+
+@media (max-width: 992px) {
+  .tb-grid-2,
+  .tb-grid-3 {
+    grid-template-columns: 1fr;
+  }
+}

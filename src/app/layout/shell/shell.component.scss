@@ -1,0 +1,32 @@
+.shell {
+  height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background: #eef3f8;
+  overflow: hidden;
+}
+
+.shell-body {
+  min-height: 0;
+  display: grid;
+
+  // IMPORTANT:
+  // auto para ang width sa Kendo Drawer mo-adjust kung expanded or mini.
+  grid-template-columns: auto minmax(0, 1fr);
+
+  overflow: hidden;
+}
+
+.shell-main {
+  min-width: 0;
+  min-height: 0;
+  padding: 20px;
+  overflow: auto;
+  background: linear-gradient(180deg, #f8fbff 0%, #eef3f8 100%);
+}
+
+@media (max-width: 840px) {
+  .shell-main {
+    padding: 14px;
+  }
+}

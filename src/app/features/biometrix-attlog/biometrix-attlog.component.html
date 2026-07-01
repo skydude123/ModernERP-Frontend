@@ -1,0 +1,268 @@
+<div class="attlog-page">
+  <section class="page-header">
+    <div class="page-title-block">
+      <h1>Biometrix ATTLOG Upload</h1>
+      <p>
+        Upload ATTLOG.DAT, validate the selected date range, process daily attendance,
+        and review the audited output before export or payroll handoff.
+      </p>
+    </div>
+
+    <div class="page-toolbar">
+      <button kendoButton themeColor="primary" size="medium" [svgIcon]="uploadSvgIcon"
+        [disabled]="!facade.canUpload() || payrollContextForm.invalid" (click)="onUploadAndProcess()">
+        Upload and Process
+      </button>
+
+      <button kendoButton fillMode="outline" size="medium" [svgIcon]="refreshSvgIcon" [disabled]="!facade.canRefresh()"
+        (click)="onRefresh()">
+        Refresh Result
+      </button>
+
+      <button kendoButton fillMode="outline" size="medium" [svgIcon]="clearSvgIcon" [disabled]="facade.hasSavingOt()"
+        (click)="onClear()">
+        Clear
+      </button>
+
+      <button kendoButton themeColor="primary" fillMode="outline" size="medium" [svgIcon]="saveSvgIcon"
+        [disabled]="facade.dirtyOtCount() === 0 || facade.hasSavingOt()" (click)="onSaveAllOtChanges()">
+        Save All OT Changes ({{ facade.dirtyOtCount() }})
+      </button>
+
+      <div class="export-control">
+        <kendo-dropdownbutton class="export-button" themeColor="primary" size="medium" [svgIcon]="downloadSvgIcon"
+          [data]="exportMenuItems" [disabled]="!canExport()" (itemClick)="onExportMenuItemClick($event)">
+          {{ isExporting() ? 'Exporting...' : 'Export All' }}
+
+          <ng-template kendoDropDownButtonItemTemplate let-dataItem>
+            <span class="export-menu-item">
+              <kendo-svgicon class="export-menu-icon" [icon]="dataItem.svgIcon">
+              </kendo-svgicon>
+              <span>{{ dataItem.text }}</span>
+            </span>
+          </ng-template>
+        </kendo-dropdownbutton>
+
+        <div class="export-indicator" *ngIf="exportStatus() as status">
+          <kendo-svgicon class="export-indicator-icon" [icon]="clockSvgIcon">
+          </kendo-svgicon>
+          <span>{{ status }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="entry-card">
+    <div class="entry-grid">
+      <div class="field" [formGroup]="facade.form">
+        <kendo-label text="Date From"></kendo-label>
+        <kendo-datepicker formControlName="dateFrom" format="MM/dd/yyyy">
+        </kendo-datepicker>
+      </div>
+
+      <div class="field" [formGroup]="facade.form">
+        <kendo-label text="Date To"></kendo-label>
+        <kendo-datepicker formControlName="dateTo" format="MM/dd/yyyy">
+        </kendo-datepicker>
+      </div>
+
+      <div class="field" [formGroup]="payrollContextForm">
+        <kendo-label text="Payroll Period"></kendo-label>
+        <kendo-combobox formControlName="payrollPeriod" [data]="payrollPeriods()" [textField]="'name'"
+          [valueField]="'id'" [valuePrimitive]="true" [filterable]="true" [kendoDropDownFilter]="comboFilterSettings"
+          placeholder="Select payroll period">
+        </kendo-combobox>
+      </div>
+
+      <div class="field" [formGroup]="payrollContextForm">
+        <kendo-label text="Branch Name"></kendo-label>
+        <kendo-combobox formControlName="branchName" [data]="branches()" [textField]="'name'" [valueField]="'id'"
+          [valuePrimitive]="true" [filterable]="true" [kendoDropDownFilter]="comboFilterSettings"
+          placeholder="Select branch">
+        </kendo-combobox>
+      </div>
+
+      <div class="field field-file">
+        <kendo-label text="ATTLOG.DAT"></kendo-label>
+        <kendo-fileselect [multiple]="false" [restrictions]="facade.fileRestrictions" (select)="onFileSelect($event)">
+        </kendo-fileselect>
+      </div>
+
+      <div class="field field-selected-file">
+        <label class="selected-file-label">Selected File</label>
+
+        <div class="selected-file-box">
+          <div class="selected-file-name">
+            {{ facade.selectedFileName() }}
+          </div>
+
+          <div class="selected-file-size">
+            {{ facade.selectedFileSizeText() }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="error-banner" *ngIf="facade.error() as errorMessage">
+      {{ errorMessage }}
+    </div>
+  </section>
+
+  <section class="summary-card" *ngIf="facade.batchDetail() as batch">
+    <div class="summary-header">
+      <div>
+        <h2>Upload Summary</h2>
+        <p>Batch {{ batch.uploadBatchId }} · {{ batch.originalFileName }}</p>
+      </div>
+
+      <div class="status-pill" [class.status-failed]="batch.processingStatus === 'FAILED'">
+        <kendo-svgicon class="status-icon" [icon]="checkSvgIcon">
+        </kendo-svgicon>
+        {{ batch.processingStatus }}
+      </div>
+    </div>
+
+    <div class="summary-grid">
+      <div class="summary-item">
+        <span class="summary-label">Date Range</span>
+        <strong>{{ batch.dateFrom }} to {{ batch.dateTo }}</strong>
+      </div>
+
+      <div class="summary-item">
+        <span class="summary-label">Created At</span>
+        <strong>{{ batch.createdAt }}</strong>
+      </div>
+
+      <div class="summary-item">
+        <span class="summary-label">Processed At</span>
+        <strong>{{ batch.processedAt || 'Pending' }}</strong>
+      </div>
+
+      <div class="metric-box">
+        <span class="metric-label">Total Result Rows</span>
+        <strong>{{ facade.summary().totalRows }}</strong>
+      </div>
+
+      <div class="metric-box">
+        <span class="metric-label">Total OT</span>
+        <strong>{{ facade.summary().totalOt | number:'1.2-2' }}</strong>
+      </div>
+    </div>
+  </section>
+
+  <section class="result-card">
+    <div class="result-header">
+      <div>
+        <h2>Processed Attendance Result</h2>
+        <p>
+          ERP verification view for payroll audit, attendance checking,
+          and Excel export readiness.
+        </p>
+      </div>
+
+      <div class="loading-indicator" *ngIf="facade.loading() || facade.hasSavingOt() || isExporting()">
+        <kendo-svgicon class="loading-icon" [icon]="clockSvgIcon">
+        </kendo-svgicon>
+
+        {{
+        isExporting()
+        ? 'Exporting...'
+        : facade.hasSavingOt()
+        ? 'Saving OT...'
+        : 'Processing...'
+        }}
+      </div>
+    </div>
+
+    <div class="selected-row-panel" *ngIf="selectedAttendanceRow as selected">
+      <div>
+        <span class="selected-row-label">Selected Row</span>
+        <strong>
+          IDNO {{ selected.idno || 'N/A' }} · {{ selected.date || 'No Date' }}
+        </strong>
+      </div>
+
+      <div class="selected-row-meta">
+        <span>Time In: {{ selected.timeIn || '-' }}</span>
+        <span>Time Out: {{ selected.timeOut || '-' }}</span>
+        <span>Hours: {{ selected.noOfHoursWork || 0 }}</span>
+        <span>OT: {{ selected.ot || 0 }}</span>
+      </div>
+    </div>
+
+    <kendo-grid #attendanceGrid class="attendance-grid" [kendoGridBinding]="gridRowsForDisplay()" [height]="520"
+      [sortable]="true" filterable="row" [resizable]="true" [reorderable]="true" [selectable]="selectableSettings"
+      [kendoGridSelectBy]="attendanceRowKey" [selectedKeys]="selectedAttendanceKeys"
+      (selectedKeysChange)="onSelectedKeysChange($event)" (selectionChange)="onSelectionChange($event)">
+
+      <kendo-grid-excel [fileName]="getExportFileName('xlsx')" [fetchData]="allExportData">
+      </kendo-grid-excel>
+
+      <kendo-grid-pdf [fileName]="getExportFileName('pdf')" [allPages]="true" paperSize="A4" [landscape]="true"
+        [repeatHeaders]="true" [scale]="0.65">
+        <kendo-grid-pdf-margin top="0.8cm" left="0.5cm" right="0.5cm" bottom="0.8cm">
+        </kendo-grid-pdf-margin>
+      </kendo-grid-pdf>
+
+      <kendo-grid-checkbox-column [width]="44" [showSelectAll]="false" [hidden]="isExporting()">
+      </kendo-grid-checkbox-column>
+
+      <kendo-grid-column field="idno" title="IDNO" filter="text" [width]="120"></kendo-grid-column>
+      <kendo-grid-column field="date" title="DATE" filter="text" [width]="130"></kendo-grid-column>
+      <kendo-grid-column field="dayName" title="DAY" filter="text" [width]="110"></kendo-grid-column>
+      <kendo-grid-column field="timeIn" title="TIME-IN" filter="text" [width]="120"></kendo-grid-column>
+      <kendo-grid-column field="timeOut" title="TIME-OUT" filter="text" [width]="120"></kendo-grid-column>
+      <kendo-grid-column field="noOfHoursWork" title="NO. OF HOURS WORK" filter="numeric"
+        [width]="170"></kendo-grid-column>
+
+      <kendo-grid-column field="ot" title="OT" filter="numeric" [width]="170">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <ng-container *ngIf="isExporting(); else otEditorTemplate">
+            <span class="export-cell-value">
+              {{ toNumber(dataItem.ot) | number:'1.2-2' }}
+            </span>
+          </ng-container>
+
+          <ng-template #otEditorTemplate>
+            <div class="ot-cell">
+              <kendo-numerictextbox class="ot-editor" [value]="toNumber(dataItem.ot)" [min]="0" [max]="24"
+                [decimals]="2" [format]="'n2'" [step]="0.25" [spinners]="true" [disabled]="isOtSaving(dataItem)"
+                (valueChange)="onOtValueChange(dataItem, $event)">
+              </kendo-numerictextbox>
+
+              <span class="ot-dirty-pill" *ngIf="isOtDirty(dataItem)">
+                Edited
+              </span>
+            </div>
+          </ng-template>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column field="payrollPeriodDisplay" title="PAYROLL PERIOD" filter="text" [width]="150">
+      </kendo-grid-column>
+
+      <kendo-grid-column field="branchName" title="BRANCH" filter="text" [width]="150">
+      </kendo-grid-column>
+
+      <kendo-grid-column title="ACTION" [width]="200" [filterable]="false" [sortable]="false" [hidden]="isExporting()">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <div class="ot-actions">
+            <button kendoButton size="small" themeColor="primary" [svgIcon]="saveSvgIcon"
+              [disabled]="!isOtDirty(dataItem) || isOtSaving(dataItem)" (click)="onSaveOt(dataItem)">
+              {{ isOtSaving(dataItem) ? 'Saving...' : 'Save OT' }}
+            </button>
+
+            <button kendoButton size="small" fillMode="outline" [svgIcon]="clearSvgIcon"
+              [disabled]="!isOtDirty(dataItem) || isOtSaving(dataItem)" (click)="onRevertOt(dataItem)">
+              Revert
+            </button>
+          </div>
+
+          <div class="ot-save-error" *ngIf="getOtSaveError(dataItem) as saveError">
+            {{ saveError }}
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+    </kendo-grid>
+  </section>
+</div>

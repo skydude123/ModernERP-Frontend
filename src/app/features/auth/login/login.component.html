@@ -1,0 +1,116 @@
+<div class="login-page">
+  <img
+    class="bg-image"
+    src="assets/images/twb_background.png"
+    alt="TwinBee Print Shop Background"
+  />
+
+  <div class="bg-overlay"></div>
+
+  <div class="login-content">
+    <section class="login-panel">
+      <div class="login-brand">
+        <div class="logo-frame">
+          <img
+            class="login-logo"
+            src="assets/images/twb-logo-transparent.png"
+            alt="Twinbee Logo"
+          />
+        </div>
+      </div>
+
+      <div class="login-divider"></div>
+
+      <div class="login-panel__head">
+        <h3>Secure Sign In</h3>
+        <p>Welcome to TwinBee ERP / HRIS Biometrix</p>
+      </div>
+
+      <form class="login-form" [formGroup]="form" (ngSubmit)="submit()">
+        <div class="form-box">
+          <kendo-formfield>
+            <kendo-label [for]="userId" text="User ID"></kendo-label>
+
+            <kendo-textbox
+              formControlName="userId"
+              #userId
+              placeholder="Enter your user ID"
+              [clearButton]="true"
+              size="large"
+              showSuccessIcon="initial"
+              showErrorIcon="initial"
+            >
+              <ng-template kendoTextBoxPrefixTemplate>
+                <kendo-svg-icon [icon]="usersSolidIcon"></kendo-svg-icon>
+              </ng-template>
+            </kendo-textbox>
+          </kendo-formfield>
+
+          <kendo-formfield>
+            <kendo-label [for]="password" text="Password"></kendo-label>
+
+            <kendo-textbox
+              formControlName="password"
+              #password
+              [type]="showPassword() ? 'text' : 'password'"
+              placeholder="Enter your password"
+              size="large"
+              showSuccessIcon="initial"
+              showErrorIcon="initial"
+            >
+              <ng-template kendoTextBoxPrefixTemplate>
+                <kendo-svg-icon [icon]="lockSvg"></kendo-svg-icon>
+              </ng-template>
+
+              <ng-template kendoTextBoxSuffixTemplate>
+                <button
+                title="Show Password"
+                  kendoButton
+                  type="button"
+                  fillMode="flat"
+                  size="large"
+                  [svgIcon]="showPassword() ? eyeSvg : eyeSlashSvg"
+                  (click)="togglePasswordVisibility()"
+                ></button>
+              </ng-template>
+            </kendo-textbox>
+
+            <!-- <kendo-formhint>Must be at least 8 characters</kendo-formhint> -->
+            <kendo-formerror>Password is required</kendo-formerror>
+          </kendo-formfield>
+
+          <label class="remember-wrap">
+            <input type="checkbox" formControlName="rememberMe" />
+            <span>Remember Me</span>
+          </label>
+        </div>
+
+        @if (auth.error()) {
+          <div class="login-error">
+            {{ auth.error() }}
+          </div>
+        }
+
+        <button
+          themeColor="primary"
+          kendoButton
+          type="submit"
+          class="login-btn"
+          [disabled]="!canSubmit"
+        >
+          @if (auth.loading()) {
+            <span class="btn-spinner"></span>
+          }
+
+          <span>{{ auth.loading() ? "SIGNING IN..." : "LOGIN" }}</span>
+        </button>
+
+        <div class="login-links">
+          <a href="javascript:void(0)">Forgot Password?</a>
+          <span>|</span>
+          <a href="javascript:void(0)">Create Account</a>
+        </div>
+      </form>
+    </section>
+  </div>
+</div>

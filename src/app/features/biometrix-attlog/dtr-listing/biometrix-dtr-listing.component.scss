@@ -1,0 +1,631 @@
+:host {
+  display: block;
+  width: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
+  background:
+    radial-gradient(circle at top left, rgba(255, 137, 4, 0.10), transparent 34%),
+    linear-gradient(180deg, #fffaf5 0%, #f7f8fb 44%, #f4f6fa 100%);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.listing-page {
+  /* MODIFIED: from 1140px to 1440px para pareha lapad sa HRIS Biometrix / ATTLOG page */
+  width: min(100%, 1440px);
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(10px, 1vw, 16px);
+  min-height: 100%;
+  display: grid;
+  gap: 14px;
+  color: #171717;
+  font-size: 13px;
+}
+
+/* MODIFIED: TwinBee brand variables */
+.listing-page {
+  --tb-orange: #ff7900;
+  --tb-orange-dark: #e85f00;
+  --tb-amber: #ffb000;
+  --tb-charcoal: #151515;
+  --tb-soft-orange: #fff4e8;
+  --tb-border: rgba(255, 121, 0, 0.20);
+}
+
+.header-card,
+.filter-card,
+.grid-card {
+  /* MODIFIED: full width inside 1440px shell */
+  width: 100%;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 252, 248, 0.98) 100%);
+  border: 1px solid var(--tb-border);
+  border-radius: 18px;
+  box-shadow:
+    0 16px 38px rgba(15, 23, 42, 0.07),
+    0 4px 14px rgba(255, 121, 0, 0.07);
+}
+
+.header-card {
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.header-card::after {
+  content: '';
+  position: absolute;
+  right: -55px;
+  top: -60px;
+  width: 170px;
+  height: 170px;
+  background:
+    radial-gradient(circle, rgba(255, 176, 0, 0.18), transparent 65%);
+  pointer-events: none;
+}
+
+.header-icon-box {
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--tb-orange) 0%, var(--tb-amber) 100%);
+  box-shadow:
+    0 12px 22px rgba(255, 121, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  flex: 0 0 auto;
+}
+
+.header-icon-box .k-svg-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.title-block h1 {
+  margin: 0 0 4px;
+  font-size: 21px;
+  font-weight: 800;
+  color: #171717;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.title-block p {
+  margin: 0;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.filter-card {
+  padding: 16px 18px;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.95fr auto;
+  gap: 14px;
+  align-items: end;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.toolbar-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.error-banner {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.summary-strip {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #fff7ed 0%, #ffffff 100%);
+  border: 1px solid rgba(255, 121, 0, 0.18);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  color: #334155;
+  font-size: 13px;
+}
+
+.summary-strip strong {
+  color: var(--tb-orange-dark);
+}
+
+.grid-card {
+  padding: 14px;
+  overflow: hidden;
+}
+
+.grid-toolbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.grid-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.grid-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.toolbar-caption-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  color: var(--tb-orange);
+  background: #fff4e8;
+  border: 1px solid rgba(255, 121, 0, 0.22);
+}
+
+.toolbar-caption-icon .k-svg-icon {
+  width: 17px;
+  height: 17px;
+}
+
+.toolbar-caption {
+  font-size: 13px;
+  font-weight: 800;
+  color: #171717;
+  letter-spacing: 0.01em;
+}
+
+.toolbar-count {
+  font-size: 12px;
+  color: #64748b;
+  background: #fff7ed;
+  border: 1px solid rgba(255, 121, 0, 0.18);
+  padding: 4px 8px;
+  border-radius: 999px;
+}
+
+.export-dialog-form {
+  display: grid;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.export-hint {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.compact-edit-shell {
+  display: grid;
+  gap: 12px;
+  padding-top: 4px;
+}
+
+.compact-edit-note {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.compact-edit-form {
+  display: grid;
+  gap: 12px;
+}
+
+/* ---------- PROFESSIONAL DIALOG DESIGN ---------- */
+
+.dtr-dialog-shell {
+  display: grid;
+  gap: 14px;
+  padding-top: 4px;
+}
+
+.dtr-dialog-topbar {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(120px, 1fr));
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #fed7aa;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fff7ed 0%, #ffffff 100%);
+}
+
+.topbar-item {
+  display: grid;
+  gap: 2px;
+}
+
+.topbar-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--tb-orange-dark);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.topbar-item strong {
+  font-size: 13px;
+  color: #0f172a;
+  font-weight: 800;
+}
+
+.dialog-form {
+  display: grid;
+  gap: 12px;
+}
+
+.dialog-section-card {
+  border: 1px solid rgba(255, 121, 0, 0.18);
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ffffff 0%, #fffaf5 100%);
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.section-heading {
+  display: grid;
+  gap: 2px;
+}
+
+.section-heading h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+  color: #171717;
+}
+
+.section-heading p {
+  margin: 0;
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.35;
+}
+
+.dialog-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.dialog-grid-2 {
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+}
+
+.compact-edit-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+}
+
+.readonly-field :is(input, .k-input, .k-picker, .k-input-inner) {
+  background: #fff7ed;
+}
+
+.remarks-field {
+  grid-column: 1 / -1;
+}
+
+.dtr-dialog-actions {
+  border-top: 1px solid #fed7aa;
+  padding-top: 10px;
+  margin-top: 4px;
+}
+
+/* ---------- TWINBEE BUTTONS ---------- */
+
+:host ::ng-deep .brand-load-btn.k-button,
+:host ::ng-deep .brand-edit-btn.k-button {
+  border-color: transparent;
+  color: #ffffff;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--tb-orange) 0%, var(--tb-amber) 100%);
+  box-shadow: 0 10px 18px rgba(255, 121, 0, 0.24);
+}
+
+:host ::ng-deep .brand-load-btn.k-button:hover,
+:host ::ng-deep .brand-edit-btn.k-button:hover {
+  filter: brightness(0.98);
+  transform: translateY(-1px);
+}
+
+:host ::ng-deep .brand-clear-btn.k-button,
+:host ::ng-deep .brand-refresh-btn.k-button {
+  color: var(--tb-orange-dark);
+  border-color: rgba(255, 121, 0, 0.58);
+  background: #ffffff;
+  font-weight: 800;
+}
+
+:host ::ng-deep .brand-clear-btn.k-button:hover,
+:host ::ng-deep .brand-refresh-btn.k-button:hover {
+  background: #fff4e8;
+}
+
+:host ::ng-deep .brand-excel-btn.k-button {
+  font-weight: 800;
+  box-shadow: 0 10px 18px rgba(22, 163, 74, 0.16);
+}
+
+/* ---------- KENDO FINE TUNING ---------- */
+
+:host ::ng-deep .k-grid {
+  width: 100%;
+  font-size: 12px;
+  border-radius: 14px;
+  border-color: rgba(255, 121, 0, 0.18);
+  overflow: hidden;
+}
+
+:host ::ng-deep .k-grid .k-grid-header {
+  font-size: 12px;
+  background: #fff7ed;
+}
+
+:host ::ng-deep .k-grid th.k-header {
+  padding: 9px 10px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #c2410c;
+  background: linear-gradient(180deg, #fff7ed 0%, #ffedd5 100%);
+  border-color: rgba(255, 121, 0, 0.18);
+}
+
+:host ::ng-deep .k-grid td {
+  padding: 8px 10px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+:host ::ng-deep .k-grid .k-table-row {
+  height: auto;
+}
+
+:host ::ng-deep .k-grid .k-grid-toolbar {
+  border-color: rgba(255, 121, 0, 0.16);
+  background:
+    linear-gradient(180deg, #ffffff 0%, #fffaf5 100%);
+}
+
+/* ADDED: keep horizontal scroll clean kung daghan columns */
+:host ::ng-deep .k-grid-content {
+  overflow-x: auto;
+}
+
+/* ADDED: professional empty-state placement inside grid */
+:host ::ng-deep .k-grid .k-grid-norecords td {
+  padding: 0 !important;
+}
+
+.no-records-state {
+  min-height: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px 16px;
+}
+
+.no-records-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #171717;
+  margin-bottom: 6px;
+}
+
+.no-records-subtitle {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.5;
+  max-width: 320px;
+}
+
+:host ::ng-deep .k-button {
+  font-size: 12px;
+  border-radius: 10px;
+}
+
+:host ::ng-deep .k-input,
+:host ::ng-deep .k-picker,
+:host ::ng-deep .k-dropdownlist,
+:host ::ng-deep .k-textbox,
+:host ::ng-deep .k-input-inner,
+:host ::ng-deep textarea.k-input-inner {
+  font-size: 12px;
+}
+
+:host ::ng-deep .k-picker,
+:host ::ng-deep .k-textbox,
+:host ::ng-deep .k-input-md,
+:host ::ng-deep textarea.k-input-inner {
+  border-radius: 11px;
+  border-color: rgba(148, 163, 184, 0.55);
+}
+
+:host ::ng-deep .k-picker:hover,
+:host ::ng-deep .k-textbox:hover,
+:host ::ng-deep .k-input-md:hover {
+  border-color: rgba(255, 121, 0, 0.50);
+}
+
+:host ::ng-deep .k-picker:focus-within,
+:host ::ng-deep .k-textbox:focus-within,
+:host ::ng-deep .k-input-md:focus-within {
+  border-color: var(--tb-orange);
+  box-shadow: 0 0 0 3px rgba(255, 121, 0, 0.12);
+}
+
+:host ::ng-deep .k-label,
+:host ::ng-deep label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #171717;
+}
+
+:host ::ng-deep .k-dialog {
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 24px 50px rgba(15, 23, 42, 0.18);
+}
+
+:host ::ng-deep .k-dialog-titlebar {
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #171717 0%, #27272a 100%);
+  border-bottom: 2px solid var(--tb-orange);
+}
+
+:host ::ng-deep .k-dialog-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+:host ::ng-deep .k-dialog-content {
+  padding: 16px;
+  font-size: 12px;
+}
+
+:host ::ng-deep .k-dialog-actions {
+  padding: 12px 16px 16px;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+:host ::ng-deep .k-form-field {
+  font-size: 12px;
+}
+
+:host ::ng-deep .k-grid .k-button {
+  min-height: 28px;
+  padding: 4px 10px;
+}
+
+@media (max-width: 1440px) {
+  .listing-page {
+    width: 100%;
+    max-width: 1440px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .listing-page {
+    width: 100%;
+    max-width: 1440px;
+    padding: 14px;
+  }
+
+  .filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .toolbar-actions {
+    justify-content: flex-start;
+  }
+
+  .dialog-grid-2,
+  .dtr-dialog-topbar {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .listing-page {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .header-card {
+    align-items: flex-start;
+  }
+
+  .header-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+  }
+
+  .header-card,
+  .filter-card,
+  .grid-card {
+    border-radius: 14px;
+  }
+
+  .header-card,
+  .filter-card {
+    padding: 14px;
+  }
+
+  .title-block h1 {
+    font-size: 18px;
+  }
+
+  .title-block p,
+  .summary-strip,
+  .error-banner {
+    font-size: 12px;
+  }
+
+  .dialog-grid-2,
+  .dtr-dialog-topbar {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-toolbar {
+    align-items: flex-start;
+  }
+
+  .grid-toolbar-left,
+  .grid-toolbar-right {
+    width: 100%;
+  }
+
+  .no-records-state {
+    min-height: 280px;
+    padding: 20px 14px;
+  }
+
+  :host ::ng-deep .k-grid {
+    font-size: 11px;
+  }
+
+  :host ::ng-deep .k-grid th.k-header,
+  :host ::ng-deep .k-grid td {
+    padding: 7px 8px;
+    font-size: 11px;
+  }
+}

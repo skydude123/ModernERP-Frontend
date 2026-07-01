@@ -1,0 +1,77 @@
+<header class="app-header">
+  <div class="header-left">
+    <button
+      kendoButton
+      type="button"
+      fillMode="flat"
+      class="icon-btn"
+      (click)="toggleSidebar()"
+      aria-label="Toggle sidebar"
+    >
+      <kendo-svg-icon [icon]="menuSvg"></kendo-svg-icon>
+    </button>
+
+    <div class="brand-wrap">
+      <img
+        class="brand-logo"
+        src="assets/images/twinbee-logo.png"
+        alt="TwinBee logo"
+      />
+
+      <div class="brand-meta">
+        <div class="brand-name">TwinBee Print Ads</div>
+        <div class="brand-module">{{ moduleTitle() }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <!-- <button
+      kendoButton
+      type="button"
+      fillMode="flat"
+      class="icon-btn notification-btn"
+      aria-label="Notifications"
+    >
+      <kendo-svg-icon [icon]="bellSvg"></kendo-svg-icon>
+      @if (notificationCount() > 0) {
+        <span class="notif-badge">{{ notificationCount() }}</span>
+      }
+    </button> -->
+
+    <div class="user-panel">
+      <div class="user-name">{{ userName() | titlecase }}</div>
+      <div class="user-meta">{{ department() }} / {{ branch() }}</div>
+    </div>
+
+    <button
+      kendoButton
+      type="button"
+      fillMode="flat"
+      class="icon-btn logout-btn"
+      (click)="logout()"
+      aria-label="Logout"
+    >
+      <kendo-svg-icon [icon]="logoutSvg"></kendo-svg-icon>
+    </button>
+  </div>
+</header>
+
+
+<!-- <header class="app-header">
+  <div class="left-zone">
+    <button kendoButton fillMode="flat" icon="menu" (click)="auth.toggleDrawer()"></button>
+    <div>
+      <h1>TwinBee Print Ads</h1>
+      <small>Errands Portal</small>
+    </div>
+  </div>
+
+  <div class="right-zone">
+    <div class="user-meta">
+      <strong>{{ auth.displayName() }}</strong>
+      <span>{{ auth.branch() }} {{ auth.department() ? '• ' + auth.department() : '' }}</span>
+    </div>
+    <button kendoButton themeColor="primary" (click)="auth.logout()">Logout</button>
+  </div>
+</header> -->

@@ -1,0 +1,263 @@
+<div class="listing-page">
+  <section class="header-card">
+    <div class="title-block">
+      <h1>Biometrix DTR Listing</h1>
+      <p>View and manage processed attendance records by branch name and payroll period.</p>
+    </div>
+  </section>
+
+  <section class="filter-card">
+    <form [formGroup]="facade.filterForm" class="filter-grid">
+      <div class="field">
+        <kendo-label text="Branch Name"></kendo-label>
+        <kendo-dropdownlist
+          [data]="facade.branches()"
+          textField="text"
+          valueField="value"
+          [valuePrimitive]="true"
+          formControlName="branchName">
+        </kendo-dropdownlist>
+      </div>
+
+      <div class="field">
+        <kendo-label text="Payroll Period"></kendo-label>
+        <kendo-dropdownlist
+          [data]="facade.payrollPeriods()"
+          textField="text"
+          valueField="value"
+          [valuePrimitive]="true"
+          formControlName="payrollPeriod">
+        </kendo-dropdownlist>
+      </div>
+
+      <div class="toolbar-actions">
+        <button
+          kendoButton
+          themeColor="primary"
+          type="button"
+          (click)="facade.loadRows()">
+          Load
+        </button>
+
+        <button
+          kendoButton
+          fillMode="outline"
+          type="button"
+          (click)="facade.clearFilter()">
+          Clear
+        </button>
+      </div>
+    </form>
+
+    <div *ngIf="facade.error() as errorMessage" class="error-banner">
+      {{ errorMessage }}
+    </div>
+
+    <div class="summary-strip" *ngIf="facade.rows().length > 0">
+      <div><strong>Branch:</strong> {{ facade.filterForm.controls.branchName.value }}</div>
+      <div><strong>Payroll Period:</strong> {{ facade.filterForm.controls.payrollPeriod.value }}</div>
+      <div><strong>Total Records:</strong> {{ facade.totalRows() }}</div>
+      <div><strong>Total Hours:</strong> {{ facade.totalHours() | number:'1.2-2' }}</div>
+      <div><strong>Total OT:</strong> {{ facade.totalOt() | number:'1.2-2' }}</div>
+    </div>
+  </section>
+
+  <section class="grid-card">
+    <kendo-grid
+      [data]="facade.rows()"
+      [height]="620"
+      [sortable]="true"
+      [resizable]="true"
+      [reorderable]="true"
+      [loading]="facade.loading()">
+
+      <ng-template kendoGridToolbarTemplate>
+        <div class="grid-toolbar">
+          <div class="grid-toolbar-left">
+            <span class="toolbar-caption">Processed Attendance Records</span>
+            <span class="toolbar-count" *ngIf="facade.rows().length > 0">
+              {{ facade.totalRows() }} row(s)
+            </span>
+          </div>
+
+          <div class="grid-toolbar-right">
+            <button
+              kendoButton
+              fillMode="outline"
+              type="button"
+              [svgIcon]="refreshIcon"
+              [disabled]="facade.loading()"
+              (click)="facade.loadRows()">
+              Refresh
+            </button>
+
+            <button
+              kendoButton
+              themeColor="success"
+              type="button"
+              [svgIcon]="excelIcon"
+              [disabled]="!facade.canExport()"
+              (click)="openExportDialog()">
+              Export Excel
+            </button>
+          </div>
+        </div>
+      </ng-template>
+
+      <ng-template kendoGridNoRecordsTemplate>
+        <div class="no-records-state">
+          <div class="no-records-title">No records available</div>
+          <div class="no-records-subtitle">
+            Select a branch and payroll period, then click Load.
+          </div>
+        </div>
+      </ng-template>
+
+      <kendo-grid-column field="dtrId" title="DTR ID" [width]="110"></kendo-grid-column>
+      <kendo-grid-column field="employeeIdNo" title="BIO ID" [width]="120"></kendo-grid-column>
+      <kendo-grid-column field="hrisIdNo" title="HRIS ID" [width]="120"></kendo-grid-column>
+      <kendo-grid-column field="empName" title="EMPLOYEE NAME" [width]="220"></kendo-grid-column>
+      <kendo-grid-column field="payrollPeriod" title="PAYROLL PERIOD" [width]="140"></kendo-grid-column>
+      <kendo-grid-column field="branchName" title="BRANCH NAME" [width]="150"></kendo-grid-column>
+      <kendo-grid-column field="dayName" title="DAY" [width]="150"></kendo-grid-column>
+      <kendo-grid-column field="workDate" title="WORK DATE" [width]="130"></kendo-grid-column>
+      <kendo-grid-column field="scheduleStartTime" title="SCHEDULE START" [width]="140"></kendo-grid-column>
+      <kendo-grid-column field="scheduleEndTime" title="SCHEDULE END" [width]="140"></kendo-grid-column>
+      <kendo-grid-column field="timeIn" title="TIME IN" [width]="120"></kendo-grid-column>
+      <kendo-grid-column field="timeOut" title="TIME OUT" [width]="120"></kendo-grid-column>
+      <kendo-grid-column field="noOfHoursWork" title="NO. OF HOURS WORK" [width]="170"></kendo-grid-column>
+      <kendo-grid-column field="otHours" title="OT" [width]="100"></kendo-grid-column>
+      <kendo-grid-column field="remarks" title="REMARKS" [width]="260"></kendo-grid-column>
+
+      <kendo-grid-column title="ACTION" [width]="120">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <button
+            kendoButton
+            size="small"
+            themeColor="primary"
+            type="button"
+            (click)="facade.openEditDialog(dataItem)">
+            Edit
+          </button>
+        </ng-template>
+      </kendo-grid-column>
+    </kendo-grid>
+
+    <kendo-excelexport
+      #excelExport
+      [data]="facade.rows()"
+      [fileName]="exportFileName()">
+
+      <kendo-excelexport-column field="dtrId" title="DTR ID"></kendo-excelexport-column>
+      <kendo-excelexport-column field="employeeIdNo" title="BIO ID"></kendo-excelexport-column>
+      <kendo-excelexport-column field="hrisIdNo" title="HRIS ID"></kendo-excelexport-column>
+      <kendo-excelexport-column field="empName" title="EMPLOYEE NAME"></kendo-excelexport-column>
+      <kendo-excelexport-column field="payrollPeriod" title="PAYROLL PERIOD"></kendo-excelexport-column>
+      <kendo-excelexport-column field="branchName" title="BRANCH NAME"></kendo-excelexport-column>
+      <kendo-excelexport-column field="dayName" title="NAME OF THE DAY"></kendo-excelexport-column>
+      <kendo-excelexport-column field="workDate" title="WORK DATE"></kendo-excelexport-column>
+      <kendo-excelexport-column field="scheduleStartTime" title="SCHEDULE START"></kendo-excelexport-column>
+      <kendo-excelexport-column field="scheduleEndTime" title="SCHEDULE END"></kendo-excelexport-column>
+      <kendo-excelexport-column field="timeIn" title="TIME IN"></kendo-excelexport-column>
+      <kendo-excelexport-column field="timeOut" title="TIME OUT"></kendo-excelexport-column>
+      <kendo-excelexport-column field="noOfHoursWork" title="NO. OF HOURS WORK"></kendo-excelexport-column>
+      <kendo-excelexport-column field="otHours" title="OT"></kendo-excelexport-column>
+      <kendo-excelexport-column field="remarks" title="REMARKS"></kendo-excelexport-column>
+    </kendo-excelexport>
+  </section>
+
+  <kendo-dialog
+    *ngIf="exportDialogOpen()"
+    title="Rename Excel File"
+    [width]="480"
+    (close)="closeExportDialog()">
+
+    <form [formGroup]="exportForm" class="export-dialog-form">
+      <div class="field">
+        <kendo-label text="File Name"></kendo-label>
+        <input title="File Name" kendoTextBox formControlName="fileName" />
+      </div>
+
+      <div class="export-hint">
+        .xlsx will be added automatically
+      </div>
+    </form>
+
+    <kendo-dialog-actions>
+      <button
+        kendoButton
+        fillMode="outline"
+        type="button"
+        (click)="closeExportDialog()">
+        Cancel
+      </button>
+
+      <button
+        kendoButton
+        themeColor="primary"
+        type="button"
+        (click)="confirmExport()">
+        Download
+      </button>
+    </kendo-dialog-actions>
+  </kendo-dialog>
+
+  <kendo-dialog
+    *ngIf="facade.editDialogOpen()"
+    title="Edit DTR Record"
+    [minWidth]="520"
+    [width]="520"
+    (close)="facade.closeEditDialog()">
+
+    <div class="compact-edit-shell">
+      <div class="compact-edit-note">
+        Review the selected DTR row and update only the computed values below.
+      </div>
+
+      <form [formGroup]="facade.editForm" class="compact-edit-form">
+        <div class="dialog-section-card">
+          <div class="section-heading">
+            <h3>DTR Adjustment</h3>
+            <p>DTR ID is reference only. No. of Hours Work and OT are editable.</p>
+          </div>
+
+          <div class="compact-edit-grid">
+            <div class="field readonly-field">
+              <kendo-label text="DTR ID"></kendo-label>
+              <input title="DTR ID" kendoTextBox formControlName="dtrId" readonly />
+            </div>
+
+            <div class="field">
+              <kendo-label text="No. of Hours Work"></kendo-label>
+              <input title="No. of Hours Work" kendoTextBox formControlName="noOfHoursWork" />
+            </div>
+
+            <div class="field">
+              <kendo-label text="OT"></kendo-label>
+              <input title="OT" kendoTextBox formControlName="otHours" />
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <kendo-dialog-actions class="dtr-dialog-actions">
+      <button
+        kendoButton
+        fillMode="outline"
+        type="button"
+        (click)="facade.closeEditDialog()">
+        Cancel
+      </button>
+
+      <button
+        kendoButton
+        themeColor="primary"
+        type="button"
+        [disabled]="facade.saving()"
+        (click)="facade.saveEdit()">
+        {{ facade.saving() ? 'Saving...' : 'Save Changes' }}
+      </button>
+    </kendo-dialog-actions>
+  </kendo-dialog>
+</div>
