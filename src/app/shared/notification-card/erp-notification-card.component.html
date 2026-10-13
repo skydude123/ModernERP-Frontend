@@ -1,0 +1,26 @@
+<div [class]="hostClass">
+  <div class="erp-notify-card__icon" [attr.aria-label]="iconAriaLabel">
+    <span>{{ iconSymbol }}</span>
+  </div>
+
+  <div class="erp-notify-card__body">
+    <div class="erp-notify-card__title-row">
+      <div class="erp-notify-card__title">{{ data.title }}</div>
+      @if (data.moduleName) {
+        <div class="erp-notify-card__module">
+          {{ data.moduleName }}
+        </div>
+      }
+    </div>
+
+    <div class="erp-notify-card__message">
+      {{ data.message }}
+    </div>
+
+    @if (data.documentNo) {
+      <div class="erp-notify-card__meta">
+        Document No.: <strong>{{ data.documentNo }}</strong>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,152 @@
+<kendo-dialog
+  class="warehouse-dialog"
+  [width]="980"
+  [minWidth]="360"
+  (close)="close()"
+  >
+  <kendo-dialog-titlebar>
+    <div class="dialog-titlebar">
+      <div>
+        <h2>Warehouse / Storage Balance</h2>
+        <p>
+          Item Code:
+          <strong>{{ itemCode }}</strong>
+          @if (itemDescription) {
+            <span> • {{ itemDescription }} </span>
+          }
+        </p>
+      </div>
+    </div>
+  </kendo-dialog-titlebar>
+
+  <section class="warehouse-dialog-body">
+    <div class="dialog-toolbar">
+      <div>
+        <span class="eyebrow">STORAGE DETAILS</span>
+        <h3>All Branches / Warehouses</h3>
+      </div>
+
+      <div class="dialog-actions">
+        <button
+          kendoButton
+          class="export-excel-btn"
+          fillMode="solid"
+          rounded="medium"
+          type="button"
+          [disabled]="!rows().length"
+          (click)="exportExcel()"
+          >
+          <kendo-svgicon [icon]="fileExcelIcon" class="export-excel-icon">
+          </kendo-svgicon>
+
+          <span>Export Excel</span>
+        </button>
+      </div>
+    </div>
+
+    @if (error()) {
+      <div class="dialog-alert">
+        {{ error() }}
+      </div>
+    }
+
+    <kendo-grid
+      #warehouseGrid
+      class="warehouse-grid"
+      [kendoGridBinding]="rows()"
+      [loading]="loading()"
+      [pageSize]="10"
+      [pageable]="{
+        buttonCount: 5,
+        pageSizes: [10, 20, 50],
+        previousNext: true,
+        info: true,
+      }"
+      [sortable]="true"
+      [filterable]="false"
+      [resizable]="true"
+      [height]="390"
+      [selectable]="{ mode: 'single' }"
+      (selectionChange)="onWarehouseSelectionChange($event)"
+      >
+      <kendo-grid-column
+        field="warehouseDescription"
+        title="WHSE DESC"
+        [width]="210"
+        >
+      </kendo-grid-column>
+
+      <kendo-grid-column field="itemCode" title="ITEM CODE" [width]="125">
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        field="itemDescription"
+        title="ITEM DESC"
+        [width]="260"
+        >
+      </kendo-grid-column>
+
+      <kendo-grid-column field="baseUm" title="BASE UM" [width]="105">
+      </kendo-grid-column>
+
+      <kendo-grid-column field="qtyReceived" title="QTY RCV" [width]="120">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span class="number-cell">
+            {{ dataItem.qtyReceived | number: "1.2-2" }}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column field="qtyIssued" title="QTY ISSUED" [width]="130">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span class="number-cell">
+            {{ dataItem.qtyIssued | number: "1.2-2" }}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        field="qtyForIssue"
+        title="QTY FOR ISSUE"
+        [width]="150"
+        >
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span class="number-cell">
+            {{ dataItem.qtyForIssue | number: "1.2-2" }}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column field="onHandCost" title="ON HAND COST" [width]="155">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span class="number-cell cost-cell">
+            {{ dataItem.onHandCost | currency: "PHP" : "symbol" : "1.2-2" }}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-excel [fileName]="'Warehouse_Balance_' + itemCode + '.xlsx'">
+      </kendo-grid-excel>
+    </kendo-grid>
+
+    @if (!loading() && !error() && rows().length === 0) {
+      <div
+        class="empty-state"
+        >
+        No warehouse / storage balance found for this item.
+      </div>
+    }
+  </section>
+
+  <kendo-dialog-actions>
+    <button
+      kendoButton
+      size="small"
+      themeColor="primary"
+      rounded="medium"
+      (click)="close()"
+      >
+      Close
+    </button>
+  </kendo-dialog-actions>
+</kendo-dialog>

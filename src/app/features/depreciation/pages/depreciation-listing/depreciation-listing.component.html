@@ -1,0 +1,191 @@
+<app-toolbar
+  [config]="toolbar.config()"
+  title="Depreciation Register"
+  subtitle="Server-paged fixed-asset depreciation batches"
+  (onNew)="newDocument()"
+  (onRefresh)="refresh()"
+  (onPrint)="print()"
+></app-toolbar>
+
+<section class="filter-card" [formGroup]="filters">
+  <label
+    >Period From<input
+      kendoTextBox
+      formControlName="periodFrom"
+      maxlength="6"
+      placeholder="YYYYMM"
+  /></label>
+  <label
+    >Period To<input
+      kendoTextBox
+      formControlName="periodTo"
+      maxlength="6"
+      placeholder="YYYYMM"
+  /></label>
+  <label
+    >Run Date From<kendo-datepicker
+      formControlName="runDateFrom"
+    ></kendo-datepicker
+  ></label>
+  <label
+    >Run Date To<kendo-datepicker formControlName="runDateTo"></kendo-datepicker
+  ></label>
+  <label
+    >Status<kendo-dropdownlist
+      [data]="statuses"
+      formControlName="status"
+    ></kendo-dropdownlist
+  ></label>
+  <label
+    >Branch<kendo-dropdownlist
+      [data]="facade.branches()"
+      textField="name"
+      valueField="code"
+      [valuePrimitive]="true"
+      [defaultItem]="{ code: '', name: 'All branches' }"
+      formControlName="branchCode"
+    ></kendo-dropdownlist
+  ></label>
+  <label
+    >Category<kendo-dropdownlist
+      [data]="facade.categories()"
+      textField="name"
+      valueField="code"
+      [valuePrimitive]="true"
+      [defaultItem]="{ code: '', name: 'All categories' }"
+      formControlName="assetCategoryCode"
+    ></kendo-dropdownlist
+  ></label>
+  <label
+    >Method<kendo-dropdownlist
+      [data]="facade.methods()"
+      textField="name"
+      valueField="code"
+      [valuePrimitive]="true"
+      [defaultItem]="{ code: '', name: 'All methods' }"
+      formControlName="methodCode"
+    ></kendo-dropdownlist
+  ></label>
+  <label class="search"
+    >Search<input
+      kendoTextBox
+      formControlName="search"
+      placeholder="Run, journal, remarks, asset"
+  /></label>
+  <div class="filter-actions">
+    <button kendoButton themeColor="primary" (click)="applyFilters(true)">
+      Apply</button
+    ><button kendoButton (click)="clear()">Clear</button>
+  </div>
+</section>
+
+<kendo-grid
+  [data]="gridData()"
+  [loading]="facade.listLoading()"
+  [pageable]="true"
+  [sortable]="true"
+  [skip]="state().skip || 0"
+  [pageSize]="state().take || 50"
+  [sort]="state().sort || []"
+  [height]="590"
+  [selectable]="{ mode: 'single' }"
+  (dataStateChange)="dataStateChange($event)"
+>
+  <kendo-grid-column field="depRunNo" title="Run No." [width]="175">
+    <ng-template kendoGridCellTemplate let-row
+      ><button class="link" (click)="open(row)">
+        {{ row.depRunNo }}
+      </button></ng-template
+    >
+  </kendo-grid-column>
+  <kendo-grid-column
+    field="periodKey"
+    title="Period"
+    [width]="95"
+  ></kendo-grid-column>
+  <kendo-grid-column field="runDate" title="Run Date" [width]="120"
+    ><ng-template kendoGridCellTemplate let-row>{{
+      row.runDate | date: "yyyy-MM-dd"
+    }}</ng-template></kendo-grid-column
+  >
+  <kendo-grid-column
+    field="branchCode"
+    title="Branch"
+    [width]="125"
+  ></kendo-grid-column>
+  <kendo-grid-column
+    field="assetCategoryCode"
+    title="Category"
+    [width]="120"
+  ></kendo-grid-column>
+  <kendo-grid-column
+    field="methodCode"
+    title="Method"
+    [width]="90"
+  ></kendo-grid-column>
+  <kendo-grid-column field="status" title="Status" [width]="110"
+    ><ng-template kendoGridCellTemplate let-row
+      ><span [class]="statusClass(row.status)">{{
+        row.status
+      }}</span></ng-template
+    ></kendo-grid-column
+  >
+  <kendo-grid-column
+    field="assetCount"
+    title="Assets"
+    [width]="85"
+  ></kendo-grid-column>
+  <kendo-grid-column
+    field="totalAcquisitionCost"
+    title="Acquisition Cost"
+    [width]="145"
+    format="{0:n2}"
+  ></kendo-grid-column>
+  <kendo-grid-column
+    field="totalCurrentDepreciation"
+    title="Current Dep."
+    [width]="135"
+    format="{0:n2}"
+  ></kendo-grid-column>
+  <kendo-grid-column
+    field="totalClosingNetBookValue"
+    title="Closing NBV"
+    [width]="135"
+    format="{0:n2}"
+  ></kendo-grid-column>
+  <kendo-grid-column
+    field="journalNo"
+    title="Journal No."
+    [width]="145"
+  ></kendo-grid-column>
+  <kendo-grid-column
+    field="preparedBy"
+    title="Prepared By"
+    [width]="120"
+  ></kendo-grid-column>
+  <kendo-grid-column
+    field="postedBy"
+    title="Posted By"
+    [width]="120"
+  ></kendo-grid-column>
+  <kendo-grid-column field="postedAt" title="Posted Date" [width]="135"
+    ><ng-template kendoGridCellTemplate let-row>{{
+      row.postedAt | date: "yyyy-MM-dd"
+    }}</ng-template></kendo-grid-column
+  >
+  <kendo-grid-column
+    field="reversalJournalNo"
+    title="Reversal Journal"
+    [width]="155"
+  ></kendo-grid-column>
+  <kendo-grid-column
+    field="remarks"
+    title="Remarks"
+    [width]="220"
+  ></kendo-grid-column>
+  <kendo-grid-column title="Command" [width]="95" [sticky]="true"
+    ><ng-template kendoGridCellTemplate let-row
+      ><button kendoButton (click)="open(row)">Open</button></ng-template
+    ></kendo-grid-column
+  >
+</kendo-grid>

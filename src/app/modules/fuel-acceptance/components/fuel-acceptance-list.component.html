@@ -1,0 +1,460 @@
+<section class="list-page">
+  <app-toolbar
+    title="Fuel Consumption Acceptance Register"
+    subtitle="Posted documents are eligible sources for Voucher Payable"
+    [config]="toolbar.config()"
+    [formValid]="true"
+    (onNew)="newDocument()"
+    (onPrint)="print()"
+    (onRefresh)="refresh()"
+  >
+  </app-toolbar>
+
+  <section class="filter-card">
+    <div
+      class="quick-ranges"
+      aria-label="Quick List date ranges"
+    >
+      <strong>Quick List</strong>
+
+      <button
+        kendoButton
+        type="button"
+        fillMode="flat"
+        (click)="today()"
+      >
+        Today
+      </button>
+
+      <button
+        kendoButton
+        type="button"
+        fillMode="flat"
+        (click)="yesterday()"
+      >
+        Yesterday
+      </button>
+
+      <button
+        kendoButton
+        type="button"
+        fillMode="flat"
+        (click)="thisMonth()"
+      >
+        This Month
+      </button>
+
+      <button
+        kendoButton
+        type="button"
+        fillMode="flat"
+        (click)="lastMonth()"
+      >
+        Last Month
+      </button>
+
+      <button
+        kendoButton
+        type="button"
+        fillMode="flat"
+        (click)="thisYear()"
+      >
+        This Year
+      </button>
+
+      <button
+        kendoButton
+        type="button"
+        fillMode="flat"
+        (click)="lastYear()"
+      >
+        Last Year
+      </button>
+    </div>
+
+    <form
+      class="filters"
+      [formGroup]="filters"
+      (ngSubmit)="applyFilters()"
+    >
+      <kendo-formfield>
+        <!-- MODIFIED:
+             Removed [for] to avoid htmlFor/kendo-label language-service errors.
+        -->
+        <kendo-label text="Date From">
+        </kendo-label>
+
+        <kendo-datepicker
+          formControlName="fromDate"
+        >
+        </kendo-datepicker>
+      </kendo-formfield>
+
+      <kendo-formfield>
+        <!-- MODIFIED -->
+        <kendo-label text="Date To">
+        </kendo-label>
+
+        <kendo-datepicker
+          formControlName="toDate"
+        >
+        </kendo-datepicker>
+      </kendo-formfield>
+
+      <kendo-formfield>
+        <!-- MODIFIED -->
+        <kendo-label text="Status">
+        </kendo-label>
+
+        <kendo-dropdownlist
+          formControlName="status"
+          [data]="statusOptions"
+          textField="text"
+          valueField="value"
+          [valuePrimitive]="true"
+        >
+        </kendo-dropdownlist>
+      </kendo-formfield>
+
+      <kendo-formfield>
+        <!-- MODIFIED -->
+        <kendo-label text="Branch">
+        </kendo-label>
+
+        <kendo-dropdownlist
+          formControlName="branchName"
+          [data]="facade.branches()"
+          textField="branchName"
+          valueField="branchName"
+          [valuePrimitive]="true"
+          [defaultItem]="branchDefaultItem"
+        >
+        </kendo-dropdownlist>
+      </kendo-formfield>
+
+      <kendo-formfield class="search">
+        <!-- MODIFIED -->
+        <kendo-label text="Search">
+        </kendo-label>
+
+        <kendo-textbox
+          formControlName="search"
+          placeholder="Acceptance, PO, supplier, vehicle, or driver"
+        >
+        </kendo-textbox>
+
+        <kendo-formhint>
+          Searches document, PO, supplier, vehicle, plate, and driver.
+        </kendo-formhint>
+      </kendo-formfield>
+
+      <button
+        kendoButton
+        type="submit"
+        themeColor="primary"
+      >
+        Apply
+      </button>
+
+      <button
+        kendoButton
+        type="button"
+        fillMode="outline"
+        (click)="clearFilters()"
+      >
+        Clear
+      </button>
+    </form>
+  </section>
+
+  <!-- MODIFIED:
+       Added register information similar to Receiving List.
+  -->
+  <div class="grid-meta">
+    <span>
+      Total Records:
+
+      <strong>
+        {{ facade.total() | number }}
+      </strong>
+    </span>
+
+    @if (facade.listLoading()) {
+      <span class="loading-text">
+        Loading...
+      </span>
+    }
+  </div>
+
+  <div class="grid-card">
+    <kendo-grid
+      class="register-grid"
+      [data]="gridData()"
+      [skip]="state().skip || 0"
+      [pageSize]="state().take || 50"
+      [pageable]="{
+        buttonCount: 5,
+        info: true,
+        type: 'numeric',
+        pageSizes: [25, 50, 100, 250],
+        previousNext: true,
+        responsive: true
+      }"
+      [sortable]="true"
+      [sort]="state().sort || []"
+      [resizable]="true"
+      [loading]="facade.listLoading()"
+      [selectable]="{
+        mode: 'single'
+      }"
+      [height]="650"
+      (dataStateChange)="dataStateChange($event)"
+      (selectionChange)="selectionChange($event)"
+    >
+      <kendo-grid-column
+        field="fuelAcceptanceNo"
+        title="Acceptance No."
+        [width]="175"
+        [headerClass]="'headerCustomClass'"
+      >
+        <ng-template
+          kendoGridCellTemplate
+          let-row
+        >
+          <button
+            class="document-link"
+            type="button"
+            (click)="open(row)"
+          >
+            {{ row.fuelAcceptanceNo }}
+          </button>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        field="acceptanceDate"
+        title="Date"
+        [width]="110"
+        [headerClass]="'headerCustomClass'"
+      >
+        <ng-template
+          kendoGridCellTemplate
+          let-row
+        >
+          {{
+            row.acceptanceDate
+              | date: "MM/dd/yyyy"
+          }}
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        field="poNo"
+        title="PO No."
+        [width]="125"
+        [headerClass]="'headerCustomClass'"
+      >
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        field="suppName"
+        title="Supplier"
+        [width]="220"
+        [headerClass]="'headerCustomClass'"
+      >
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        field="branchName"
+        title="Branch"
+        [width]="115"
+        [headerClass]="'headerCustomClass'"
+      >
+      </kendo-grid-column>
+
+      <!-- <kendo-grid-column
+        field="vehicleNo"
+        title="Vehicle"
+        [width]="180"
+        [headerClass]="'headerCustomClass'"
+      >
+      </kendo-grid-column> -->
+
+      <kendo-grid-column
+        field="plateNo"
+        title="Plate No."
+        [width]="115"
+        [headerClass]="'headerCustomClass'"
+      >
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        field="driverName"
+        title="Driver Name"
+        [width]="175"
+        [headerClass]="'headerCustomClass'"
+      >
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        field="totalLiters"
+        title="Total Liters"
+        [width]="115"
+        [headerClass]="'headerCustomClass'"
+      >
+        <ng-template
+          kendoGridCellTemplate
+          let-row
+        >
+          {{
+            row.totalLiters
+              | number: "1.4-4"
+          }}
+        </ng-template>
+      </kendo-grid-column>
+
+      <!-- <kendo-grid-column
+        field="totalGross"
+        title="Gross"
+        [width]="120"
+        [headerClass]="'headerCustomClass'"
+      >
+        <ng-template
+          kendoGridCellTemplate
+          let-row
+        >
+          <strong>
+            {{
+              row.totalGross
+                | number: "1.2-2"
+            }}
+          </strong>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        field="totalInputVat"
+        title="Input VAT"
+        [width]="115"
+        [headerClass]="'headerCustomClass'"
+      >
+        <ng-template
+          kendoGridCellTemplate
+          let-row
+        >
+          {{
+            row.totalInputVat
+              | number: "1.2-2"
+          }}
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        field="totalEwt"
+        title="EWT"
+        [width]="100"
+        [headerClass]="'headerCustomClass'"
+      >
+        <ng-template
+          kendoGridCellTemplate
+          let-row
+        >
+          {{
+            row.totalEwt
+              | number: "1.2-2"
+          }}
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        field="totalNet"
+        title="Net Payable"
+        [width]="130"
+        [headerClass]="'headerCustomClass'"
+      >
+        <ng-template
+          kendoGridCellTemplate
+          let-row
+        >
+          <strong>
+            {{
+              row.totalNet
+                | number: "1.2-2"
+            }}
+          </strong>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        field="noReceiptAmount"
+        title="No Receipt Amount"
+        [width]="145"
+        [headerClass]="'headerCustomClass'"
+      >
+        <ng-template
+          kendoGridCellTemplate
+          let-row
+        >
+          {{
+            row.noReceiptAmount
+              | number: "1.2-2"
+          }}
+        </ng-template>
+      </kendo-grid-column> -->
+
+      <kendo-grid-column
+        field="status"
+        title="Status"
+        [width]="165"
+        [headerClass]="'headerCustomClass'"
+      >
+        <ng-template
+          kendoGridCellTemplate
+          let-row
+        >
+          <span
+            class="status"
+            [class.posted]="row.status === 'A'"
+            [class.reversed]="row.status === 'R'"
+          >
+            {{ statusLabel(row.status) }}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+
+      <!-- <kendo-grid-column
+        title="Actions"
+        [width]="105"
+        [headerClass]="'headerCustomClass'"
+        [sortable]="false"
+      >
+        <ng-template
+          kendoGridCellTemplate
+          let-row
+        >
+          <button
+            kendoButton
+            type="button"
+            size="small"
+            fillMode="outline"
+            (click)="open(row)"
+          >
+            Open
+          </button>
+        </ng-template>
+      </kendo-grid-column> -->
+
+      <ng-template kendoGridNoRecordsTemplate>
+        <div class="grid-empty-state">
+          <strong>
+            No Fuel Acceptance records found.
+          </strong>
+
+          <span>
+            Adjust the current filters or create a new Fuel Acceptance.
+          </span>
+        </div>
+      </ng-template>
+    </kendo-grid>
+  </div>
+</section>

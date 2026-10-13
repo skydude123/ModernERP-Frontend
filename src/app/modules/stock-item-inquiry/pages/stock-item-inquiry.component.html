@@ -1,0 +1,437 @@
+<main class="inquiry-page">
+  <!-- <app-toolbar
+  [config]="toolbarService.config()"
+  title="Stock Item Inquiry"
+  subtitle="Read-only inventory balances, receipt lots, and movement history"
+  (onRefresh)="refreshActiveTab()"
+  (onPrint)="print()"
+  /> -->
+
+  <section class="context-bar" aria-label="Current inventory context">
+    <div>
+      <span>Selected item</span
+        ><strong>{{ facade.selectedItem()?.itemCode || "None" }}</strong>
+      </div>
+      <div>
+        <span>Description</span
+          ><strong>{{ facade.selectedItem()?.itemDesc || "—" }}</strong>
+        </div>
+        <div>
+          <span>Warehouse</span
+            ><strong>{{ facade.selectedWarehouse()?.whseCode || "None" }}</strong>
+          </div>
+        </section>
+
+        <kendo-tabstrip [keepTabContent]="true" (tabSelect)="onTabSelect($event)">
+          <kendo-tabstrip-tab title="ITEM LIST" [selected]="selectedTab() === 0">
+            <ng-template kendoTabContent>
+              <form
+                class="criteria-bar"
+                [formGroup]="itemForm"
+                (ngSubmit)="searchItems()"
+                >
+                <kendo-formfield>
+                  <kendo-label [for]="searchInput" text="Search" />
+                  <kendo-textbox
+                    #searchInput
+                    formControlName="search"
+                    placeholder="Item code or description"
+                    />
+                  <kendo-formerror
+                    >Search is limited to 100 characters.</kendo-formerror
+                    >
+                  </kendo-formfield>
+                  <kendo-formfield>
+                    <kendo-label [for]="groupInput" text="Group" />
+                    <kendo-textbox
+                      #groupInput
+                      formControlName="groupCode"
+                      placeholder="Optional group code"
+                      />
+                    <kendo-formerror
+                      >Group code is limited to 10 characters.</kendo-formerror
+                      >
+                    </kendo-formfield>
+                    <button kendoButton type="submit" themeColor="primary">Search</button>
+                    <button kendoButton type="button" (click)="clearItemFilters()">
+                      Clear
+                    </button>
+                  </form>
+
+                  @if (facade.itemError(); as error) {
+                    <div class="error-state">
+                      {{ error }}
+                    </div>
+                  }
+                  <kendo-grid class="grid--clickable"
+                    [data]="itemGridData()"
+                    [loading]="facade.itemsLoading()"
+                    [pageable]="true"
+                    [pageSize]="itemState().take || 50"
+                    [skip]="itemState().skip || 0"
+                    [sortable]="true"
+                    [resizable]="true"
+                    [reorderable]="true"
+                    scrollable="scrollable"
+                    (dataStateChange)="itemStateChange($event)"
+                    [selectable]="{ mode: 'single' }"
+                    (cellClick)="onItemCellClick($event)"
+                    >
+                    <kendo-grid-column field="itemCode" title="Item Code" [width]="165" />
+                    <kendo-grid-column
+                      field="itemDesc"
+                      title="Description"
+                      [width]="300"
+                      />
+                    <kendo-grid-column field="groupCode" title="Group" [width]="120" />
+                    <kendo-grid-column
+                      field="groupDesc"
+                      title="Group Description"
+                      [width]="210"
+                      />
+                    <kendo-grid-column
+                      field="baseUm"
+                      title="U/M"
+                      [width]="80"
+                      [filterable]="false"
+                      />
+                    <kendo-grid-column field="itemType" title="Type" [width]="85" />
+                    <kendo-grid-column
+                      field="lastUnitCost"
+                      title="Last Cost"
+                      format="{0:n4}"
+                      [width]="130"
+                      class="numeric-cell"
+                      />
+                    <!-- <kendo-grid-column title="Select" [width]="105" [sticky]="true">
+                    <ng-template kendoGridCellTemplate let-item>
+                      <button
+                        kendoButton
+                        size="small"
+                        themeColor="primary"
+                        (click)="openItem(item)"
+                        >
+                        Open
+                      </button>
+                    </ng-template>
+                  </kendo-grid-column> -->
+                  <ng-template kendoGridNoRecordsTemplate
+                    >No active items match the applied criteria.</ng-template
+                    >
+                  </kendo-grid>
+                </ng-template>
+              </kendo-tabstrip-tab>
+
+              <kendo-tabstrip-tab
+                [title]="'WAREHOUSE STOCKS - ' + (facade.selectedItem()?.itemCode || '')"
+                [disabled]="!facade.selectedItem()"
+                [selected]="selectedTab() === 1"
+                >
+                <ng-template kendoTabContent>
+                  @if (facade.warehouseError(); as error) {
+                    <div class="error-state">
+                      {{ error }}
+                    </div>
+                  }
+                  <kendo-grid
+                    [data]="facade.warehouses()"
+                    [loading]="facade.warehousesLoading()"
+                    [resizable]="true"
+                    [sortable]="true"
+                    [selectable]="{ mode: 'single' }"
+                    scrollable="scrollable"
+                    (cellClick)="onWarehouseCellClick($event)"
+                    >
+                    <kendo-grid-column field="whseCode" title="Warehouse" [width]="115" />
+                    <kendo-grid-column field="branchName" title="Branchname" [width]="115" />
+                    <kendo-grid-column field="baseUm" title="U/M" [width]="75" />
+                    <kendo-grid-column
+                      field="qtyReceived"
+                      title="Received"
+                      format="{0:n4}"
+                      [width]="125"
+                      class="numeric-cell"
+                      />
+                    <kendo-grid-column
+                      field="qtyIssued"
+                      title="Issued"
+                      format="{0:n4}"
+                      [width]="125"
+                      class="numeric-cell"
+                      />
+                    <kendo-grid-column
+                      field="onHandQty"
+                      title="On Hand"
+                      format="{0:n4}"
+                      [width]="125"
+                      class="numeric-cell"
+                      />
+                    <kendo-grid-column
+                      field="qtyForIssue"
+                      title="For Issue"
+                      format="{0:n4}"
+                      [width]="125"
+                      class="numeric-cell"
+                      />
+                    <kendo-grid-column
+                      field="availableQty"
+                      title="Available"
+                      format="{0:n4}"
+                      [width]="125"
+                      class="numeric-cell"
+                      />
+                    <kendo-grid-column
+                      field="qtyPo"
+                      title="PO Qty"
+                      format="{0:n4}"
+                      [width]="120"
+                      class="numeric-cell"
+                      />
+                    <kendo-grid-column
+                      field="lastUnitCost"
+                      title="Last Cost"
+                      format="{0:n4}"
+                      [width]="125"
+                      class="numeric-cell"
+                      />
+                    <kendo-grid-column
+                      field="onHandCost"
+                      title="On Hand Cost"
+                      format="{0:n4}"
+                      [width]="145"
+                      class="numeric-cell"
+                      />
+                    <!-- <kendo-grid-column title="Open" [width]="105" [sticky]="true">
+                    <ng-template kendoGridCellTemplate let-row>
+                      <button
+                        kendoButton
+                        size="small"
+                        themeColor="primary"
+                        (click)="openWarehouse(row)"
+                        >
+                        Open
+                      </button>
+                    </ng-template>
+                  </kendo-grid-column> -->
+                  <ng-template kendoGridNoRecordsTemplate
+                    >No warehouse records exist for the selected item.</ng-template
+                    >
+                  </kendo-grid>
+                </ng-template>
+              </kendo-tabstrip-tab>
+
+              <kendo-tabstrip-tab
+      [title]="
+        'WAREHOUSE LOTS - ' +
+        (facade.selectedItem()?.itemCode || '') +
+        ' / ' +
+        (facade.selectedWarehouse()?.whseCode || '')
+      "
+                [disabled]="!facade.selectedWarehouse()"
+                [selected]="selectedTab() === 2"
+                >
+                <ng-template kendoTabContent>
+                  <div class="criteria-bar compact-toggle">
+                    <kendo-label text="Open lots only">
+                      <kendo-switch
+                        [checked]="facade.openOnly()"
+                        (valueChange)="setOpenOnly($event)"
+                        />
+                    </kendo-label>
+                  </div>
+                  @if (facade.lotError(); as error) {
+                    <div class="error-state">
+                      {{ error }}
+                    </div>
+                  }
+                  <kendo-grid
+                    [kendoGridBinding]="facade.lots()"
+                    [loading]="facade.lotsLoading()"
+                    [selectable]="{ mode: 'single' }"
+                    [resizable]="true"
+                    [sortable]="true"
+                    scrollable="scrollable"
+                    >
+                    <kendo-grid-column field="transDate" title="Date" [width]="115">
+                      <ng-template kendoGridCellTemplate let-row>{{
+                        row.transDate | date: "MM/dd/yyyy"
+                      }}</ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column field="transType" title="Type" [width]="80" />
+                    <kendo-grid-column
+                      field="transNo"
+                      title="Transaction / RR"
+                      [width]="150"
+                      />
+                    <kendo-grid-column field="poNo" title="PO No." [width]="120" />
+                    <kendo-grid-column
+                      field="baseQty"
+                      title="Lot Qty"
+                      format="{0:n4}"
+                      [width]="120"
+                      class="numeric-cell"
+                      />
+                    <kendo-grid-column
+                      field="qtyIssued"
+                      title="Issued"
+                      format="{0:n4}"
+                      [width]="120"
+                      class="numeric-cell"
+                      />
+                    <kendo-grid-column
+                      field="remainingQty"
+                      title="Remaining"
+                      format="{0:n4}"
+                      [width]="125"
+                      class="numeric-cell"
+                      />
+                    <kendo-grid-column field="baseUm" title="U/M" [width]="75" />
+                    <kendo-grid-column
+                      field="unitCost"
+                      title="Unit Cost"
+                      format="{0:n4}"
+                      [width]="125"
+                      class="numeric-cell"
+                      />
+                    <kendo-grid-column
+                      field="remainingValue"
+                      title="Remaining Value"
+                      format="{0:n4}"
+                      [width]="150"
+                      class="numeric-cell"
+                      />
+                    <ng-template kendoGridNoRecordsTemplate
+                      >No receipt lots match this warehouse context.</ng-template
+                      >
+                    </kendo-grid>
+                  </ng-template>
+                </kendo-tabstrip-tab>
+
+                <kendo-tabstrip-tab
+      [title]="
+        'STOCK CARD - ' +
+        (facade.selectedItem()?.itemCode || '') +
+        ' / ' +
+        (facade.selectedWarehouse()?.whseCode || '')
+      "
+                  [disabled]="!facade.selectedWarehouse()"
+                  [selected]="selectedTab() === 3"
+                  >
+                  <ng-template kendoTabContent>
+                    <form
+                      class="criteria-bar"
+                      [formGroup]="cardForm"
+                      (ngSubmit)="refreshStockCard()"
+                      >
+                      <kendo-formfield>
+                        <kendo-label [for]="dateFromPicker" text="Date From" />
+                        <kendo-datepicker
+                          #dateFromPicker
+                          formControlName="dateFrom"
+                          format="MM/dd/yyyy"
+                          (valueChange)="refreshStockCard()"
+                          />
+                        <kendo-formerror>Date From is required.</kendo-formerror>
+                      </kendo-formfield>
+                      <kendo-formfield>
+                        <kendo-label [for]="dateToPicker" text="Date To" />
+                        <kendo-datepicker
+                          #dateToPicker
+                          formControlName="dateTo"
+                          format="MM/dd/yyyy"
+                          (valueChange)="refreshStockCard()"
+                          />
+                        <kendo-formerror
+                          >Date To is required and cannot precede Date
+                          From.</kendo-formerror
+                          >
+                        </kendo-formfield>
+                        <!-- <button kendoButton type="submit" themeColor="primary">
+                        Refresh
+                      </button> -->
+                    </form>
+                    @if (facade.stockCardError(); as error) {
+                      <div class="error-state">
+                        {{ error }}
+                      </div>
+                    }
+                    <kendo-grid
+                      [data]="facade.stockCard()"
+                      [loading]="facade.stockCardLoading()"
+                      [resizable]="true"
+                      scrollable="scrollable"
+                      >
+                      <kendo-grid-column field="transDate" title="Date" [width]="115">
+                        <ng-template kendoGridCellTemplate let-row>{{
+                          row.transDate | date: "MM/dd/yyyy"
+                        }}</ng-template>
+                      </kendo-grid-column>
+                      <kendo-grid-column field="transType" title="Type" [width]="80" />
+                      <kendo-grid-column
+                        field="transNo"
+                        title="Transaction"
+                        [width]="125"
+                        />
+                      <kendo-grid-column
+                        field="reference"
+                        title="Reference"
+                        [width]="165"
+                        />
+                      <kendo-grid-column
+                        field="beginningQty"
+                        title="Beginning"
+                        format="{0:n4}"
+                        [width]="125"
+                        class="numeric-cell"
+                        />
+                      <kendo-grid-column
+                        field="qtyIn"
+                        title="IN"
+                        format="{0:n4}"
+                        [width]="110"
+                        class="numeric-cell qty-in"
+                        />
+                      <kendo-grid-column
+                        field="qtyOut"
+                        title="OUT"
+                        format="{0:n4}"
+                        [width]="110"
+                        class="numeric-cell qty-out"
+                        />
+                      <kendo-grid-column
+                        field="endingQty"
+                        title="Balance"
+                        format="{0:n4}"
+                        [width]="125"
+                        class="numeric-cell"
+                        />
+                      <kendo-grid-column
+                        field="unitCost"
+                        title="Unit Cost"
+                        format="{0:n4}"
+                        [width]="125"
+                        class="numeric-cell"
+                        />
+                      <kendo-grid-column
+                        field="movementValue"
+                        title="Movement Value"
+                        format="{0:n4}"
+                        [width]="150"
+                        class="numeric-cell"
+                        />
+                      <kendo-grid-column field="poNo" title="PO No." [width]="120" />
+                      <kendo-grid-column
+                        field="workCenter"
+                        title="Work Center"
+                        [width]="165"
+                        />
+                      <kendo-grid-column field="rrLotNo" title="RR Lot" [width]="120" />
+                      <kendo-grid-column field="userId" title="User" [width]="105" />
+                      <ng-template kendoGridNoRecordsTemplate
+                        >No stock movements exist in the selected date range.</ng-template
+                        >
+                      </kendo-grid>
+                    </ng-template>
+                  </kendo-tabstrip-tab>
+                </kendo-tabstrip>
+              </main>

@@ -1,0 +1,124 @@
+:host {
+  display: block;
+}
+.list-page {
+  display: grid;
+  gap: 15px;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 18px;
+}
+.filters {
+  display: grid;
+  grid-template-columns: 150px 150px 150px 160px minmax(260px, 1fr) auto auto;
+  align-items: end;
+  gap: 12px;
+  padding: 16px;
+  background: #fff;
+  border: 1px solid #dce3ed;
+  border-radius: 10px;
+}
+label {
+  display: grid;
+  gap: 5px;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 650;
+}
+.grid-card {
+  overflow: hidden;
+  border: 1px solid #dce3ed;
+  border-radius: 10px;
+  background: #fff;
+}
+a {
+  color: #075985;
+  cursor: pointer;
+  font-weight: 700;
+  text-decoration: underline;
+}
+.status {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 3px 8px;
+  color: #fff;
+  background: #64748b;
+  font-size: 11px;
+  font-weight: 750;
+}
+.status.submitted {
+  background: #2563eb;
+}
+.status.accepted {
+  background: #0891b2;
+}
+.status.posted {
+  background: #15803d;
+}
+.status.reversed {
+  background: #b91c1c;
+}
+@media (max-width: 1100px) {
+  .filters {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .search {
+    grid-column: span 2;
+  }
+}
+@media (max-width: 650px) {
+  .list-page {
+    padding: 10px;
+  }
+  .filters {
+    grid-template-columns: 1fr;
+  }
+  .search {
+    grid-column: auto;
+  }
+}
+@media print {
+  app-toolbar,
+  .filters {
+    display: none !important;
+  }
+  .list-page {
+    padding: 0;
+  }
+}
+
+.headerCustomClass {
+  background-color: #fa8128 !important; /* Use !important to override other styles /
+  font-weight: bolder !important; / Use !important to override other styles /
+  text-align: center !important; / Use !important to override other styles /
+  color: white !important; / Set font color to white */
+  text-align: center !important;
+}
+
+/* =========================================================
+   SERVICE ACCEPTANCE LISTING
+   Dark + Bold Grid Values
+   ========================================================= */
+
+:host ::ng-deep .list-page .k-grid .k-grid-content td,
+:host ::ng-deep .list-page .k-grid .k-grid-content .k-table-td {
+  color: #111827 !important;
+  font-weight: 700 !important;
+}
+
+/* SA No. clickable link */
+:host ::ng-deep .list-page .k-grid a {
+  color: #111827 !important;
+  font-weight: 700 !important;
+}
+
+/* Status */
+:host ::ng-deep .list-page .k-grid .status {
+  font-weight: 700 !important;
+}
+
+/* Amount / completion and other formatted data */
+:host ::ng-deep .list-page .k-grid strong {
+  color: #111827 !important;
+  font-weight: 700 !important;
+}

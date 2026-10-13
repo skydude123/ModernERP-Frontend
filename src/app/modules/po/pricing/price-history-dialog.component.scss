@@ -1,0 +1,637 @@
+:host {
+  display: block;
+}
+
+/* =========================================================
+   DIALOG
+   ========================================================= */
+
+:host ::ng-deep .price-history-dialog .k-dialog {
+  width: min(1240px, calc(100vw - 30px)) !important;
+  max-width: calc(100vw - 30px);
+
+  max-height: calc(100vh - 28px);
+
+  border-radius: 12px;
+  overflow: hidden;
+
+  box-shadow:
+    0 26px 70px rgba(15, 23, 42, 0.30),
+    0 8px 22px rgba(15, 23, 42, 0.12);
+}
+
+:host ::ng-deep .price-history-dialog .k-dialog-titlebar {
+  min-height: 48px;
+
+  padding: 11px 15px;
+
+  background: linear-gradient(
+    135deg,
+    #f97316 0%,
+    #fb923c 100%
+  );
+
+  border-bottom: 1px solid #ea580c;
+
+  color: #111827;
+
+  font-size: 15px;
+  font-weight: 900;
+}
+
+:host ::ng-deep .price-history-dialog .k-dialog-title {
+  color: #111827;
+
+  font-size: 16px;
+  font-weight: 900;
+}
+
+:host ::ng-deep .price-history-dialog .k-dialog-content {
+  padding: 0;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  background: #f5f7fa;
+}
+
+:host ::ng-deep .price-history-dialog .k-dialog-actions {
+  min-height: 48px;
+
+  padding: 8px 14px;
+
+  background: #ffffff;
+
+  border-top: 1px solid #dbe3ec;
+}
+
+
+/* =========================================================
+   SHELL
+   ========================================================= */
+
+.history-shell {
+  display: grid;
+
+  gap: 10px;
+
+  padding: 12px;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   COMMON CARDS
+   ========================================================= */
+
+.history-lookup-card,
+.history-context,
+.date-filter-card,
+.history-section {
+  background: #ffffff;
+
+  border: 1px solid #dbe4ee;
+  border-radius: 9px;
+
+  box-shadow:
+    0 4px 12px rgba(15, 23, 42, 0.045);
+}
+
+
+/* =========================================================
+   LOOKUP
+   ========================================================= */
+
+.history-lookup-card {
+  overflow: visible;
+}
+
+.card-heading {
+  display: flex;
+
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 9px 11px;
+
+  border-bottom: 1px solid #e5eaf0;
+  border-left: 4px solid #f97316;
+}
+
+.card-heading h3 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 13.5px;
+  font-weight: 900;
+}
+
+.card-heading p {
+  margin: 2px 0 0;
+
+  color: #64748b;
+
+  font-size: 10.5px;
+}
+
+.history-badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  padding: 4px 8px;
+
+  background: #fff7ed;
+
+  border: 1px solid #fdba74;
+  border-radius: 999px;
+
+  color: #c2410c;
+
+  font-size: 9.5px;
+  font-weight: 900;
+
+  white-space: nowrap;
+}
+
+.history-lookup-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(240px, 1fr)
+    minmax(360px, 1.5fr)
+    minmax(150px, 0.55fr)
+    auto;
+
+  gap: 12px;
+
+  align-items: end;
+
+  padding: 12px;
+}
+
+.lookup-field {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 5px;
+
+  min-width: 0;
+}
+
+.lookup-field label {
+  color: #334155;
+
+  font-size: 10.5px;
+  font-weight: 850;
+}
+
+.lookup-field label small {
+  color: #64748b;
+
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.lookup-field kendo-multicolumncombobox,
+.lookup-field kendo-dropdownlist {
+  width: 100%;
+}
+
+.um-field {
+  min-width: 150px;
+}
+
+.required {
+  color: #dc2626;
+
+  font-weight: 900;
+}
+
+.lookup-buttons {
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+}
+
+
+/* =========================================================
+   KENDO CONTROLS
+   ========================================================= */
+
+:host ::ng-deep .history-lookup-grid .k-input,
+:host ::ng-deep .history-lookup-grid .k-picker,
+:host ::ng-deep .date-filter-card .k-input,
+:host ::ng-deep .date-filter-card .k-picker {
+  min-height: 34px;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   POPUP
+   ========================================================= */
+
+:host ::ng-deep .k-animation-container .k-table-th {
+  background: #f97316;
+
+  color: #111827;
+
+  font-size: 10px;
+  font-weight: 900;
+}
+
+:host ::ng-deep .k-animation-container .k-table-td {
+  font-size: 10.5px;
+  font-weight: 650;
+}
+
+
+/* =========================================================
+   CONTEXT
+   ========================================================= */
+
+.history-context {
+  display: flex;
+
+  justify-content: space-between;
+
+  overflow: hidden;
+}
+
+.context-main {
+  display: grid;
+
+  grid-template-columns:
+    1.5fr
+    1fr
+    0.7fr;
+
+  flex: 1;
+}
+
+.context-main > div {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 2px;
+
+  min-width: 0;
+
+  padding: 10px 12px;
+
+  border-right: 1px solid #e5e7eb;
+}
+
+.context-main span {
+  color: #9a3412;
+
+  font-size: 9px;
+  font-weight: 900;
+
+  letter-spacing: 0.04em;
+
+  text-transform: uppercase;
+}
+
+.context-main strong {
+  overflow: hidden;
+
+  color: #111827;
+
+  font-size: 12px;
+  font-weight: 900;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.context-main small {
+  overflow: hidden;
+
+  color: #64748b;
+
+  font-size: 10px;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-summary {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: flex-end;
+  justify-content: center;
+
+  min-width: 160px;
+
+  padding: 10px 12px;
+
+  background: #fff7ed;
+}
+
+.history-summary span {
+  color: #9a3412;
+
+  font-size: 9px;
+  font-weight: 850;
+}
+
+.history-summary strong {
+  color: #c2410c;
+
+  font-size: 22px;
+  font-weight: 950;
+}
+
+
+/* =========================================================
+   DATE FILTER
+   ========================================================= */
+
+.date-filter-card {
+  display: grid;
+
+  grid-template-columns:
+    minmax(260px, 1fr)
+    160px
+    160px
+    auto;
+
+  gap: 10px;
+
+  align-items: end;
+
+  padding: 10px 11px;
+}
+
+.date-filter-title {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 2px;
+
+  padding-bottom: 3px;
+}
+
+.date-filter-title strong {
+  color: #334155;
+
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.date-filter-title span {
+  color: #64748b;
+
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   HISTORY SECTIONS
+   ========================================================= */
+
+.history-section {
+  overflow: hidden;
+}
+
+.history-section-heading {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 8px 11px;
+
+  border-bottom: 1px solid #e5eaf0;
+}
+
+.history-section-heading h3 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.history-section-heading p {
+  margin: 2px 0 0;
+
+  color: #64748b;
+
+  font-size: 10px;
+}
+
+.title-row {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+}
+
+.history-type {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  min-width: 46px;
+
+  padding: 3px 7px;
+
+  border-radius: 5px;
+
+  font-size: 9px;
+  font-weight: 950;
+}
+
+.history-type.master {
+  background: #fff7ed;
+
+  border: 1px solid #fdba74;
+
+  color: #c2410c;
+}
+
+.history-type.po {
+  background: #eff6ff;
+
+  border: 1px solid #bfdbfe;
+
+  color: #1d4ed8;
+}
+
+
+/* =========================================================
+   GRIDS
+   ========================================================= */
+
+:host ::ng-deep .master-grid .k-grid-header th,
+:host ::ng-deep .master-grid .k-table-th {
+  background: #f97316 !important;
+
+  color: #111827;
+
+  font-size: 10px;
+  font-weight: 900;
+}
+
+:host ::ng-deep .po-grid .k-grid-header th,
+:host ::ng-deep .po-grid .k-table-th {
+  background: #fb923c !important;
+
+  color: #111827;
+
+  font-size: 10px;
+  font-weight: 900;
+}
+
+:host ::ng-deep .history-grid td,
+:host ::ng-deep .history-grid .k-table-td {
+  color: #1f2937;
+
+  font-size: 10.5px;
+  font-weight: 650;
+}
+
+:host ::ng-deep .history-grid .k-grid-content tr:hover td {
+  background: #fff7ed;
+}
+
+.new-price,
+.historical-price {
+  color: #c2410c;
+
+  font-weight: 950;
+
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.history-error {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 2px;
+
+  padding: 9px 11px;
+
+  background: #fef2f2;
+
+  border: 1px solid #fecaca;
+  border-left: 4px solid #dc2626;
+
+  border-radius: 7px;
+
+  color: #991b1b;
+}
+
+.history-error strong {
+  font-size: 11px;
+}
+
+.history-error span {
+  font-size: 10.5px;
+}
+
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
+
+.history-empty-state {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 4px;
+
+  min-height: 150px;
+
+  padding: 18px;
+
+  background: #ffffff;
+
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+
+  color: #64748b;
+
+  text-align: center;
+}
+
+.history-empty-state strong {
+  color: #334155;
+
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.history-empty-state span {
+  font-size: 10.5px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1000px) {
+  .history-lookup-grid {
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+  .context-main {
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+  .date-filter-card {
+    grid-template-columns:
+      1fr 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .history-lookup-grid,
+  .context-main,
+  .date-filter-card {
+    grid-template-columns:
+      1fr;
+  }
+
+  .history-context {
+    flex-direction: column;
+  }
+
+  .history-summary {
+    align-items: flex-start;
+  }
+}

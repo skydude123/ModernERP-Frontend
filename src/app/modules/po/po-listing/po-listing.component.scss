@@ -1,0 +1,640 @@
+:host {
+  display: block;
+}
+
+.po-list-page {
+  min-height: 100%;
+  padding: 8px 10px 10px;
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.06), transparent 28%),
+    linear-gradient(180deg, #f8fafc 0%, #edf2f8 100%);
+  color: #0f172a;
+}
+
+.page-shell {
+  width: 100%;
+  max-width: 1336px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.po-list-toolbar {
+  display: block;
+  margin-bottom: 7px;
+}
+
+.filter-card,
+.grid-card {
+  background: #ffffff;
+  border: 1px solid #dbe5f0;
+  border-radius: 10px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.07);
+}
+
+.filter-card {
+  padding: 10px;
+  margin-bottom: 8px;
+}
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+
+  h1 {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.1;
+    font-weight: 900;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    margin: 3px 0 0;
+    color: #64748b;
+    font-size: 11.5px;
+    line-height: 1.2;
+  }
+}
+
+.selected-chip {
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: 145px 145px 150px 165px 1fr auto;
+  gap: 8px;
+  align-items: end;
+}
+
+.search-field {
+  min-width: 220px;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.grid-card {
+  position: relative;
+  overflow: hidden;
+  padding: 8px;
+  border-top: 3px solid #2563eb;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 3px;
+    pointer-events: none;
+    background: linear-gradient(90deg, #2563eb 0%, #0ea5e9 48%, #22c55e 100%);
+  }
+}
+
+.grid-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  min-height: 24px;
+  padding: 0 2px 6px;
+  color: #475569;
+  font-size: 11.5px;
+  line-height: 1.15;
+}
+
+.record-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+
+  strong {
+    color: #0f172a;
+    font-weight: 950;
+  }
+}
+
+.loading-text {
+  color: #2563eb;
+  font-weight: 900;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 74px;
+  min-height: 22px;
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 10.5px;
+  line-height: 1;
+  font-weight: 950;
+  letter-spacing: 0.025em;
+  border: 1px solid #dbe3ef;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.status-N {
+  background: #fff7ed;
+  color: #9a3412;
+  border-color: #fed7aa;
+  box-shadow: inset 0 0 0 1px rgba(251, 146, 60, 0.12);
+}
+
+.status-P {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-color: #bfdbfe;
+  box-shadow: inset 0 0 0 1px rgba(96, 165, 250, 0.12);
+}
+
+.status-A {
+  background: #ecfdf5;
+  color: #047857;
+  border-color: #86efac;
+  box-shadow: inset 0 0 0 1px rgba(34, 197, 94, 0.12);
+}
+
+.status-C {
+  background: #f8fafc;
+  color: #475569;
+  border-color: #cbd5e1;
+  box-shadow: inset 0 0 0 1px rgba(100, 116, 139, 0.1);
+}
+
+.row-actions {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.po-link-button {
+  min-height: 22px;
+  padding: 0;
+  font-size: 11.5px;
+  font-weight: 900;
+  color: #1d4ed8;
+  letter-spacing: 0.01em;
+}
+
+.error-box {
+  margin-top: 8px;
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #991b1b;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.success-box {
+  margin-top: 8px;
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+  color: #166534;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.dialog-content {
+  display: grid;
+  gap: 10px;
+
+  p {
+    margin: 0;
+    color: #334155;
+    font-size: 12.5px;
+    line-height: 1.35;
+  }
+}
+
+/* Compact Kendo toolbar from shared app-toolbar */
+:host ::ng-deep .po-list-toolbar .k-button,
+:host ::ng-deep .po-list-toolbar button[kendoButton] {
+  min-height: 30px;
+  padding-inline: 12px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+:host ::ng-deep .po-list-toolbar .k-toolbar,
+:host ::ng-deep .po-list-toolbar [class*='toolbar'] {
+  gap: 6px;
+}
+
+/* Compact Kendo Grid */
+:host ::ng-deep .po-list-grid.k-grid {
+  height: clamp(390px, calc(100vh - 230px), 520px) !important;
+  border-color: #dbe5f0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #ffffff;
+  font-size: 11.5px;
+}
+
+:host ::ng-deep .po-list-grid .k-grid-header {
+  background: #243244;
+}
+
+:host ::ng-deep .po-list-grid .k-grid-header th,
+:host ::ng-deep .po-list-grid .k-grid-header .k-header {
+  padding: 6px 8px;
+  background: #243244;
+  color: #ffffff;
+  border-color: #334155;
+  font-size: 10.5px;
+  line-height: 1.1;
+  font-weight: 950;
+  text-align: center;
+  letter-spacing: 0.01em;
+}
+
+:host ::ng-deep .po-list-grid .k-grid-content td,
+:host ::ng-deep .po-list-grid .k-grid-content .k-table-td {
+  padding: 5px 8px;
+  border-color: #e5edf6;
+  color: #0f172a;
+  font-size: 11.5px;
+  line-height: 1.15;
+  vertical-align: middle;
+  font-weight: 700;
+}
+
+:host ::ng-deep .po-list-grid .k-grid-content tr:nth-child(even) td {
+  background: #fbfdff;
+}
+
+:host ::ng-deep .po-list-grid .k-grid-content tr:hover td {
+  background: #eff6ff;
+}
+
+:host ::ng-deep .po-list-grid .k-grid-content tr.k-selected td,
+:host ::ng-deep .po-list-grid .k-grid-content tr.k-state-selected td {
+  background: #bfdbfe;
+  color: #0f172a;
+}
+
+:host ::ng-deep .po-list-grid .k-grid-content tr.k-selected:hover td,
+:host ::ng-deep .po-list-grid .k-grid-content tr.k-state-selected:hover td {
+  background: #b4d4ff;
+}
+
+:host ::ng-deep .po-list-grid .k-grid-content strong {
+  font-weight: 950;
+  color: #0f172a;
+}
+
+:host ::ng-deep .po-list-grid .k-grid-aria-root,
+:host ::ng-deep .po-list-grid .k-grid-container,
+:host ::ng-deep .po-list-grid .k-grid-content {
+  min-height: 0;
+}
+
+:host ::ng-deep .po-list-grid .k-grid-content {
+  background: #ffffff;
+}
+
+:host ::ng-deep .po-list-grid .k-grid-pager {
+  min-height: 36px;
+  padding: 4px 7px;
+  border-color: #dbe5f0;
+  background: #f8fafc;
+  font-size: 11.5px;
+}
+
+:host ::ng-deep .po-list-grid .k-pager-info {
+  font-size: 11px;
+  color: #475569;
+}
+
+:host ::ng-deep .po-list-grid .k-pager-sizes,
+:host ::ng-deep .po-list-grid .k-pager-numbers-wrap {
+  gap: 3px;
+}
+
+:host ::ng-deep .po-list-grid .k-pager .k-button,
+:host ::ng-deep .po-list-grid .k-pager .k-pager-nav,
+:host ::ng-deep .po-list-grid .k-pager .k-page-number {
+  min-width: 26px;
+  height: 26px;
+  min-height: 26px;
+  padding: 0 6px;
+  border-radius: 6px;
+  font-size: 11px;
+}
+
+:host ::ng-deep .po-list-grid .k-pager-sizes .k-dropdownlist,
+:host ::ng-deep .po-list-grid .k-pager-sizes .k-picker {
+  min-height: 26px;
+  height: 26px;
+  font-size: 11px;
+}
+
+/* Compact smart search toolbar inside grid */
+:host ::ng-deep .grid-search-toolbar.k-toolbar,
+:host ::ng-deep .po-list-grid .k-toolbar {
+  min-height: 36px;
+  padding: 4px 7px;
+  border-color: #dbe5f0;
+  background: #f8fafc;
+}
+
+:host ::ng-deep .grid-search-toolbar .k-button,
+:host ::ng-deep .po-list-grid .k-toolbar .k-button {
+  min-height: 28px;
+  padding-inline: 9px;
+  border-radius: 7px;
+  font-size: 11.5px;
+  font-weight: 850;
+}
+
+:host ::ng-deep .grid-search-toolbar .k-input,
+:host ::ng-deep .grid-search-toolbar .k-picker,
+:host ::ng-deep .grid-search-toolbar input {
+  min-height: 28px;
+  height: 28px;
+  border-radius: 7px;
+  font-size: 11.5px;
+}
+
+:host ::ng-deep .po-list-grid .k-grid-smartbox,
+:host ::ng-deep .po-list-grid kendo-grid-smartbox-tool {
+  max-width: 420px;
+  width: min(420px, 100%);
+}
+
+/* Compact form controls for optional filter block */
+:host ::ng-deep .filter-card .k-label {
+  margin-bottom: 2px;
+  color: #334155;
+  font-size: 10.5px;
+  line-height: 1.15;
+  font-weight: 900;
+}
+
+:host ::ng-deep .filter-card .k-input,
+:host ::ng-deep .filter-card .k-picker,
+:host ::ng-deep .filter-card .k-dropdownlist,
+:host ::ng-deep .filter-card input[kendoTextBox] {
+  width: 100%;
+  min-height: 30px;
+  border-radius: 7px;
+  font-size: 11.5px;
+}
+
+:host ::ng-deep .filter-card .k-input-inner {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  font-size: 11.5px;
+}
+
+:host ::ng-deep .filter-actions .k-button {
+  min-height: 30px;
+  padding-inline: 11px;
+  border-radius: 7px;
+  font-size: 11.5px;
+  font-weight: 850;
+}
+
+/* Dialog modern ERP style */
+:host ::ng-deep .k-dialog {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+:host ::ng-deep .k-dialog-titlebar {
+  padding: 9px 12px;
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+:host ::ng-deep .k-dialog-content {
+  padding: 12px;
+}
+
+:host ::ng-deep .k-dialog-actions {
+  padding: 8px 12px;
+  border-top: 1px solid #e5edf6;
+  background: #f8fafc;
+}
+
+:host ::ng-deep .compact-dialog-content textarea,
+:host ::ng-deep .compact-dialog-content .k-textarea {
+  min-height: 78px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+@media (max-width: 1200px) {
+  .po-list-page {
+    padding: 7px 8px 9px;
+  }
+
+  .filter-grid {
+    grid-template-columns: repeat(3, minmax(150px, 1fr));
+    gap: 7px;
+  }
+
+  .search-field {
+    grid-column: span 2;
+  }
+
+  :host ::ng-deep .po-list-grid.k-grid {
+    height: clamp(360px, calc(100vh - 215px), 490px) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .grid-card {
+    padding: 7px;
+  }
+
+  .grid-meta {
+    padding-bottom: 5px;
+  }
+
+  :host ::ng-deep .po-list-grid.k-grid {
+    height: clamp(350px, calc(100vh - 205px), 470px) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .po-list-page {
+    padding: 6px;
+  }
+
+  .filter-header {
+    flex-direction: column;
+  }
+
+  .filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .search-field {
+    grid-column: span 1;
+  }
+
+  .filter-actions {
+    justify-content: stretch;
+
+    button {
+      flex: 1;
+    }
+  }
+
+  .grid-meta {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  :host ::ng-deep .po-list-grid.k-grid {
+    height: clamp(340px, calc(100vh - 195px), 440px) !important;
+  }
+
+  :host ::ng-deep .po-list-grid .k-grid-content td,
+  :host ::ng-deep .po-list-grid .k-grid-content .k-table-td {
+    padding: 5px 7px;
+  }
+}
+
+.grid-meta-left,
+.grid-meta-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.grid-meta-left {
+  min-width: 0;
+}
+
+.grid-meta-actions {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+:host ::ng-deep .grid-meta-actions .k-button {
+  min-height: 26px;
+  height: 26px;
+  padding-inline: 10px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 850;
+}
+
+:host ::ng-deep .erp-confirm-dialog-host .k-dialog {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+:host ::ng-deep .erp-confirm-dialog-host .k-dialog-content {
+  padding: 0;
+}
+
+.po-print-dialog-body {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.po-print-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  background: #ffffff;
+}
+
+:host ::ng-deep .po-print-dialog .k-dialog {
+  display: flex;
+  flex-direction: column;
+
+  width: min(1180px, calc(100vw - 32px)) !important;
+  height: min(790px, calc(100vh - 32px)) !important;
+
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 32px);
+
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+:host ::ng-deep .po-print-dialog .k-dialog-titlebar {
+  flex: 0 0 auto;
+  padding: 12px 16px;
+}
+
+:host ::ng-deep .po-print-dialog .k-dialog-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+:host ::ng-deep .po-print-dialog .k-dialog-actions {
+  flex: 0 0 auto;
+  padding: 10px 16px;
+  border-top: 1px solid #e5e7eb;
+  background: #ffffff;
+}
+
+@media (max-width: 900px) {
+  :host ::ng-deep .po-print-dialog .k-dialog {
+    width: calc(100vw - 20px) !important;
+    height: calc(100vh - 20px) !important;
+
+    max-width: calc(100vw - 20px);
+    max-height: calc(100vh - 20px);
+  }
+}
+
+/* Purchase Order Listing grid header */
+:host ::ng-deep .po-list-grid .k-grid-header,
+:host ::ng-deep .po-list-grid .k-grid-header-wrap,
+:host ::ng-deep .po-list-grid .k-table-thead,
+:host ::ng-deep .po-list-grid .k-table-th {
+  background-color: #fa8128 !important;
+}
+
+:host ::ng-deep .po-list-grid .k-table-th,
+:host ::ng-deep .po-list-grid .k-column-title,
+:host ::ng-deep .po-list-grid .k-table-th .k-link {
+  color: #000000 !important;
+  font-weight: 700;
+}
+
+:host ::ng-deep .po-list-grid .k-sort-icon,
+:host ::ng-deep .po-list-grid .k-table-th .k-svg-icon {
+  color: #000000 !important;
+  fill: #000000 !important;
+}

@@ -1,0 +1,1078 @@
+<section class="supplier-list-page">
+  <app-toolbar
+    [config]="toolbarService.config()"
+    [formValid]="true"
+    title="Supplier Listing"
+    subtitle="Supplier contact, commercial, tax, and active-status maintenance"
+    (onNew)="newSupplier()"
+    (onRefresh)="refresh()"
+  >
+  </app-toolbar>
+
+  <form class="filter-panel" [formGroup]="filterForm">
+    <div class="filter-field filter-field--search">
+      <label for="supplierSearch"> Search </label>
+
+      <input
+        id="supplierSearch"
+        kendoTextBox
+        formControlName="search"
+        placeholder="Code, name, TIN, contact, or email"
+        autocomplete="off"
+      />
+    </div>
+
+    <div class="filter-field">
+      <label for="listGroup"> Supplier Group </label>
+
+      <kendo-dropdownlist
+        id="listGroup"
+        formControlName="supplierGroupCode"
+        [data]="facade.lookups().groups"
+        textField="displayName"
+        valueField="code"
+        [valuePrimitive]="true"
+        [defaultItem]="allLookupOption"
+      >
+      </kendo-dropdownlist>
+    </div>
+
+    <div class="filter-field">
+      <label for="listTerms"> Terms </label>
+
+      <kendo-dropdownlist
+        id="listTerms"
+        formControlName="termsCode"
+        [data]="facade.lookups().terms"
+        textField="displayName"
+        valueField="code"
+        [valuePrimitive]="true"
+        [defaultItem]="allLookupOption"
+      >
+      </kendo-dropdownlist>
+    </div>
+
+    <div class="filter-field">
+      <label for="listCurrency"> Currency </label>
+
+      <kendo-dropdownlist
+        id="listCurrency"
+        formControlName="currencyCode"
+        [data]="facade.lookups().currencies"
+        textField="displayName"
+        valueField="code"
+        [valuePrimitive]="true"
+        [defaultItem]="allLookupOption"
+      >
+      </kendo-dropdownlist>
+    </div>
+
+    <!-- <div class="filter-field">
+      <label for="listTaxProfile"> Tax Profile </label>
+
+      <kendo-dropdownlist
+        id="listTaxProfile"
+        formControlName="taxProfileCode"
+        [data]="facade.lookups().taxProfiles"
+        textField="displayName"
+        valueField="code"
+        [valuePrimitive]="true"
+        [defaultItem]="allLookupOption"
+      >
+      </kendo-dropdownlist>
+    </div> -->
+
+    <div class="filter-field">
+      <label for="listStatus"> Status </label>
+
+      <kendo-dropdownlist
+        id="listStatus"
+        formControlName="activeFlag"
+        [data]="statusOptions"
+        textField="text"
+        valueField="value"
+        [valuePrimitive]="true"
+      >
+      </kendo-dropdownlist>
+    </div>
+
+    <div class="filter-actions">
+      <button
+        kendoButton
+        type="button"
+        fillMode="outline"
+        [svgIcon]="filterClearIcon"
+        [disabled]="facade.loading()"
+        (click)="clearFilters()"
+      >
+        Clear
+      </button>
+    </div>
+  </form>
+
+  @if (facade.lookupsLoading()) {
+    <div class="inline-state" role="status">Loading supplier lookups…</div>
+  }
+
+  @if (facade.lookupsError(); as lookupError) {
+    <div class="inline-state inline-state--error" role="alert">
+      <strong> Supplier lookup data could not be loaded. </strong>
+
+      <span>
+        {{ lookupError }}
+      </span>
+    </div>
+  }
+
+  @if (facade.error(); as listError) {
+    <div class="inline-state inline-state--error" role="alert">
+      <strong> Supplier listing could not be loaded. </strong>
+
+      <span>
+        {{ listError }}
+      </span>
+    </div>
+  }
+
+  <section class="grid-card" aria-label="Supplier results">
+    <div class="grid-summary">
+      <span>
+        {{ facade.total() | number }}
+        supplier{{ facade.total() === 1 ? "" : "s" }}
+      </span>
+
+      @if (facade.loading()) {
+        <span class="loading-label" role="status"> Loading… </span>
+      }
+    </div>
+
+    <kendo-grid
+      class="supplier-grid"
+      [data]="gridData()"
+      [skip]="gridState().skip ?? 0"
+      [pageSize]="gridState().take ?? 50"
+      [sort]="gridState().sort ?? []"
+      [selectable]="{
+        enabled: true,
+        mode: 'single',
+        cell: false,
+        checkboxOnly: false,
+      }"
+      kendoGridSelectBy="supplierCode"
+      [(selectedKeys)]="selectedSupplierKeys"
+      [pageable]="{
+        buttonCount: 5,
+        pageSizes: [25, 50, 100],
+        previousNext: true,
+        info: true,
+      }"
+      [sortable]="{
+        allowUnsort: false,
+        mode: 'single',
+      }"
+      [resizable]="true"
+      [loading]="facade.loading()"
+      [height]="560"
+      (dataStateChange)="dataStateChange($event)"
+      (edit)="editSupplierHandler($event)"
+    >
+      <kendo-grid-column
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder',
+        }"
+        field="supplierCode"
+        title="Supplier Code"
+        [width]="130"
+        [locked]="true"
+        [sortable]="true"
+      >
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span
+            class="supplier-code-value"
+            [title]="dataItem.supplierCode || ''"
+          >
+            {{ dataItem.supplierCode || "—" }}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-command-column
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder',
+        }"
+        title="Action"
+        [width]="90"
+        [locked]="true"
+      >
+        <ng-template kendoGridCellTemplate>
+          <div class="supplier-action-cell">
+            <button
+              kendoGridEditCommand
+              class="supplier-edit-button"
+              type="button"
+              size="small"
+              fillMode="outline"
+              [disabled]="isDialogBusy()"
+            >
+              {{ canEdit() ? "Edit" : "Open" }}
+            </button>
+          </div>
+        </ng-template>
+      </kendo-grid-command-column>
+
+      <kendo-grid-column
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder',
+        }"
+        field="supplierName"
+        title="Supplier Name"
+        [width]="240"
+      >
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder',
+        }"
+        field="supplierGroupName"
+        title="Group"
+        [width]="165"
+      >
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder',
+        }"
+        field="contactPerson"
+        title="Contact"
+        [width]="150"
+      >
+        <ng-template kendoGridCellTemplate let-dataItem>
+          {{ dataItem.contactPerson || "—" }}
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder',
+        }"
+        field="telephone"
+        title="Telephone"
+        [width]="140"
+      >
+        <ng-template kendoGridCellTemplate let-dataItem>
+          {{ dataItem.telephone || "—" }}
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder',
+        }"
+        field="email"
+        title="Email"
+        [width]="205"
+      >
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span class="ellipsis-cell" [title]="dataItem.email || ''">
+            {{ dataItem.email || "—" }}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder',
+        }"
+        field="tinNo"
+        title="TIN"
+        [width]="150"
+      >
+        <ng-template kendoGridCellTemplate let-dataItem>
+          {{ dataItem.tinNo || "—" }}
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder',
+        }"
+        field="termsCode"
+        title="Terms"
+        [width]="95"
+      >
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span [title]="dataItem.termsDescription || ''">
+            {{ dataItem.termsCode || "—" }}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+
+      <!-- <kendo-grid-column
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder',
+        }"
+        field="taxProfileCode"
+        title="Tax Profile"
+        [width]="135"
+      >
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span [title]="dataItem.taxProfileDescription || ''">
+            {{ dataItem.taxProfileCode || "—" }}
+          </span>
+        </ng-template>
+      </kendo-grid-column> -->
+
+      <!-- <kendo-grid-column
+        field="activeFlag"
+        title="Status"
+        [width]="105">
+
+        <ng-template
+          kendoGridCellTemplate
+          let-dataItem>
+
+          <span
+            [class]="statusClass(dataItem.activeFlag)">
+            {{
+              dataItem.activeFlag === 'Y'
+                ? 'Active'
+                : 'Inactive'
+            }}
+          </span>
+        </ng-template>
+      </kendo-grid-column> -->
+
+      <kendo-grid-column
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder',
+        }"
+        field="modifiedBy"
+        title="Modified By"
+        [width]="120"
+      >
+        <ng-template kendoGridCellTemplate let-dataItem>
+          {{ dataItem.modifiedBy || "—" }}
+        </ng-template>
+      </kendo-grid-column>
+
+      <ng-template kendoGridNoRecordsTemplate>
+        <div class="empty-state">
+          <strong> No suppliers found </strong>
+
+          <span> Change the search or filter values. </span>
+        </div>
+      </ng-template>
+    </kendo-grid>
+  </section>
+</section>
+
+@if (isEditDialogOpen()) {
+  <kendo-dialog
+    class="supplier-edit-dialog"
+    [width]="980"
+    [minWidth]="360"
+    (close)="closeEditDialog()"
+  >
+    <kendo-dialog-titlebar>
+      <div class="dialog-title-content">
+        <div
+          class="dialog-mode-icon"
+          [class.dialog-mode-icon--edit]="!isNew()"
+          aria-hidden="true"
+        >
+          {{ isNew() ? "+" : "✎" }}
+        </div>
+
+        <div class="dialog-title-text">
+          <span class="dialog-kicker">
+            {{ isNew() ? "NEW SUPPLIER MASTER" : "UPDATE SUPPLIER MASTER" }}
+          </span>
+
+          <h2>
+            {{ editDialogTitle }}
+          </h2>
+
+          <p>
+            {{ editDialogDescription }}
+          </p>
+        </div>
+      </div>
+    </kendo-dialog-titlebar>
+
+    <form
+      id="supplierEditForm"
+      class="supplier-edit-form"
+      [formGroup]="editForm"
+      novalidate
+      (ngSubmit)="requestSave()"
+    >
+      @if (facade.detailLoading()) {
+        <div class="dialog-state" role="status">
+          <span class="dialog-state-indicator"></span>
+
+          <div>
+            <strong> Loading supplier information </strong>
+
+            <p>Retrieving the latest supplier record…</p>
+          </div>
+        </div>
+      }
+
+      @if (facade.detailError(); as detailError) {
+        <div class="dialog-state dialog-state--error" role="alert">
+          <span class="dialog-state-indicator"></span>
+
+          <div>
+            <strong> Supplier could not be loaded </strong>
+
+            <p>
+              {{ detailError }}
+            </p>
+          </div>
+        </div>
+      }
+
+      @if (facade.commandError(); as commandError) {
+        <div class="dialog-state dialog-state--error" role="alert">
+          <span class="dialog-state-indicator"></span>
+
+          <div>
+            <strong> Supplier request failed </strong>
+
+            <p>
+              {{ commandError }}
+            </p>
+          </div>
+        </div>
+      }
+
+      <section class="dialog-form-section">
+        <header class="dialog-section-header">
+          <div>
+            <span class="section-kicker"> GENERAL INFORMATION </span>
+
+            <h3>Supplier identity</h3>
+
+            <p>Maintain the supplier code, name, classification, and status.</p>
+          </div>
+
+          <div class="dialog-header-badges">
+            <span
+              class="dialog-status-chip"
+              [class.dialog-status-chip--inactive]="activeFlag() === 'N'"
+            >
+              {{ statusLabel }}
+            </span>
+
+            <span class="required-note">
+              <span>*</span>
+              Required fields
+            </span>
+          </div>
+        </header>
+
+        <div class="dialog-form-grid dialog-form-grid--identity">
+          <div class="dialog-field">
+            <label for="dialogSupplierCode">
+              Supplier Code
+              <span aria-hidden="true">*</span>
+            </label>
+
+            <input
+              id="dialogSupplierCode"
+              kendoTextBox
+              formControlName="supplierCode"
+              placeholder="Enter supplier code"
+              autocomplete="off"
+              [maxlength]="lengths.supplierCode"
+              [readonly]="!isNew()"
+              [class.readonly-control]="!isNew()"
+              (blur)="normalizeSupplierCode()"
+            />
+
+            <small class="field-hint">
+              {{
+                isNew()
+                  ? "Enter the unique supplier code."
+                  : "Supplier Code is locked after creation."
+              }}
+            </small>
+
+            @if (isDialogControlInvalid("supplierCode")) {
+              <small class="field-error">
+                {{ dialogValidationText("supplierCode") }}
+              </small>
+            }
+          </div>
+
+          <div class="dialog-field dialog-field--wide">
+            <label for="dialogSupplierName">
+              Supplier Name
+              <span aria-hidden="true">*</span>
+            </label>
+
+            <input
+              id="dialogSupplierName"
+              kendoTextBox
+              formControlName="supplierName"
+              placeholder="Enter the registered supplier name"
+              autocomplete="organization"
+              [maxlength]="lengths.supplierName"
+            />
+
+            <small class="field-hint">
+              Use the complete registered or recognized business name.
+            </small>
+
+            @if (isDialogControlInvalid("supplierName")) {
+              <small class="field-error">
+                {{ dialogValidationText("supplierName") }}
+              </small>
+            }
+          </div>
+
+          <div class="dialog-field">
+            <label for="dialogSupplierGroup">
+              Supplier Group
+              <span aria-hidden="true">*</span>
+            </label>
+
+            <kendo-dropdownlist
+              id="dialogSupplierGroup"
+              formControlName="supplierGroupCode"
+              [data]="facade.lookups().groups"
+              textField="displayName"
+              valueField="code"
+              [valuePrimitive]="true"
+              [defaultItem]="requiredLookupDefault"
+            >
+            </kendo-dropdownlist>
+
+            <small class="field-hint">
+              Select the supplier classification.
+            </small>
+
+            @if (isDialogControlInvalid("supplierGroupCode")) {
+              <small class="field-error">
+                {{ dialogValidationText("supplierGroupCode") }}
+              </small>
+            }
+          </div>
+        </div>
+      </section>
+
+      <section class="dialog-form-section">
+        <header class="dialog-section-header">
+          <div>
+            <span class="section-kicker"> CONTACT INFORMATION </span>
+
+            <h3>Address and contact</h3>
+
+            <p>Maintain the supplier's primary correspondence details.</p>
+          </div>
+        </header>
+
+        <div class="dialog-form-grid">
+          <div class="dialog-field dialog-field--full">
+            <label for="dialogAddressLine1"> Address Line 1 </label>
+
+            <input
+              id="dialogAddressLine1"
+              kendoTextBox
+              formControlName="addressLine1"
+              placeholder="Street, building, barangay, or primary address"
+              [maxlength]="lengths.addressLine1"
+            />
+
+            @if (isDialogControlInvalid("addressLine1")) {
+              <small class="field-error">
+                {{ dialogValidationText("addressLine1") }}
+              </small>
+            }
+          </div>
+
+          <div class="dialog-field">
+            <label for="dialogAddressLine2"> Address Line 2 </label>
+
+            <input
+              id="dialogAddressLine2"
+              kendoTextBox
+              formControlName="addressLine2"
+              placeholder="Additional address information"
+              [maxlength]="lengths.addressLine2"
+            />
+
+            @if (isDialogControlInvalid("addressLine2")) {
+              <small class="field-error">
+                {{ dialogValidationText("addressLine2") }}
+              </small>
+            }
+          </div>
+
+          <!-- <div class="dialog-field">
+            <label for="dialogAddressLine3"> Address Line 3 </label>
+
+            <input
+              id="dialogAddressLine3"
+              kendoTextBox
+              formControlName="addressLine3"
+              placeholder="City, province, or country"
+              [maxlength]="lengths.addressLine3"
+            />
+
+            @if (isDialogControlInvalid("addressLine3")) {
+              <small class="field-error">
+                {{ dialogValidationText("addressLine3") }}
+              </small>
+            }
+          </div> -->
+
+          <div class="dialog-field">
+            <label for="dialogContactPerson"> Contact Person </label>
+
+            <input
+              id="dialogContactPerson"
+              kendoTextBox
+              formControlName="contactPerson"
+              placeholder="Primary contact person"
+              autocomplete="name"
+              [maxlength]="lengths.contactPerson"
+            />
+
+            @if (isDialogControlInvalid("contactPerson")) {
+              <small class="field-error">
+                {{ dialogValidationText("contactPerson") }}
+              </small>
+            }
+          </div>
+
+          <div class="dialog-field">
+            <label for="dialogPositionTitle"> Position / Title </label>
+
+            <input
+              id="dialogPositionTitle"
+              kendoTextBox
+              formControlName="positionTitle"
+              placeholder="Contact person's position"
+              [maxlength]="lengths.positionTitle"
+            />
+
+            @if (isDialogControlInvalid("positionTitle")) {
+              <small class="field-error">
+                {{ dialogValidationText("positionTitle") }}
+              </small>
+            }
+          </div>
+
+          <div class="dialog-field">
+            <label for="dialogTelephone"> Telephone </label>
+
+            <input
+              id="dialogTelephone"
+              kendoTextBox
+              formControlName="telephone"
+              placeholder="Telephone or mobile number"
+              autocomplete="tel"
+              [maxlength]="lengths.telephone"
+            />
+
+            @if (isDialogControlInvalid("telephone")) {
+              <small class="field-error">
+                {{ dialogValidationText("telephone") }}
+              </small>
+            }
+          </div>
+
+          <div class="dialog-field">
+            <label for="dialogFax"> Fax </label>
+
+            <input
+              id="dialogFax"
+              kendoTextBox
+              formControlName="fax"
+              placeholder="Fax number"
+              [maxlength]="lengths.fax"
+            />
+
+            @if (isDialogControlInvalid("fax")) {
+              <small class="field-error">
+                {{ dialogValidationText("fax") }}
+              </small>
+            }
+          </div>
+
+          <div class="dialog-field">
+            <label for="dialogEmail"> Email </label>
+
+            <input
+              id="dialogEmail"
+              kendoTextBox
+              formControlName="email"
+              type="email"
+              placeholder="supplier@example.com"
+              autocomplete="email"
+              [maxlength]="lengths.email"
+            />
+
+            @if (isDialogControlInvalid("email")) {
+              <small class="field-error">
+                {{ dialogValidationText("email") }}
+              </small>
+            }
+          </div>
+
+          <div class="dialog-field">
+            <label for="dialogWebsite"> Website </label>
+
+            <input
+              id="dialogWebsite"
+              kendoTextBox
+              formControlName="website"
+              placeholder="https://example.com"
+              autocomplete="url"
+              [maxlength]="lengths.website"
+            />
+
+            @if (isDialogControlInvalid("website")) {
+              <small class="field-error">
+                {{ dialogValidationText("website") }}
+              </small>
+            }
+          </div>
+        </div>
+      </section>
+
+      <section class="dialog-form-section">
+        <header class="dialog-section-header">
+          <div>
+            <span class="section-kicker"> COMMERCIAL DEFAULTS </span>
+
+            <h3>Commercial Information</h3>
+
+            <p>Configure payment and registration defaults.</p>
+          </div>
+        </header>
+
+        <div class="dialog-form-grid">
+          <div class="dialog-field">
+            <label for="dialogTermsCode"> Payment Terms </label>
+
+            <kendo-dropdownlist
+              id="dialogTermsCode"
+              formControlName="termsCode"
+              [data]="facade.lookups().terms"
+              textField="displayName"
+              valueField="code"
+              [valuePrimitive]="true"
+              [defaultItem]="optionalLookupDefault"
+            >
+            </kendo-dropdownlist>
+          </div>
+
+          <!-- <div class="dialog-field">
+            <label for="dialogCurrencyCode"> Currency </label>
+
+            <kendo-dropdownlist
+              id="dialogCurrencyCode"
+              formControlName="currencyCode"
+              [data]="facade.lookups().currencies"
+              textField="displayName"
+              valueField="code"
+              [valuePrimitive]="true"
+              [defaultItem]="optionalLookupDefault"
+            >
+            </kendo-dropdownlist>
+          </div> -->
+
+          <!-- <div class="dialog-field">
+            <label for="dialogTaxProfileCode"> Default Tax Profile </label>
+
+           <kendo-combobox
+  id="dialogTaxProfileCode"
+  formControlName="taxProfileCode"
+  [data]="filteredTaxProfiles()"
+  textField="displayName"
+  valueField="code"
+  [valuePrimitive]="true"
+  [filterable]="true"
+  [suggest]="true"
+  [clearButton]="true"
+  placeholder="Search or select tax profile"
+  (filterChange)="filterTaxProfiles($event)"
+>
+</kendo-combobox>
+
+            <small class="field-hint">
+              Supplier default only; transaction detail tax remains
+              authoritative.
+            </small>
+          </div> -->
+
+          <div class="dialog-field">
+            <label for="dialogTinNo"> TIN </label>
+
+            <input
+              id="dialogTinNo"
+              kendoTextBox
+              formControlName="tinNo"
+              placeholder="Enter supplier TIN"
+              [maxlength]="lengths.tinNo"
+            />
+
+            @if (isDialogControlInvalid("tinNo")) {
+              <small class="field-error">
+                {{ dialogValidationText("tinNo") }}
+              </small>
+            }
+          </div>
+
+          <!-- <div class="dialog-field dialog-field--full">
+            <label for="dialogSpecialties"> Specialties </label>
+
+            <textarea
+              id="dialogSpecialties"
+              kendoTextArea
+              formControlName="specialties"
+              rows="3"
+              placeholder="Products, services, capabilities, or supplier specialties"
+              [maxlength]="lengths.specialties"
+            >
+            </textarea>
+
+            <small class="field-hint field-hint--counter">
+              {{ editForm.controls.specialties.value.length }}
+              /
+              {{ lengths.specialties }}
+            </small>
+
+            @if (isDialogControlInvalid("specialties")) {
+              <small class="field-error">
+                {{ dialogValidationText("specialties") }}
+              </small>
+            }
+          </div> -->
+        </div>
+      </section>
+
+      <section class="dialog-form-section dialog-form-section--audit">
+        <header class="dialog-section-header">
+          <div>
+            <span class="section-kicker"> SYSTEM INFORMATION </span>
+
+            <h3>Audit</h3>
+
+            <p>
+              Automatically assigned from the current logged-in user and
+              database server.
+            </p>
+          </div>
+        </header>
+
+        <div class="dialog-form-grid">
+          <div class="dialog-field">
+            <label for="dialogModifiedBy"> Modified By </label>
+
+            <input
+              id="dialogModifiedBy"
+              kendoTextBox
+              formControlName="modifiedBy"
+              placeholder="Current logged-in user"
+              readonly
+              class="readonly-control"
+            />
+
+            <small class="field-hint">
+              Automatically taken from the current login.
+            </small>
+          </div>
+
+          <div class="dialog-field">
+            <label for="dialogModifiedDate"> Modified Date </label>
+
+            <input
+              id="dialogModifiedDate"
+              kendoTextBox
+              formControlName="modifiedDate"
+              placeholder="Assigned after saving"
+              readonly
+              class="readonly-control"
+            />
+
+            <small class="field-hint">
+              Automatically assigned by the database after saving.
+            </small>
+          </div>
+        </div>
+      </section>
+
+      @if (facade.commandBusy()) {
+        <div class="dialog-state" role="status">
+          <span class="dialog-state-indicator"></span>
+
+          <div>
+            <strong> Processing supplier request </strong>
+
+            <p>Please wait while the command is being completed…</p>
+          </div>
+        </div>
+      }
+    </form>
+
+    <kendo-dialog-actions layout="end">
+      <div class="dialog-footer-actions">
+        <div class="dialog-actions-start">
+          <button
+            kendoButton
+            class="dialog-secondary-button"
+            type="button"
+            fillMode="outline"
+            [disabled]="isDialogBusy()"
+            (click)="requestDialogRefresh()"
+          >
+            {{ isNew() ? "Reset" : "Refresh" }}
+          </button>
+
+          @if (showActivateSupplier()) {
+            <button
+              kendoButton
+              class="dialog-activate-button"
+              type="button"
+              [disabled]="!canActivateSupplier()"
+              [title]="
+                !mayActivate()
+                  ? 'You do not have SUPPLIER_ACTIVATE permission.'
+                  : ''
+              "
+              (click)="requestActivate()"
+            >
+              Activate
+            </button>
+          }
+
+          @if (showDeactivateSupplier()) {
+            <button
+              kendoButton
+              class="dialog-deactivate-button"
+              type="button"
+              [disabled]="!canDeactivateSupplier()"
+              [title]="
+                !mayDeactivate()
+                  ? 'You do not have SUPPLIER_DEACTIVATE permission.'
+                  : ''
+              "
+              (click)="requestDeactivate()"
+            >
+              Deactivate
+            </button>
+          }
+        </div>
+
+        <div class="dialog-actions-end">
+          <button
+            kendoButton
+            class="dialog-cancel-button"
+            type="button"
+            [svgIcon]="cancelIcon"
+            [disabled]="isDialogBusy()"
+            (click)="closeEditDialog()"
+          >
+            Cancel
+          </button>
+
+          @if (isNew() ? canCreate() : canEdit()) {
+            <button
+              kendoButton
+              class="dialog-save-button"
+              type="submit"
+              form="supplierEditForm"
+              themeColor="primary"
+              [svgIcon]="saveIcon"
+              [disabled]="!canSubmitDialog()"
+            >
+              {{ saveButtonText }}
+            </button>
+          }
+        </div>
+      </div>
+    </kendo-dialog-actions>
+  </kendo-dialog>
+}
+
+@if (confirmation(); as confirm) {
+  <kendo-dialog
+    class="supplier-confirm-dialog"
+    [width]="500"
+    [minWidth]="340"
+    (close)="cancelConfirmation()"
+  >
+    <kendo-dialog-titlebar>
+      {{ confirm.title }}
+    </kendo-dialog-titlebar>
+
+    <div class="supplier-confirm-content">
+      <div
+        class="supplier-confirm-symbol"
+        [class.supplier-confirm-symbol--danger]="confirm.danger"
+      >
+        {{ confirm.danger ? "!" : "?" }}
+      </div>
+
+      <div>
+        <p>
+          {{ confirm.message }}
+        </p>
+
+        @if (confirm.note) {
+          <small>
+            {{ confirm.note }}
+          </small>
+        }
+      </div>
+    </div>
+
+    <kendo-dialog-actions layout="end">
+      <button
+        kendoButton
+        type="button"
+        fillMode="outline"
+        (click)="cancelConfirmation()"
+      >
+        Cancel
+      </button>
+
+      <button
+        kendoButton
+        type="button"
+        themeColor="primary"
+        [class.confirm-danger-button]="confirm.danger"
+        (click)="confirmDialogAction()"
+      >
+        {{ confirm.confirmText }}
+      </button>
+    </kendo-dialog-actions>
+  </kendo-dialog>
+}

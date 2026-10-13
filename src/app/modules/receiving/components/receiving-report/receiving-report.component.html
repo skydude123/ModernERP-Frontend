@@ -1,0 +1,12 @@
+<section class="report-page">
+  <div class="report-header">
+    <div>
+      <span>Receiving Report</span>
+      <h1>{{ rrNo }}</h1>
+    </div>
+
+    <button kendoButton type="button" fillMode="outline" [svgIcon]="arrowLeftIcon" (click)="back()">Back</button>
+  </div>
+
+  <iframe class="report-frame" [src]="viewerUrl" title="Receiving Report Viewer"></iframe>
+</section>

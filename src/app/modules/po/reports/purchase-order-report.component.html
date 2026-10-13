@@ -1,0 +1,482 @@
+<section class="po-reports">
+  <!-- =========================================================
+       ERP PAGE HEADER
+       ========================================================= -->
+  <div class="erp-header">
+    <div class="erp-header-left">
+      <div class="erp-title">Purchase Order Reports</div>
+
+      <div class="erp-subtitle">Purchasing / Reports</div>
+    </div>
+
+    <div class="erp-header-actions">
+      <button kendoButton themeColor="primary" size="small" (click)="apply()">
+        Preview
+      </button>
+
+      <button kendoButton size="small" (click)="refresh()">Refresh</button>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       FILTER PANEL
+       KENDO GRIDLAYOUT
+       ========================================================= -->
+  <section class="erp-panel filter-panel">
+    <div class="panel-header">
+      <div>
+        <span class="panel-title"> Report Filters </span>
+
+        <span class="panel-subtitle"> Define report criteria </span>
+      </div>
+    </div>
+
+    <form [formGroup]="form" class="filter-form">
+      <kendo-gridlayout
+        [cols]="[
+          'minmax(150px, 1fr)',
+          'minmax(150px, 1fr)',
+          'minmax(150px, 1fr)',
+          'minmax(150px, 1fr)',
+        ]"
+        [gap]="{
+          rows: 8,
+          cols: 10,
+        }"
+      >
+        <!-- PO DATE FROM -->
+        <kendo-gridlayout-item>
+          <div class="erp-field">
+            <label for="poDateFrom"> PO Date From </label>
+
+            <kendo-datepicker
+              id="poDateFrom"
+              formControlName="poDateFrom"
+              format="MM-dd-yyyy"
+              placeholder="MM-DD-YYYY"
+            >
+            </kendo-datepicker>
+          </div>
+        </kendo-gridlayout-item>
+
+        <!-- PO DATE TO -->
+        <kendo-gridlayout-item>
+          <div class="erp-field">
+            <label for="poDateTo"> PO Date To </label>
+
+            <kendo-datepicker
+              id="poDateTo"
+              formControlName="poDateTo"
+              format="MM-dd-yyyy"
+              placeholder="MM-DD-YYYY"
+            >
+            </kendo-datepicker>
+          </div>
+        </kendo-gridlayout-item>
+
+        <!-- DELIVERY DATE FROM -->
+        <kendo-gridlayout-item>
+          <div class="erp-field">
+            <label for="deliveryDateFrom"> Delivery From </label>
+
+            <kendo-datepicker
+              id="deliveryDateFrom"
+              formControlName="deliveryDateFrom"
+              format="MM-dd-yyyy"
+              placeholder="MM-DD-YYYY"
+            >
+            </kendo-datepicker>
+          </div>
+        </kendo-gridlayout-item>
+
+        <!-- DELIVERY DATE TO -->
+        <kendo-gridlayout-item>
+          <div class="erp-field">
+            <label for="deliveryDateTo"> Delivery To </label>
+
+            <kendo-datepicker
+              id="deliveryDateTo"
+              formControlName="deliveryDateTo"
+              format="MM-dd-yyyy"
+              placeholder="MM-DD-YYYY"
+            >
+            </kendo-datepicker>
+          </div>
+        </kendo-gridlayout-item>
+
+        <!-- PO STATUS -->
+        <kendo-gridlayout-item>
+          <div class="erp-field">
+            <label for="poStatus"> PO Status </label>
+
+            <kendo-dropdownlist
+              id="poStatus"
+              [data]="statuses"
+              textField="text"
+              valueField="value"
+              [valuePrimitive]="true"
+              formControlName="poStatus"
+            >
+            </kendo-dropdownlist>
+          </div>
+        </kendo-gridlayout-item>
+
+        <!-- BALANCE STATUS -->
+        <kendo-gridlayout-item>
+          <div class="erp-field">
+            <label for="balanceStatus"> Balance Status </label>
+
+            <kendo-dropdownlist
+              id="balanceStatus"
+              [data]="balanceStatuses"
+              [valuePrimitive]="true"
+              formControlName="balanceStatus"
+            >
+            </kendo-dropdownlist>
+          </div>
+        </kendo-gridlayout-item>
+
+        <!-- PO TYPE -->
+        <kendo-gridlayout-item>
+          <div class="erp-field">
+            <label for="poType"> PO Type </label>
+
+            <kendo-dropdownlist
+              formControlName="poType"
+              [data]="poTypes"
+              textField="description"
+              valueField="code"
+              [valuePrimitive]="true"
+            >
+            </kendo-dropdownlist>
+          </div>
+        </kendo-gridlayout-item>
+
+        <!-- PO NO -->
+        <kendo-gridlayout-item>
+          <div class="erp-field">
+            <label for="poNo"> PO No. </label>
+
+            <input
+              id="poNo"
+              kendoTextBox
+              formControlName="poNo"
+              placeholder="PO No."
+              title="PO No."
+            />
+          </div>
+        </kendo-gridlayout-item>
+
+        <!-- ITEM CODE -->
+        <kendo-gridlayout-item>
+          <div class="erp-field">
+            <label for="itemCode"> Item Code </label>
+
+            <input
+              id="itemCode"
+              kendoTextBox
+              formControlName="itemCode"
+              placeholder="Item Code"
+              title="Item Code"
+            />
+          </div>
+        </kendo-gridlayout-item>
+
+        <!-- ITEM DESCRIPTION -->
+        <kendo-gridlayout-item>
+          <div class="erp-field">
+            <label for="itemDesc"> Item Description </label>
+
+            <input
+              id="itemDesc"
+              kendoTextBox
+              formControlName="itemDesc"
+              placeholder="Item Description"
+              title="Item Description"
+            />
+          </div>
+        </kendo-gridlayout-item>
+
+        <!-- PURCHASER -->
+        <kendo-gridlayout-item>
+          <div class="erp-field">
+            <label for="purchaser"> Created By / Purchaser </label>
+
+            <input
+              id="purchaser"
+              kendoTextBox
+              formControlName="purchaser"
+              placeholder="Purchaser"
+              title="Created By / Purchaser"
+            />
+          </div>
+        </kendo-gridlayout-item>
+
+        <!-- BRANCH -->
+        <kendo-gridlayout-item>
+          <div class="erp-field">
+            <label for="branchName"> Branch </label>
+
+            <input
+              id="branchName"
+              kendoTextBox
+              formControlName="branchName"
+              placeholder="Branch"
+              title="Branch"
+            />
+          </div>
+        </kendo-gridlayout-item>
+      </kendo-gridlayout>
+    </form>
+
+    @if (form.errors?.["invalidDates"]) {
+      <div class="erp-error">Date From must not be after Date To.</div>
+    }
+  </section>
+
+  <!-- =========================================================
+       SUPPLIERS
+       ========================================================= -->
+  <section class="erp-panel supplier-panel">
+    <div class="panel-header supplier-header">
+      <div>
+        <span class="panel-title"> Suppliers </span>
+
+        <span class="supplier-count">
+          {{
+            supplierMode() === "ALL"
+              ? "All suppliers"
+              : selectedSupplierCodes().length + " selected"
+          }}
+        </span>
+      </div>
+
+      <div class="supplier-actions">
+        <button kendoButton size="small" (click)="useAllSuppliers()">
+          All
+        </button>
+
+        <button kendoButton size="small" (click)="selectAll()">
+          Select All
+        </button>
+
+        <button kendoButton size="small" (click)="clearAll()">Clear</button>
+
+        <input
+          id="supplierSearch"
+          kendoTextBox
+          class="supplier-search"
+          placeholder="Search supplier..."
+          title="Search suppliers"
+          aria-label="Search suppliers"
+          (input)="supplierSearch.set($any($event.target).value)"
+        />
+      </div>
+    </div>
+
+    <kendo-grid
+      class="supplier-grid"
+      [data]="filteredSuppliers()"
+      [height]="150"
+      [resizable]="true"
+      size="small"
+    >
+      <kendo-grid-column title="" [width]="42">
+        <ng-template kendoGridCellTemplate let-row>
+          <input
+            type="checkbox"
+            title="Select supplier"
+            aria-label="Select supplier"
+            [checked]="selected(row.suppCode)"
+            (change)="toggleSupplier(row.suppCode, $any($event.target).checked)"
+          />
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column field="suppCode" title="Supplier Code" [width]="145">
+      </kendo-grid-column>
+
+      <kendo-grid-column field="suppName" title="Supplier Name">
+      </kendo-grid-column>
+    </kendo-grid>
+  </section>
+
+  <!-- =========================================================
+       REPORT TABSTRIP
+       ========================================================= -->
+  <section class="erp-panel report-panel">
+    <kendo-tabstrip
+      class="report-tabstrip"
+      [animate]="false"
+      [scrollable]="true"
+      (tabSelect)="onReportTabSelect($event)"
+    >
+      @for (type of types; track type.code; let i = $index) {
+        <kendo-tabstrip-tab
+          [title]="type.title"
+          [selected]="selectedReportIndex() === i"
+        >
+          <ng-template kendoTabContent>
+            <div class="report-content">
+              <div class="report-info-bar">
+                <div>
+                  <strong>
+                    {{ type.title }}
+                  </strong>
+
+                  <span>
+                    {{ type.detail }}
+                  </span>
+                </div>
+
+                <div class="record-count">
+                  {{ facade.total() | number }}
+                  record(s)
+                </div>
+              </div>
+
+              @if (facade.error()) {
+                <div class="erp-error">
+                  Unable to load this report.
+
+                  @if (facade.query().reportType === "PO_RR") {
+                    PO / RR requires the receiving report schema deployment.
+                  } @else {
+                    Please check the report request or backend response.
+                  }
+                </div>
+              }
+
+              <!-- =================================================
+                   KENDO GRID INSIDE KENDO TABSTRIP
+                   ================================================= -->
+              <kendo-grid
+                class="report-grid"
+                [data]="data()"
+                [loading]="facade.loading()"
+                [pageSize]="facade.query().take"
+                [skip]="facade.query().skip"
+                [pageable]="{
+                  buttonCount: 5,
+                  info: true,
+                  type: 'numeric',
+                  pageSizes: [25, 50, 100],
+                  previousNext: true,
+                }"
+                [resizable]="true"
+                [reorderable]="true"
+                [sortable]="true"
+                [height]="430"
+                size="small"
+                (pageChange)="pageChange($event)"
+              >
+                <kendo-grid-column field="poNo" title="PO No." [width]="125">
+                </kendo-grid-column>
+
+                <!--
+                    DISPLAY DATE = MM-DD-YYYY
+                -->
+                <kendo-grid-column field="poDate" title="PO Date" [width]="110">
+                  <ng-template kendoGridCellTemplate let-dataItem>
+                    {{ dataItem.poDate | date: "MM-dd-yyyy" }}
+                  </ng-template>
+                </kendo-grid-column>
+
+                <kendo-grid-column
+                  field="suppName"
+                  title="Supplier"
+                  [width]="190"
+                >
+                </kendo-grid-column>
+
+                <kendo-grid-column field="itemCode" title="Item" [width]="120">
+                </kendo-grid-column>
+
+                <kendo-grid-column
+                  field="itemDesc"
+                  title="Description"
+                  [width]="210"
+                >
+                </kendo-grid-column>
+
+                <kendo-grid-column field="poUm" title="U/M" [width]="70">
+                </kendo-grid-column>
+
+                <kendo-grid-column
+                  field="qtyPo"
+                  title="Ordered"
+                  [width]="100"
+                  format="{0:n4}"
+                  class="num"
+                  headerClass="num-header"
+                >
+                </kendo-grid-column>
+
+                <kendo-grid-column
+                  field="qtyFulfilled"
+                  title="Fulfilled"
+                  [width]="100"
+                  format="{0:n4}"
+                  class="num"
+                  headerClass="num-header"
+                >
+                </kendo-grid-column>
+
+                <kendo-grid-column
+                  field="balanceQty"
+                  title="Balance"
+                  [width]="100"
+                  format="{0:n4}"
+                  class="num"
+                  headerClass="num-header"
+                >
+                </kendo-grid-column>
+
+                <kendo-grid-column
+                  field="poAmount"
+                  title="PO Amount"
+                  [width]="120"
+                  format="{0:n2}"
+                  class="num"
+                  headerClass="num-header"
+                >
+                </kendo-grid-column>
+
+                <kendo-grid-column
+                  field="balanceAmount"
+                  title="Open Amount"
+                  [width]="120"
+                  format="{0:n2}"
+                  class="num"
+                  headerClass="num-header"
+                >
+                </kendo-grid-column>
+
+                <kendo-grid-column
+                  field="balanceStatus"
+                  title="Balance Status"
+                  [width]="140"
+                >
+                  <ng-template kendoGridCellTemplate let-dataItem>
+                    <span
+                      class="status-badge"
+                      [class.status-open]="dataItem.balanceStatus === 'OPEN'"
+                      [class.status-partial]="
+                        dataItem.balanceStatus === 'PARTIAL'
+                      "
+                      [class.status-closed]="
+                        dataItem.balanceStatus === 'FULLY_RECEIVED'
+                      "
+                    >
+                      {{ dataItem.balanceStatus }}
+                    </span>
+                  </ng-template>
+                </kendo-grid-column>
+              </kendo-grid>
+            </div>
+          </ng-template>
+        </kendo-tabstrip-tab>
+      }
+    </kendo-tabstrip>
+  </section>
+</section>

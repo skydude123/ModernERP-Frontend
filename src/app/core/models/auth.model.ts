@@ -27,7 +27,8 @@ export interface AuthUser {
   branch: string;
   designation: string;
   dept: string;
-  userights: string;
+  userRights: string;
+  userights?: string;
   administrator: string;
   stats: string;
   entity: string;

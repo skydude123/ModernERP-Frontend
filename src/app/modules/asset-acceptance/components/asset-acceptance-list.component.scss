@@ -1,0 +1,155 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+.asset-page {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 12px;
+  min-height: calc(100vh - 110px);
+}
+.filter-card,
+.grid-card {
+  background: #fff;
+  border: 1px solid #d9e1ea;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgb(20 42 74 / 6%);
+  margin-top: 10px;
+}
+.filter-card {
+  padding: 12px;
+}
+.filter-grid {
+  display: grid;
+  grid-template-columns: 145px 145px 150px 165px 180px minmax(190px, 1fr) auto;
+  gap: 10px;
+  align-items: end;
+}
+label {
+  display: grid;
+  gap: 4px;
+  color: #3d4b5d;
+  font-size: 12px;
+  font-weight: 600;
+}
+.filter-actions {
+  display: flex;
+  gap: 6px;
+}
+.grid-card {
+  overflow: hidden;
+}
+.grid-heading {
+  min-height: 46px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e4e9ef;
+}
+.status-chip {
+  display: inline-flex;
+  justify-content: center;
+  min-width: 84px;
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.status-draft {
+  background: #e7f1ff;
+  color: #1859a9;
+}
+.status-submitted {
+  background: #fff1c7;
+  color: #805b00;
+}
+.status-accepted {
+  background: #dff6e7;
+  color: #176a37;
+}
+.status-posted {
+  background: #d7efe9;
+  color: #075d50;
+}
+.status-cancelled {
+  background: #f7dfe2;
+  color: #8b2635;
+}
+.link-button {
+  border: 0;
+  background: none;
+  color: #1769aa;
+  padding: 0;
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 600;
+}
+:host ::ng-deep .number-cell {
+  text-align: right;
+}
+@media (max-width: 1180px) {
+  .filter-grid {
+    grid-template-columns: repeat(4, minmax(140px, 1fr));
+  }
+  .search-field {
+    grid-column: span 2;
+  }
+}
+@media (max-width: 760px) {
+  .asset-page {
+    padding: 6px;
+  }
+  .filter-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .search-field {
+    grid-column: 1 / -1;
+  }
+}
+@media print {
+  app-toolbar,
+  .filter-card,
+  .grid-heading button {
+    display: none !important;
+  }
+  .asset-page {
+    padding: 0;
+  }
+}
+
+.headerCustomClass {
+  background-color: #fa8128 !important; /* Use !important to override other styles /
+  font-weight: bolder !important; / Use !important to override other styles /
+  text-align: center !important; / Use !important to override other styles /
+  color: white !important; / Set font color to white */
+  text-align: center !important;
+}
+
+/* =========================================================
+   ASSET ACCEPTANCE LISTING
+   Dark + Bold Grid Data
+   ========================================================= */
+
+:host ::ng-deep .asset-page .k-grid .k-grid-content td,
+:host ::ng-deep .asset-page .k-grid .k-grid-content .k-table-td {
+  color: #111827 !important;
+  font-weight: 700 !important;
+}
+
+/* Acceptance No. clickable link */
+.asset-page .link-button {
+  color: #111827 !important;
+  font-weight: 700 !important;
+}
+
+/* Status text */
+.asset-page .status-chip {
+  font-weight: 700 !important;
+}
+
+/* Numeric values */
+:host ::ng-deep .asset-page .number-cell {
+  color: #111827 !important;
+  font-weight: 700 !important;
+}

@@ -2,7 +2,7 @@
   display: block;
   height: 100%;
   min-height: 0;
-  background: #171717;
+  background: #f8fafc;
   transition:
     width 180ms ease,
     min-width 180ms ease,
@@ -15,8 +15,9 @@
   width: 220px;
   min-width: 220px;
   max-width: 220px;
-  background: #171717;
+  background: #f8fafc;
   overflow: hidden;
+  border-right: 1px solid #e2e8f0;
   transition:
     width 180ms ease,
     min-width 180ms ease,
@@ -28,8 +29,8 @@
   width: 220px;
   min-width: 220px;
   max-width: 220px;
-  background: #171717;
-  border-right: 1px solid rgba(255, 121, 0, 0.22);
+  background: #f8fafc;
+  border-right: 1px solid #e2e8f0;
   transition:
     width 180ms ease,
     min-width 180ms ease,
@@ -44,9 +45,10 @@
 :host ::ng-deep .app-drawer .k-drawer {
   height: 100%;
   background:
-    radial-gradient(circle at bottom left, rgba(255, 121, 0, 0.13), transparent 38%),
-    linear-gradient(180deg, #1c1c1c 0%, #111111 100%);
-  border-right: 1px solid rgba(255, 121, 0, 0.24);
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.08), transparent 34%),
+    radial-gradient(circle at bottom left, rgba(255, 121, 0, 0.08), transparent 34%),
+    linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border-right: 1px solid #e2e8f0;
 }
 
 /* Expanded drawer width */
@@ -59,8 +61,9 @@
   height: 100%;
   padding: 14px 8px 14px 8px;
   background:
-    radial-gradient(circle at bottom left, rgba(255, 121, 0, 0.14), transparent 36%),
-    linear-gradient(180deg, #1c1c1c 0%, #111111 100%);
+    radial-gradient(circle at top left, rgba(59, 130, 246, 0.07), transparent 34%),
+    radial-gradient(circle at bottom left, rgba(255, 121, 0, 0.07), transparent 36%),
+    linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -72,14 +75,17 @@
   margin: 7px 8px 7px 0;
   padding: 0 12px;
   border-radius: 0 14px 14px 0;
-  border: 1px solid transparent;
+  border: 1px solid #e2e8f0;
   border-left: 5px solid transparent;
   box-sizing: border-box;
 
   font-size: 14px;
   font-weight: 800;
   line-height: 1.2;
-  color: #f8fafc;
+  color: #0f172a;
+  background: #ffffff;
+
+  box-shadow: 0 5px 14px rgba(15, 23, 42, 0.04);
 
   transition:
     background-color 160ms ease,
@@ -106,32 +112,44 @@
   white-space: nowrap;
 }
 
-/* Dashboard */
-:host ::ng-deep .app-drawer .k-drawer-item:nth-child(1) {
-  background: rgba(255, 255, 255, 0.045);
-  color: #f8fafc;
-  border-color: rgba(255, 121, 0, 0.12);
+/* Main module normal state */
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-main-item {
+  margin-left: 0;
+  margin-right: 8px;
+  width: calc(100% - 8px);
+  min-height: 42px;
+  padding: 0 12px;
+  border-radius: 0 14px 14px 0;
+  background: #ffffff;
+  color: #0f172a;
+  border-color: #e2e8f0;
   border-left-color: transparent;
 }
 
-/* BIOMETRIX parent - group header only, not active page */
-:host ::ng-deep .app-drawer .k-drawer-item:nth-child(2) {
-  background: linear-gradient(135deg, rgba(255, 121, 0, 0.18), rgba(255, 176, 0, 0.06));
-  color: #ffffff;
-  border-color: rgba(255, 121, 0, 0.28);
-  border-left-color: #ff7900;
-  box-shadow:
-    0 8px 18px rgba(255, 121, 0, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+/* Dashboard */
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-dashboard-item {
+  background: #ffffff;
+  color: #0f172a;
+  border-color: #e2e8f0;
+  border-left-color: #1d4ed8;
 }
 
-/* HRIS Biometrix child */
-:host ::ng-deep .app-drawer .k-drawer-item:nth-child(3) {
-  background: linear-gradient(135deg, rgba(255, 121, 0, 0.26), rgba(255, 176, 0, 0.12));
-  color: #ffb000;
-  border-color: rgba(255, 121, 0, 0.34);
-  border-left-color: #ff7900;
-  box-shadow: 0 8px 18px rgba(255, 121, 0, 0.13);
+/* BIOMETRIX parent */
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-biometrix-parent {
+  background: #ffffff;
+  color: #064e3b;
+  border-color: rgba(16, 185, 129, 0.28);
+  border-left-color: #10b981;
+  box-shadow: 0 8px 18px rgba(16, 185, 129, 0.08);
+}
+
+/* Child pages under BIOMETRIX only */
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-child-item {
+  background: #ffffff;
+  color: #065f46;
+  border-color: rgba(16, 185, 129, 0.22);
+  border-left-color: #10b981;
+  box-shadow: 0 8px 18px rgba(16, 185, 129, 0.06);
 
   margin-left: 22px;
   margin-right: 8px;
@@ -141,13 +159,73 @@
   border-radius: 0 12px 12px 0;
 }
 
+/* HRIS Biometrix child */
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-hris-item {
+  color: #065f46;
+}
+
 /* DTR Listing child */
-:host ::ng-deep .app-drawer .k-drawer-item:nth-child(4) {
-  background: rgba(255, 255, 255, 0.06);
-  color: #ffb000;
-  border-color: rgba(255, 121, 0, 0.18);
-  border-left-color: #ff7900;
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.14);
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-dtr-item {
+  color: #065f46;
+}
+
+/* =====================================================
+   ITEM MASTER NORMAL STATE
+
+   IMPORTANT:
+   Set the complete border first.
+   Set border-left after it so the strong blue accent
+   will not be overwritten.
+   ===================================================== */
+
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-inventory-parent {
+  margin-left: 0 !important;
+  margin-right: 8px !important;
+
+  width: calc(100% - 8px) !important;
+  min-height: 42px !important;
+
+  padding: 0 12px !important;
+
+  border: 1px solid
+    rgba(37, 99, 235, 0.28) !important;
+
+  /*
+    This must come AFTER border.
+    Strong blue accent remains visible even without hover.
+  */
+  border-left: 5px solid #2563eb !important;
+
+  border-radius:
+    0 14px 14px 0 !important;
+
+  background: #ffffff !important;
+  color: #1e40af !important;
+
+  box-shadow:
+    0 8px 18px
+    rgba(37, 99, 235, 0.07) !important;
+}
+
+/* ORDER parent */
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-order-parent {
+  background: #ffffff;
+  color: #9a3412;
+  border-color: rgba(249, 115, 22, 0.28);
+  border-left-color: #f97316;
+  box-shadow: 0 8px 18px rgba(249, 115, 22, 0.08);
+}
+
+/* ORDER children */
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-po-entry-item,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-po-listing-item {
+  background: #ffffff;
+  color: #9a3412;
+  border-color: rgba(249, 115, 22, 0.24);
+  border-left-color: #f97316;
+  box-shadow: 0 8px 18px rgba(249, 115, 22, 0.06);
 
   margin-left: 22px;
   margin-right: 8px;
@@ -158,47 +236,509 @@
 }
 
 /* Dashboard selected */
-:host ::ng-deep .app-drawer .k-drawer-item:nth-child(1).k-selected {
-  background: linear-gradient(135deg, #ff7900 0%, #ffb000 100%);
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-dashboard-item.k-selected,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-dashboard-item.k-state-selected,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-dashboard-item.active,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-dashboard-item.is-active,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-dashboard-item.router-link-active {
+  background: linear-gradient(135deg, #2563eb 0%, #60a5fa 100%);
   color: #ffffff;
-  border-color: rgba(255, 121, 0, 0.50);
-  border-left-color: #ffb000;
+  border-color: rgba(37, 99, 235, 0.45);
+  border-left-color: #1d4ed8;
   box-shadow:
-    0 10px 20px rgba(255, 121, 0, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    0 10px 20px rgba(37, 99, 235, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
-/* Parent selected fallback - keep parent subtle, not full orange */
-:host ::ng-deep .app-drawer .k-drawer-item:nth-child(2).k-selected {
-  background: linear-gradient(135deg, rgba(255, 121, 0, 0.18), rgba(255, 176, 0, 0.06));
+/* BIOMETRIX parent selected fallback */
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-biometrix-parent.k-selected,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-biometrix-parent.k-state-selected,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-biometrix-parent.active,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-biometrix-parent.is-active,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-biometrix-parent.router-link-active {
+  background: #ecfdf5;
+  color: #064e3b;
+  border-color: rgba(16, 185, 129, 0.35);
+  border-left-color: #10b981;
+  box-shadow: 0 8px 18px rgba(16, 185, 129, 0.10);
+}
+
+/* Selected child under BIOMETRIX */
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-child-item.k-selected,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-child-item.k-state-selected,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-child-item.active,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-child-item.is-active,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-child-item.router-link-active {
+  background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
   color: #ffffff;
-  border-color: rgba(255, 121, 0, 0.28);
-  border-left-color: #ff7900;
+  border-color: rgba(16, 185, 129, 0.45);
+  border-left-color: #047857;
   box-shadow:
-    0 8px 18px rgba(255, 121, 0, 0.10),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    0 10px 20px rgba(16, 185, 129, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
-/* Selected child page only */
-:host ::ng-deep .app-drawer .k-drawer-item:nth-child(3).k-selected,
-:host ::ng-deep .app-drawer .k-drawer-item:nth-child(4).k-selected {
-  background: linear-gradient(135deg, #ff7900 0%, #ffb000 100%);
+/* INVENTORY selected */
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-inventory-parent.k-selected,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-inventory-parent.k-state-selected,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-inventory-parent.active,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-inventory-parent.is-active,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-inventory-parent.router-link-active {
+  margin-left: 0 !important;
+  margin-right: 8px !important;
+  width: calc(100% - 8px) !important;
+  padding: 0 12px !important;
+  background: linear-gradient(135deg, #2563eb 0%, #38bdf8 100%) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(37, 99, 235, 0.45) !important;
+  border-left: 5px solid #1d4ed8 !important;
+  border-radius: 0 14px 14px 0 !important;
+  box-shadow:
+    0 10px 20px rgba(37, 99, 235, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+}
+
+/* Keep selected ITEM MASTER left accent visible */
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-inventory-parent.k-selected,
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-inventory-parent.k-state-selected {
+  border-left-color: #1d4ed8 !important;
+}
+
+/* ORDER parent selected fallback */
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-order-parent.k-selected,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-order-parent.k-state-selected,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-order-parent.active,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-order-parent.is-active,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-order-parent.router-link-active {
+  background: #fff7ed;
+  color: #9a3412;
+  border-color: rgba(249, 115, 22, 0.35);
+  border-left-color: #f97316;
+  box-shadow: 0 8px 18px rgba(249, 115, 22, 0.10);
+}
+
+/* ORDER selected child */
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-po-entry-item.k-selected,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-po-listing-item.k-selected,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-po-entry-item.k-state-selected,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-po-listing-item.k-state-selected,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-po-entry-item.active,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-po-listing-item.active,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-po-entry-item.is-active,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-po-listing-item.is-active,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-po-entry-item.router-link-active,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-po-listing-item.router-link-active {
+  background: linear-gradient(135deg, #ff7900 0%, #f59e0b 100%);
   color: #ffffff;
-  border-color: rgba(255, 121, 0, 0.50);
-  border-left-color: #ffb000;
+  border-color: rgba(249, 115, 22, 0.50);
+  border-left-color: #ea580c;
   box-shadow:
-    0 10px 20px rgba(255, 121, 0, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+    0 10px 20px rgba(249, 115, 22, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
-/* Hover */
-:host ::ng-deep .app-drawer .k-drawer-item:hover {
-  transform: translateX(2px);
-  background-color: rgba(255, 121, 0, 0.14);
+/* Safety:
+   Even if INVENTORY accidentally receives drawer-child-item,
+   force it to behave like a main menu.
+*/
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-inventory-parent.drawer-child-item {
+  margin-left: 0 !important;
+  margin-right: 8px !important;
+  width: calc(100% - 8px) !important;
+  min-height: 42px !important;
+  font-size: 14px !important;
+  border-radius: 0 14px 14px 0 !important;
 }
 
-:host ::ng-deep .app-drawer .k-drawer-item:nth-child(2):hover {
-  background: linear-gradient(135deg, rgba(255, 121, 0, 0.26), rgba(255, 176, 0, 0.10));
+/* =====================================================
+   SELECTED ITEM CONTENT
+
+   All text, icons, and chevrons inherit the selected
+   item's foreground color.
+   ===================================================== */
+
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.k-selected .k-item-text,
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.k-selected .k-svg-icon,
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.k-selected .k-icon,
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.k-selected .k-drawer-toggle,
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.k-state-selected .k-item-text,
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.k-state-selected .k-svg-icon,
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.k-state-selected .k-icon,
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.k-state-selected .k-drawer-toggle {
+  color: inherit !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* =====================================================
+   ACCEPTANCE MODULE
+   ===================================================== */
+
+/* Acceptance parent normal state */
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-acceptance-parent {
+  background: #ffffff;
+
+  color: #1e40af;
+
+  border-color:
+    rgba(79, 70, 229, 0.26);
+
+  border-left-color:
+    #4f46e5;
+
+  box-shadow:
+    0 8px 18px
+    rgba(79, 70, 229, 0.07);
+}
+
+/* Acceptance children normal state */
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-acceptance-entry-item,
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-acceptance-list-item {
+  margin-left: 22px;
+  margin-right: 8px;
+
+  width: calc(100% - 30px);
+  min-height: 38px;
+
+  border-radius: 0 12px 12px 0;
+
+  background: #ffffff;
+
+  color: #1e40af;
+
+  border-color:
+    rgba(79, 70, 229, 0.22);
+
+  border-left-color:
+    #4f46e5;
+
+  font-size: 13px;
+
+  box-shadow:
+    0 8px 18px
+    rgba(79, 70, 229, 0.06);
+}
+
+/* Acceptance selected child */
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-acceptance-entry-item.k-selected,
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-acceptance-list-item.k-selected,
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-acceptance-entry-item.k-state-selected,
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-acceptance-list-item.k-state-selected {
+  background:
+    linear-gradient(
+      135deg,
+      #4f46e5 0%,
+      #3b82f6 100%
+    );
+
+  color: #ffffff;
+
+  border-color:
+    rgba(79, 70, 229, 0.48);
+
+  border-left-color:
+    #3730a3;
+
+  box-shadow:
+    0 10px 20px
+      rgba(79, 70, 229, 0.20),
+    inset 0 1px 0
+      rgba(255, 255, 255, 0.18);
+}
+
+/* =====================================================
+   HOVER FIX
+
+   IMPORTANT:
+   Apply hover styles only to NON-SELECTED items.
+
+   Reason:
+   Selected items usually have white text/icons.
+   If their selected background is replaced by a light hover
+   background, the white content appears invisible.
+   ===================================================== */
+
+/* Base hover for non-selected items only */
+:host ::ng-deep
+.app-drawer
+.k-drawer-item:not(.k-selected):not(.k-state-selected) {
+  &:hover,
+  &.k-hover,
+  &.k-state-hover {
+    transform: translateX(2px);
+
+    background-color: #f8fafc;
+
+    color: #0f172a;
+
+    box-shadow:
+      0 10px 20px
+      rgba(15, 23, 42, 0.08);
+  }
+}
+
+/* Dashboard hover */
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-dashboard-item:not(.k-selected):not(.k-state-selected) {
+  &:hover,
+  &.k-hover,
+  &.k-state-hover {
+    background: #eff6ff;
+    color: #1e40af;
+  }
+}
+
+/* ITEM MASTER hover — non-selected only */
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-inventory-parent:not(.k-selected):not(.k-state-selected) {
+  &:hover,
+  &.k-hover,
+  &.k-state-hover {
+    background: #eff6ff !important;
+    color: #1e40af !important;
+
+    border-color:
+      rgba(37, 99, 235, 0.38) !important;
+
+    /*
+      Restore this after border-color because
+      border-color affects all four sides.
+    */
+    border-left-color: #2563eb !important;
+
+    transform: translateX(2px);
+
+    box-shadow:
+      0 10px 20px
+      rgba(37, 99, 235, 0.12) !important;
+  }
+}
+
+/* BIOMETRIX parent hover */
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-biometrix-parent:not(.k-selected):not(.k-state-selected) {
+  &:hover,
+  &.k-hover,
+  &.k-state-hover {
+    background: #ecfdf5;
+    color: #064e3b;
+
+    border-color:
+      rgba(16, 185, 129, 0.38);
+
+    border-left-color:
+      #10b981;
+  }
+}
+
+/* BIOMETRIX child hover */
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-hris-item:not(.k-selected):not(.k-state-selected),
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-dtr-item:not(.k-selected):not(.k-state-selected) {
+  &:hover,
+  &.k-hover,
+  &.k-state-hover {
+    background: #ecfdf5;
+    color: #065f46;
+
+    border-color:
+      rgba(16, 185, 129, 0.34);
+
+    border-left-color:
+      #10b981;
+  }
+}
+
+/* P.O Module parent hover */
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-order-parent:not(.k-selected):not(.k-state-selected) {
+  &:hover,
+  &.k-hover,
+  &.k-state-hover {
+    background: #fff7ed;
+    color: #9a3412;
+
+    border-color:
+      rgba(249, 115, 22, 0.38);
+
+    border-left-color:
+      #f97316;
+  }
+}
+
+/* P.O Module children hover */
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-po-entry-item:not(.k-selected):not(.k-state-selected),
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-po-listing-item:not(.k-selected):not(.k-state-selected) {
+  &:hover,
+  &.k-hover,
+  &.k-state-hover {
+    background: #fff7ed;
+    color: #9a3412;
+
+    border-color:
+      rgba(249, 115, 22, 0.36);
+
+    border-left-color:
+      #f97316;
+  }
+}
+
+/* Receiving parent hover */
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-receiving-parent:not(.k-selected):not(.k-state-selected) {
+  &:hover,
+  &.k-hover,
+  &.k-state-hover {
+    background: #f1f5f9;
+    color: #0f172a;
+
+    border-color: #cbd5e1;
+    border-left-color: #475569;
+  }
+}
+
+/* Receiving children hover */
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-receiving-entry-item:not(.k-selected):not(.k-state-selected),
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-receiving-register-item:not(.k-selected):not(.k-state-selected) {
+  &:hover,
+  &.k-hover,
+  &.k-state-hover {
+    background: #f1f5f9;
+    color: #0f172a;
+
+    border-color: #cbd5e1;
+    border-left-color: #475569;
+  }
+}
+
+/* RECEIVING normal state */
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-receiving-parent {
+  background: #ffffff;
+
+  color: #0f172a;
+
+  border: 1px solid #e2e8f0;
+
+  /*
+    Must remain after the border declaration.
+  */
+  border-left: 5px solid #475569;
+
+  box-shadow:
+    0 8px 18px
+    rgba(71, 85, 105, 0.06);
+}
+
+/* RECEIVING hover */
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-receiving-parent:not(.k-selected):not(.k-state-selected) {
+  &:hover,
+  &.k-hover,
+  &.k-state-hover {
+    background: #f1f5f9;
+    color: #0f172a;
+
+    border-color: #cbd5e1;
+    border-left-color: #475569;
+
+    transform: translateX(2px);
+
+    box-shadow:
+      0 10px 20px
+      rgba(71, 85, 105, 0.10);
+  }
+}
+
+/* Acceptance parent hover */
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-acceptance-parent:not(.k-selected):not(.k-state-selected) {
+  &:hover,
+  &.k-hover,
+  &.k-state-hover {
+    background: #eef2ff;
+    color: #1e40af;
+
+    border-color:
+      rgba(79, 70, 229, 0.36);
+
+    border-left-color:
+      #4f46e5;
+  }
+}
+
+/* Acceptance children hover */
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-acceptance-entry-item:not(.k-selected):not(.k-state-selected),
+:host ::ng-deep
+.app-drawer
+.k-drawer-item.drawer-acceptance-list-item:not(.k-selected):not(.k-state-selected) {
+  &:hover,
+  &.k-hover,
+  &.k-state-hover {
+    background: #eef2ff;
+    color: #1e40af;
+
+    border-color:
+      rgba(79, 70, 229, 0.34);
+
+    border-left-color:
+      #4f46e5;
+  }
 }
 
 /* Chevron / expand icon alignment */
@@ -259,12 +799,12 @@
 }
 
 :host ::ng-deep .app-drawer .k-drawer-items::-webkit-scrollbar-thumb {
-  background: rgba(255, 121, 0, 0.35);
+  background: rgba(148, 163, 184, 0.45);
   border-radius: 999px;
 }
 
 :host ::ng-deep .app-drawer .k-drawer-items::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 121, 0, 0.55);
+  background: rgba(100, 116, 139, 0.65);
 }
 
 /* Mobile */
@@ -296,11 +836,20 @@
     margin-right: 8px;
   }
 
-  :host ::ng-deep .app-drawer .k-drawer-item:nth-child(3),
-  :host ::ng-deep .app-drawer .k-drawer-item:nth-child(4) {
+  :host ::ng-deep .app-drawer .k-drawer-item.drawer-child-item,
+  :host ::ng-deep .app-drawer .k-drawer-item.drawer-po-entry-item,
+  :host ::ng-deep .app-drawer .k-drawer-item.drawer-po-listing-item {
     margin-left: 20px;
     margin-right: 8px;
     width: calc(100% - 28px);
+  }
+
+  :host ::ng-deep .app-drawer .k-drawer-item.drawer-inventory-parent {
+    margin-left: 0 !important;
+    margin-right: 8px !important;
+    width: calc(100% - 8px) !important;
+    min-height: 40px !important;
+    font-size: 13px !important;
   }
 
   .drawer-wrap.drawer-collapsed,
@@ -309,4 +858,359 @@
     min-width: 0 !important;
     max-width: 0 !important;
   }
+}
+
+/* ============================================================
+   COMPACT MODERN ERP SIDEBAR
+   MODIFIED:
+   - More readable menu labels
+   - Less vertical spacing
+   - Cleaner enterprise typography
+   - Slightly wider sidebar to reduce text truncation
+   - Existing colors, hover and selected states remain unchanged
+   ============================================================ */
+
+:host {
+  width: 236px;
+  min-width: 236px;
+  max-width: 236px;
+}
+
+/* Keep all main drawer containers aligned */
+.drawer-wrap,
+.app-drawer {
+  width: 236px;
+  min-width: 236px;
+  max-width: 236px;
+}
+
+:host ::ng-deep .app-drawer .k-drawer-wrapper {
+  width: 236px;
+  min-width: 236px;
+  max-width: 236px;
+}
+
+/* More compact menu container */
+:host ::ng-deep .app-drawer .k-drawer-items {
+  padding: 8px 6px 10px;
+}
+
+/* ============================================================
+   MAIN MENU ITEMS
+   ============================================================ */
+
+:host ::ng-deep .app-drawer .k-drawer-item {
+  width: calc(100% - 4px);
+  min-height: 36px;
+
+  margin: 3px 4px 3px 0;
+  padding: 0 10px;
+
+  border-left-width: 4px;
+  border-radius: 0 9px 9px 0;
+
+  font-family:
+    Inter,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
+
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0.05px;
+
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.045);
+
+  transition:
+    background-color 140ms ease,
+    color 140ms ease,
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    transform 140ms ease;
+}
+
+/* Clear and properly aligned labels */
+:host ::ng-deep .app-drawer .k-drawer-item .k-item-text {
+  display: block;
+  flex: 1 1 auto;
+
+  min-width: 0;
+  max-width: 100%;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: 1.15;
+}
+
+/* Compact icons */
+:host ::ng-deep .app-drawer .k-drawer-item .k-svg-icon,
+:host ::ng-deep .app-drawer .k-drawer-item .k-icon {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+
+  margin-right: 9px;
+
+  opacity: 0.88;
+}
+
+/* Smaller and cleaner expand/collapse arrow */
+:host ::ng-deep .app-drawer .k-drawer-item .k-drawer-toggle {
+  width: 15px;
+  height: 15px;
+  min-width: 15px;
+
+  margin-left: 7px;
+
+  opacity: 0.72;
+}
+
+/* Main module dimensions */
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-main-item,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-dashboard-item,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-biometrix-parent,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-inventory-parent,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-order-parent,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-receiving-parent,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-acceptance-parent {
+  width: calc(100% - 4px) !important;
+  min-height: 36px !important;
+
+  margin: 3px 4px 3px 0 !important;
+  padding: 0 10px !important;
+
+  border-radius: 0 9px 9px 0 !important;
+
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+}
+
+/* ============================================================
+   CHILD MENU ITEMS
+   ============================================================ */
+
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-child-item,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-hris-item,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-dtr-item,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-po-entry-item,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-po-listing-item,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-receiving-entry-item,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-receiving-register-item,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-acceptance-entry-item,
+:host ::ng-deep .app-drawer .k-drawer-item.drawer-acceptance-list-item {
+  width: calc(100% - 22px) !important;
+  min-height: 33px !important;
+
+  margin: 2px 4px 2px 18px !important;
+  padding: 0 9px !important;
+
+  border-left-width: 3px !important;
+  border-radius: 0 8px 8px 0 !important;
+
+  font-size: 12px !important;
+  font-weight: 650 !important;
+
+  box-shadow: 0 2px 5px rgba(15, 23, 42, 0.035) !important;
+}
+
+/* Slightly smaller child icons */
+:host ::ng-deep
+  .app-drawer
+  .k-drawer-item.drawer-child-item
+  .k-svg-icon,
+:host ::ng-deep
+  .app-drawer
+  .k-drawer-item.drawer-child-item
+  .k-icon,
+:host ::ng-deep
+  .app-drawer
+  .k-drawer-item.drawer-po-entry-item
+  .k-svg-icon,
+:host ::ng-deep
+  .app-drawer
+  .k-drawer-item.drawer-po-listing-item
+  .k-svg-icon,
+:host ::ng-deep
+  .app-drawer
+  .k-drawer-item.drawer-acceptance-entry-item
+  .k-svg-icon,
+:host ::ng-deep
+  .app-drawer
+  .k-drawer-item.drawer-acceptance-list-item
+  .k-svg-icon {
+  width: 15px;
+  height: 15px;
+  min-width: 15px;
+
+  margin-right: 8px;
+}
+
+/* ============================================================
+   ITEM MASTER SAFETY OVERRIDE
+   Keep ITEM MASTER as a main menu item
+   ============================================================ */
+
+:host ::ng-deep
+  .app-drawer
+  .k-drawer-item.drawer-inventory-parent,
+:host ::ng-deep
+  .app-drawer
+  .k-drawer-item.drawer-inventory-parent.drawer-child-item {
+  width: calc(100% - 4px) !important;
+  min-height: 36px !important;
+
+  margin: 3px 4px 3px 0 !important;
+  padding: 0 10px !important;
+
+  border-left-width: 4px !important;
+  border-radius: 0 9px 9px 0 !important;
+
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+}
+
+/* ============================================================
+   SELECTED MENU
+   Professional ERP emphasis without becoming oversized
+   ============================================================ */
+
+:host ::ng-deep .app-drawer .k-drawer-item.k-selected,
+:host ::ng-deep .app-drawer .k-drawer-item.k-state-selected {
+  font-weight: 750 !important;
+
+  box-shadow:
+    0 5px 12px rgba(15, 23, 42, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+}
+
+:host ::ng-deep
+  .app-drawer
+  .k-drawer-item.k-selected
+  .k-svg-icon,
+:host ::ng-deep
+  .app-drawer
+  .k-drawer-item.k-selected
+  .k-icon,
+:host ::ng-deep
+  .app-drawer
+  .k-drawer-item.k-state-selected
+  .k-svg-icon,
+:host ::ng-deep
+  .app-drawer
+  .k-drawer-item.k-state-selected
+  .k-icon {
+  opacity: 1;
+}
+
+/* ============================================================
+   HOVER
+   Less movement for a professional enterprise interface
+   ============================================================ */
+
+:host ::ng-deep
+  .app-drawer
+  .k-drawer-item:not(.k-selected):not(.k-state-selected):hover,
+:host ::ng-deep
+  .app-drawer
+  .k-drawer-item:not(.k-selected):not(.k-state-selected).k-hover,
+:host ::ng-deep
+  .app-drawer
+  .k-drawer-item:not(.k-selected):not(.k-state-selected).k-state-hover {
+  transform: translateX(1px);
+
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.075);
+}
+
+/* ============================================================
+   SCROLLBAR
+   Cleaner, thinner enterprise scrollbar
+   ============================================================ */
+
+:host ::ng-deep .app-drawer .k-drawer-items::-webkit-scrollbar {
+  width: 5px;
+}
+
+:host ::ng-deep .app-drawer .k-drawer-items::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.32);
+  border-radius: 999px;
+}
+
+:host ::ng-deep .app-drawer .k-drawer-items::-webkit-scrollbar-thumb:hover {
+  background: rgba(71, 85, 105, 0.52);
+}
+
+/* ============================================================
+   MOBILE / SMALL SCREEN
+   ============================================================ */
+
+@media (max-width: 840px) {
+  :host {
+    width: 232px;
+    min-width: 232px;
+    max-width: 232px;
+  }
+
+  .drawer-wrap,
+  .app-drawer {
+    width: 232px;
+    min-width: 232px;
+    max-width: 232px;
+  }
+
+  :host ::ng-deep .app-drawer .k-drawer-wrapper {
+    width: 232px;
+    min-width: 232px;
+    max-width: 232px;
+  }
+
+  :host ::ng-deep .app-drawer .k-drawer-items {
+    padding: 7px 5px 9px;
+  }
+
+  :host ::ng-deep .app-drawer .k-drawer-item {
+    min-height: 35px;
+
+    margin-top: 2px;
+    margin-bottom: 2px;
+
+    font-size: 12.25px;
+  }
+
+  :host ::ng-deep .app-drawer .k-drawer-item.drawer-child-item,
+  :host ::ng-deep .app-drawer .k-drawer-item.drawer-po-entry-item,
+  :host ::ng-deep .app-drawer .k-drawer-item.drawer-po-listing-item,
+  :host ::ng-deep .app-drawer .k-drawer-item.drawer-acceptance-entry-item,
+  :host ::ng-deep .app-drawer .k-drawer-item.drawer-acceptance-list-item {
+    width: calc(100% - 20px) !important;
+    min-height: 32px !important;
+
+    margin-left: 16px !important;
+
+    font-size: 11.75px !important;
+  }
+
+  :host ::ng-deep
+    .app-drawer
+    .k-drawer-item.drawer-inventory-parent {
+    width: calc(100% - 4px) !important;
+    min-height: 35px !important;
+
+    margin-left: 0 !important;
+
+    font-size: 12.25px !important;
+  }
+}
+
+/* Preserve the existing full-close behavior */
+.drawer-wrap.drawer-collapsed,
+.drawer-wrap.drawer-collapsed .app-drawer {
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
 }

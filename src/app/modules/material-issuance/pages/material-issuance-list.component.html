@@ -1,0 +1,350 @@
+<section class="material-issuance-list-page">
+  <app-toolbar
+    [config]="toolbar.config()"
+    [formValid]="true"
+    title="Material Issuance Register"
+    subtitle="Server-paged raw material issuance documents."
+    (onNew)="newEntry()"
+    (onRefresh)="refresh()"
+    (onToday)="applyQuickDate('TODAY')"
+    (onYesterday)="applyQuickDate('YESTERDAY')"
+    (onThisMonth)="applyQuickDate('THIS_MONTH')"
+    (onLastMonth)="applyQuickDate('LAST_MONTH')"
+    (onThisYear)="applyQuickDate('THIS_YEAR')"
+    (onLastYear)="applyQuickDate('LAST_YEAR')"
+  >
+  </app-toolbar>
+
+  <form [formGroup]="filterForm" class="filter-band">
+    <kendo-formfield>
+      <kendo-label text="From"></kendo-label>
+
+      <kendo-datepicker formControlName="dateFrom" format="MM/dd/yyyy">
+      </kendo-datepicker>
+    </kendo-formfield>
+
+    <kendo-formfield>
+      <kendo-label text="To"></kendo-label>
+
+      <kendo-datepicker formControlName="dateTo" format="MM/dd/yyyy">
+      </kendo-datepicker>
+    </kendo-formfield>
+
+    <kendo-formfield>
+      <kendo-label text="Status"></kendo-label>
+
+      <kendo-dropdownlist
+        formControlName="status"
+        [data]="statuses"
+        textField="text"
+        valueField="value"
+        [valuePrimitive]="true"
+      >
+      </kendo-dropdownlist>
+    </kendo-formfield>
+
+    <kendo-formfield>
+      <kendo-label text="Source Type"></kendo-label>
+
+      <kendo-dropdownlist
+        formControlName="sourceType"
+        [data]="sources"
+        textField="text"
+        valueField="value"
+        [valuePrimitive]="true"
+      >
+      </kendo-dropdownlist>
+    </kendo-formfield>
+
+    <kendo-formfield>
+      <kendo-label text="Warehouse"></kendo-label>
+
+      <kendo-dropdownlist
+        formControlName="whseCode"
+        [data]="facade.warehouses()"
+        textField="whseDesc"
+        valueField="whseCode"
+        [valuePrimitive]="true"
+        [defaultItem]="{
+          whseCode: null,
+          whseDesc: 'All Warehouses',
+        }"
+      >
+      </kendo-dropdownlist>
+    </kendo-formfield>
+
+    <kendo-formfield class="search-field">
+      <kendo-label text="Search"></kendo-label>
+
+      <input
+        kendoTextBox
+        formControlName="search"
+        placeholder="Issue no., reference, source, item or description"
+        (keydown.enter)="applyFilters()"
+      />
+    </kendo-formfield>
+
+    <div class="filter-actions">
+      <button
+        kendoButton
+        type="button"
+        themeColor="primary"
+        [svgIcon]="searchIcon"
+        (click)="applyFilters()"
+      >
+        Search
+      </button>
+
+      <button
+        kendoButton
+        type="button"
+        fillMode="outline"
+        [svgIcon]="filterClearIcon"
+        (click)="clearFilters()"
+      >
+        Clear
+      </button>
+    </div>
+  </form>
+
+  <div class="grid-meta">
+    <span>
+      Total Records:
+      <strong>
+        {{ facade.total() | number }}
+      </strong>
+    </span>
+
+    @if (facade.loading()) {
+      <span>Loading...</span>
+    }
+  </div>
+
+  <kendo-grid
+    class="register-grid"
+    [data]="gridData()"
+    [height]="585"
+    [pageable]="{
+      buttonCount: 5,
+      info: true,
+      type: 'numeric',
+      pageSizes: [25, 50, 100, 250],
+      previousNext: true,
+      responsive: true,
+    }"
+    [resizable]="true"
+    [skip]="gridState().skip || 0"
+    [pageSize]="gridState().take || 50"
+    [selectable]="{
+      mode: 'single',
+    }"
+    [loading]="facade.loading()"
+    (dataStateChange)="dataStateChange($event)"
+    (selectionChange)="onSelectionChange($event)"
+  >
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      field="issueNo"
+      title="Issue No."
+      [width]="125"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <button
+          kendoButton
+          type="button"
+          fillMode="link"
+          class="issue-no-link"
+          title="Open Material Issuance"
+          (click)="selected.set(dataItem); openSelected()"
+        >
+          {{ dataItem.issueNo }}
+        </button>
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      field="issueDate"
+      title="Date"
+      [width]="105"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem>
+        {{ dataItem.issueDate | date: "MM/dd/yyyy" }}
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      field="effectiveStatus"
+      title="Status"
+      [width]="105"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <span
+          class="status-pill"
+          [ngClass]="statusClass(dataItem.effectiveStatus)"
+        >
+          {{ statusName(dataItem.effectiveStatus) }}
+        </span>
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      field="sourceType"
+      title="Source"
+      [width]="165"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <span class="source-code" [title]="sourceName(dataItem.sourceType)">
+          {{ dataItem.sourceType }}
+        </span>
+
+        <span class="source-name">
+          {{ sourceName(dataItem.sourceType) }}
+        </span>
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      field="whseCode"
+      title="Warehouse"
+      [width]="110"
+    >
+    </kendo-grid-column>
+
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      field="reference"
+      title="Reference"
+      [width]="155"
+    >
+    </kendo-grid-column>
+
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      field="sourceNo"
+      title="Source No."
+      [width]="140"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem>
+        {{ dataItem.sourceNo || "-" }}
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      field="lineCount"
+      title="Lines"
+      [width]="75"
+    >
+    </kendo-grid-column>
+
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      field="totalBaseQty"
+      title="Total Qty"
+      [width]="115"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem>
+        {{ dataItem.totalBaseQty | number: "1.4-4" }}
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      field="totalAmount"
+      title="Amount"
+      [width]="125"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <strong>
+          {{ dataItem.totalAmount | number: "1.2-2" }}
+        </strong>
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      field="userId"
+      title="User"
+      [width]="105"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem>
+        {{ dataItem.userId || "-" }}
+      </ng-template>
+    </kendo-grid-column>
+
+    <!-- <kendo-grid-column  [headerClass]="'headerCustomClass'" [headerStyle]="{
+                  'background-color': '#fa8128',
+                  'font-weight': 'bolder',
+                }" title="Actions" [width]="80">
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <div class="row-actions">
+          <button
+            kendoButton
+            type="button"
+            size="small"
+            fillMode="flat"
+            title="Print Material Issuance"
+            aria-label="Print Material Issuance"
+            [svgIcon]="printIcon"
+          ></button>
+        </div>
+      </ng-template>
+    </kendo-grid-column> -->
+
+    <ng-template kendoGridNoRecordsTemplate>
+      <div class="empty-grid">
+        <strong> No material issuance records found. </strong>
+
+        <span> Change the filters, then click Search. </span>
+      </div>
+    </ng-template>
+  </kendo-grid>
+</section>

@@ -1,0 +1,177 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.receiving-list-page {
+  width: 100%;
+  max-width: 1366px;
+  margin: 0 auto;
+  padding: 8px 10px 12px;
+  box-sizing: border-box;
+}
+
+.filter-band {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(105px, 1fr));
+  gap: 8px;
+  align-items: end;
+  padding: 9px 10px;
+  border: 1px solid #d9e1ea;
+  border-radius: 7px;
+  background: #ffffff;
+}
+
+.search-field {
+  grid-column: span 2;
+}
+
+.filter-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.grid-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 8px 0 6px;
+  color: #536376;
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 23px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  line-height: 1;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.status-N {
+  color: #075985;
+  background: #e0f2fe;
+}
+
+.status-U {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.status-R {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.status-C {
+  color: #52525b;
+  background: #e4e4e7;
+}
+
+/*
+ * Compact Kendo controls and grid.
+ * Scoped only inside receiving-list-page.
+ */
+:host ::ng-deep .receiving-list-page {
+  .k-label,
+  .k-form-field > label {
+    margin-bottom: 3px;
+    font-size: 0.7rem;
+    line-height: 1.15;
+  }
+
+  .k-input,
+  .k-picker,
+  .k-button,
+  .k-textbox,
+  .k-numerictextbox {
+    font-size: 0.75rem;
+  }
+
+  .k-input-inner {
+    min-height: 30px;
+    padding-block: 4px;
+    padding-inline: 8px;
+  }
+
+  .k-button {
+    min-height: 30px;
+    padding: 4px 9px;
+  }
+
+  .k-grid {
+    font-size: 0.73rem;
+  }
+
+  .k-grid th {
+    padding: 6px 7px;
+    font-size: 0.7rem;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .k-grid td {
+    padding: 5px 7px;
+    line-height: 1.22;
+  }
+
+  .k-grid-toolbar,
+  .k-pager-wrap,
+  .k-grid-pager {
+    padding: 5px 7px;
+  }
+
+  .k-pager-numbers .k-button,
+  .k-pager-nav {
+    min-width: 28px;
+    min-height: 28px;
+    padding: 3px;
+  }
+}
+
+@media (max-width: 1180px) {
+  .filter-band {
+    grid-template-columns: repeat(4, minmax(115px, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .receiving-list-page {
+    padding: 7px;
+  }
+
+  .filter-band {
+    grid-template-columns: 1fr;
+    padding: 8px;
+  }
+
+  .search-field {
+    grid-column: auto;
+  }
+
+  .filter-actions {
+    flex-wrap: wrap;
+  }
+
+  .grid-meta {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+.headerCustomClass {
+  background-color: #fa8128 !important; /* Use !important to override other styles /
+  font-weight: bolder !important; / Use !important to override other styles /
+  text-align: center !important; / Use !important to override other styles /
+  color: white !important; / Set font color to white */
+  text-align: center !important;
+}

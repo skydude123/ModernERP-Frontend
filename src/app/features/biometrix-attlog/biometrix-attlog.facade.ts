@@ -40,21 +40,27 @@ export class BiometrixAttlogFacade {
     maxFileSize: 20 * 1024 * 1024
   };
 
-  readonly batchReloadResource = rxResource<BiometrixUploadBatchDetailResponse | null, number | undefined>({
-    request: () => this._currentBatchId() ?? undefined,
-    loader: ({ request }) => {
-      if (request === undefined) {
-        return of(null);
-      }
+  readonly batchReloadResource = rxResource<
+  BiometrixUploadBatchDetailResponse | null,
+  number | undefined
+>({
+  params: () => this._currentBatchId() ?? undefined,
 
-      return this.api.getBatch(request).pipe(
-        catchError((error: HttpErrorResponse) => {
-          this._error.set(this.toErrorMessage(error));
-          return of(null);
-        })
-      );
+  stream: ({ params }) => {
+    if (params === undefined) {
+      return of(null);
     }
-  });
+
+    return this.api.getBatch(params).pipe(
+      catchError((error: HttpErrorResponse) => {
+        this._error.set(this.toErrorMessage(error));
+        return of(null);
+      })
+    );
+  },
+
+  defaultValue: null
+});
 
   readonly selectedFile = computed(() => this._selectedFile());
   readonly selectedFileName = computed(() => this._selectedFile()?.name ?? 'No file selected');

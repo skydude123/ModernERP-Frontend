@@ -1,0 +1,378 @@
+<section class="supplier-page">
+  <app-toolbar
+    [config]="toolbarService.config()"
+    [formValid]="canSave()"
+    [editMode]="isExisting()"
+    [activateMode]="canActivate()"
+    [deactivateMode]="canDeactivate()"
+    title="Supplier Entry"
+    subtitle="Maintain supplier identity, contact, commercial, and tax defaults"
+    (onNew)="newSupplier()"
+    (onSave)="save()"
+    (onBack)="backToList()"
+    (onRefresh)="refresh()"
+    (onActivate)="activate()"
+    (onDeactivate)="deactivate()"
+  >
+  </app-toolbar>
+
+  @if (facade.loading()) {
+    <div class="page-state page-state--loading" role="status">
+      Loading supplier record…
+    </div>
+  }
+
+  @if (facade.loadError(); as loadError) {
+    <div class="page-state page-state--error" role="alert">
+      <strong>Supplier could not be loaded.</strong>
+      <span>{{ loadError }}</span>
+    </div>
+  }
+
+  @if (facade.lookupsError(); as lookupError) {
+    <div class="page-state page-state--error" role="alert">
+      <strong>Lookup data could not be loaded.</strong>
+      <span>{{ lookupError }}</span>
+    </div>
+  }
+
+  <form class="supplier-form" [formGroup]="form" novalidate>
+    <section class="form-card">
+      <header class="card-header">
+        <div>
+          <h2>Supplier Identity</h2>
+          <p>Core supplier identity and lifecycle status.</p>
+        </div>
+        <span
+          class="status-chip"
+          [class.status-chip--inactive]="activeFlag() === 'N'"
+        >
+          {{ statusLabel() }}
+        </span>
+      </header>
+
+      <div class="form-grid form-grid--identity">
+        <div class="field" [class.field--invalid]="isInvalid('supplierCode')">
+          <label for="supplierCode">
+            Supplier Code
+            <span class="required-mark" aria-hidden="true">*</span>
+            <span class="required-text">(Required)</span>
+          </label>
+
+          <input
+            id="supplierCode"
+            kendoTextBox
+            formControlName="supplierCode"
+            autocomplete="off"
+            [maxlength]="lengths.supplierCode"
+            (blur)="normalizeSupplierCode()"
+          />
+
+          @if (isInvalid("supplierCode")) {
+            <small class="field-error"> Supplier Code is required. </small>
+          }
+
+          @if (isExisting()) {
+            <small class="field-hint">Locked after creation</small>
+          }
+        </div>
+
+        <div
+          class="field field--wide"
+          [class.field--invalid]="isInvalid('supplierName')"
+        >
+          <label for="supplierName">
+            Supplier Name
+            <span class="required-mark" aria-hidden="true">*</span>
+            <span class="required-text">(Required)</span>
+          </label>
+
+          <input
+            id="supplierName"
+            kendoTextBox
+            formControlName="supplierName"
+            autocomplete="organization"
+            [maxlength]="lengths.supplierName"
+          />
+
+          @if (isInvalid("supplierName")) {
+            <small class="field-error"> Supplier Name is required. </small>
+          }
+        </div>
+
+        <div
+          class="field"
+          [class.field--invalid]="isInvalid('supplierGroupCode')"
+        >
+          <label for="supplierGroupCode">
+            Supplier Group
+            <span class="required-mark" aria-hidden="true">*</span>
+            <span class="required-text">(Required)</span>
+          </label>
+
+          <kendo-dropdownlist
+            id="supplierGroupCode"
+            formControlName="supplierGroupCode"
+            [data]="facade.lookups().groups"
+            textField="displayName"
+            valueField="code"
+            [valuePrimitive]="true"
+            [defaultItem]="requiredLookupDefault"
+          >
+          </kendo-dropdownlist>
+
+          @if (isInvalid("supplierGroupCode")) {
+            <small class="field-error"> Please select a Supplier Group. </small>
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="form-card">
+      <header class="card-header">
+        <div>
+          <h2>Address and Contact</h2>
+          <p>Primary correspondence and contact details.</p>
+        </div>
+      </header>
+
+      <div class="form-grid">
+        <div class="field field--full">
+          <label for="addressLine1">Address Line 1</label>
+          <input
+            id="addressLine1"
+            kendoTextBox
+            formControlName="addressLine1"
+            [maxlength]="lengths.addressLine1"
+          />
+          @if (isInvalid("addressLine1")) {
+            <small class="field-error">{{
+              validationText("addressLine1")
+            }}</small>
+          }
+        </div>
+        <div class="field">
+          <label for="addressLine2">Address Line 2</label>
+          <input
+            id="addressLine2"
+            kendoTextBox
+            formControlName="addressLine2"
+            [maxlength]="lengths.addressLine2"
+          />
+          @if (isInvalid("addressLine2")) {
+            <small class="field-error">{{
+              validationText("addressLine2")
+            }}</small>
+          }
+        </div>
+        <!-- <div class="field">
+          <label for="addressLine3">Address Line 3</label>
+          <input
+            id="addressLine3"
+            kendoTextBox
+            formControlName="addressLine3"
+            [maxlength]="lengths.addressLine3"
+          />
+          @if (isInvalid("addressLine3")) {
+            <small class="field-error">{{
+              validationText("addressLine3")
+            }}</small>
+          }
+        </div> -->
+        <div class="field">
+          <label for="contactPerson">Contact Person</label>
+          <input
+            id="contactPerson"
+            kendoTextBox
+            formControlName="contactPerson"
+            autocomplete="name"
+            [maxlength]="lengths.contactPerson"
+          />
+          @if (isInvalid("contactPerson")) {
+            <small class="field-error">{{
+              validationText("contactPerson")
+            }}</small>
+          }
+        </div>
+        <div class="field">
+          <label for="positionTitle">Position / Title</label>
+          <input
+            id="positionTitle"
+            kendoTextBox
+            formControlName="positionTitle"
+            [maxlength]="lengths.positionTitle"
+          />
+          @if (isInvalid("positionTitle")) {
+            <small class="field-error">{{
+              validationText("positionTitle")
+            }}</small>
+          }
+        </div>
+        <div class="field">
+          <label for="telephone">Telephone</label>
+          <input
+            id="telephone"
+            kendoTextBox
+            formControlName="telephone"
+            autocomplete="tel"
+            [maxlength]="lengths.telephone"
+          />
+          @if (isInvalid("telephone")) {
+            <small class="field-error">{{ validationText("telephone") }}</small>
+          }
+        </div>
+        <div class="field">
+          <label for="fax">Fax</label>
+          <input
+            id="fax"
+            kendoTextBox
+            formControlName="fax"
+            [maxlength]="lengths.fax"
+          />
+          @if (isInvalid("fax")) {
+            <small class="field-error">{{ validationText("fax") }}</small>
+          }
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input
+            id="email"
+            kendoTextBox
+            formControlName="email"
+            type="email"
+            autocomplete="email"
+            [maxlength]="lengths.email"
+          />
+          @if (isInvalid("email")) {
+            <small class="field-error">{{ validationText("email") }}</small>
+          }
+        </div>
+        <div class="field">
+          <label for="website">Website</label>
+          <input
+            id="website"
+            kendoTextBox
+            formControlName="website"
+            autocomplete="url"
+            [maxlength]="lengths.website"
+          />
+          @if (isInvalid("website")) {
+            <small class="field-error">{{ validationText("website") }}</small>
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="form-card">
+      <header class="card-header">
+        <div>
+          <h2>Commercial Information</h2>
+          <p>Supplier payment terms and registration details.</p>
+        </div>
+      </header>
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="termsCode">Payment Terms</label>
+          <kendo-dropdownlist
+            id="termsCode"
+            formControlName="termsCode"
+            [data]="facade.lookups().terms"
+            textField="displayName"
+            valueField="code"
+            [valuePrimitive]="true"
+            [defaultItem]="optionalLookupDefault"
+          >
+          </kendo-dropdownlist>
+        </div>
+        <!-- <div class="field">
+          <label for="currencyCode">Currency</label>
+          <kendo-dropdownlist
+            id="currencyCode"
+            formControlName="currencyCode"
+            [data]="facade.lookups().currencies"
+            textField="displayName"
+            valueField="code"
+            [valuePrimitive]="true"
+            [defaultItem]="optionalLookupDefault"
+          >
+          </kendo-dropdownlist>
+        </div>
+        <div class="field">
+          <label for="taxProfileCode">Default Tax Profile</label>
+          <kendo-dropdownlist
+            id="taxProfileCode"
+            formControlName="taxProfileCode"
+            [data]="facade.lookups().taxProfiles"
+            textField="displayName"
+            valueField="code"
+            [valuePrimitive]="true"
+            [defaultItem]="optionalLookupDefault"
+          >
+          </kendo-dropdownlist>
+          <small class="field-hint"
+            >Supplier default only; VP detail tax remains authoritative.</small
+          >
+        </div> -->
+        <div class="field">
+          <label for="tinNo">TIN</label>
+          <input
+            id="tinNo"
+            kendoTextBox
+            formControlName="tinNo"
+            [maxlength]="lengths.tinNo"
+          />
+          @if (isInvalid("tinNo")) {
+            <small class="field-error">{{ validationText("tinNo") }}</small>
+          }
+        </div>
+        <!-- <div class="field field--full">
+          <label for="specialties">Specialties</label>
+          <textarea
+            id="specialties"
+            kendoTextArea
+            formControlName="specialties"
+            rows="3"
+            [maxlength]="lengths.specialties"
+          ></textarea>
+          <small class="field-hint"
+            >{{ form.controls.specialties.value.length }} /
+            {{ lengths.specialties }}</small
+          >
+          @if (isInvalid("specialties")) {
+            <small class="field-error">{{
+              validationText("specialties")
+            }}</small>
+          }
+        </div> -->
+      </div>
+    </section>
+
+    <section class="form-card form-card--audit">
+      <header class="card-header">
+        <div>
+          <h2>Audit</h2>
+          <p>Server-managed change information.</p>
+        </div>
+      </header>
+      <div class="form-grid form-grid--audit">
+        <div class="field">
+          <label for="modifiedBy">Modified By</label>
+          <input id="modifiedBy" kendoTextBox formControlName="modifiedBy" />
+        </div>
+        <div class="field">
+          <label for="modifiedDate">Modified Date</label>
+          <input
+            id="modifiedDate"
+            kendoTextBox
+            formControlName="modifiedDate"
+          />
+        </div>
+      </div>
+    </section>
+
+    @if (facade.commandBusy()) {
+      <div class="command-state" role="status">Saving supplier changes…</div>
+    }
+  </form>
+</section>

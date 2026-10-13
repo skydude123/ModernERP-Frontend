@@ -29,6 +29,7 @@ export class HeaderComponent {
   readonly userName = computed(() => this.auth.displayName() || 'Guest');
   readonly department = computed(() => this.auth.department() || 'N/A');
   readonly branch = computed(() => this.auth.branch() || 'Main / Cebu');
+  readonly userId = computed(() => this.auth.userId() || '');
 
   constructor() {
     this.router.events
@@ -78,6 +79,8 @@ export class HeaderComponent {
     if (url.startsWith('/dashboard')) return 'Dashboard';
     if (url.startsWith('/purchasing/purchase-orders')) return 'Purchase Order';
     if (url.startsWith('/purchasing/receiving-reports')) return 'Receiving Report';
+    if (url.startsWith('/fuel-acceptance')) return 'Fuel Consumption Acceptance';
+    if (url.startsWith('/service-acceptance')) return 'Service Acceptance';
     if (url.startsWith('/sales/sales-orders')) return 'Sales Order';
     if (url.startsWith('/sales/sales-list')) return 'Sales Order List';
     if (url.startsWith('/delivery/delivery-orders')) return 'Delivery Order';

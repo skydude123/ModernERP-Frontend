@@ -1,150 +1,329 @@
-import { CommonModule } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { KENDO_BUTTONS } from '@progress/kendo-angular-buttons';
-import { KENDO_ICONS } from '@progress/kendo-angular-icons';
-import {
-  calendarIcon,
-  checkCircleIcon,
-  clockIcon,
-  fileExcelIcon,
-  infoCircleIcon,
-  uploadIcon,
-  SVGIcon
-} from '@progress/kendo-svg-icons';
-import { AuthFacadeService } from '../../core/services/auth-facade.service';
 
-interface DashboardModuleCard {
-  title: string;
-  description: string;
-  route: string;
-  badge: string;
-  actionText: string;
-  svgIcon: SVGIcon;
-  features: string[];
-}
+import {
+  Component,
+  computed,
+  inject
+} from '@angular/core';
+
+import { KENDO_ICONS } from '@progress/kendo-angular-icons';
+
+import {
+  homeIcon,
+  infoCircleIcon
+} from '@progress/kendo-svg-icons';
+
+import { AuthFacadeService } from '../../core/services/auth-facade.service';
 
 interface DashboardInfoCard {
   label: string;
   value: string;
 }
 
-interface DashboardGuideStep {
-  number: string;
-  title: string;
-  description: string;
-  svgIcon: SVGIcon;
+interface DashboardStatusItem {
+  label: string;
+  value: string;
+  type: 'success' | 'neutral';
+}
+
+interface DashboardAuthExtension {
+  designation?: () => string | null | undefined;
+
+  currentUser?: () => {
+    designation?: string | null;
+  } | null;
 }
 
 @Component({
   selector: 'app-dashboard',
+  standalone: true,
   imports: [
-    CommonModule,
-    RouterLink,
-    KENDO_BUTTONS,
     KENDO_ICONS
-  ],
+],
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.scss',
-  standalone: true
+  styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent {
   readonly auth = inject(AuthFacadeService);
 
-  readonly uploadIcon = uploadIcon;
-  readonly calendarIcon = calendarIcon;
-  readonly checkIcon = checkCircleIcon;
+  readonly homeIcon = homeIcon;
   readonly infoIcon = infoCircleIcon;
 
-  readonly userName = computed(() => this.auth.displayName() || 'User');
+  readonly userName = computed(() => {
+    return this.auth.displayName()?.trim() || 'User';
+  });
 
-  readonly moduleCards: DashboardModuleCard[] = [
-    {
-      title: 'HRIS Biometrix',
-      description: 'Upload ATTLOG.DAT, validate attendance date range, and process raw biometric logs.',
-      route: '/hris-biometrix',
-      badge: 'ATTLOG',
-      actionText: 'Open Attendance Log',
-      svgIcon: uploadIcon,
-      features: [
-        'ATTLOG Upload',
-        'Date Validation',
-        'Attendance Processing'
-      ]
-    },
-    {
-      title: 'DTR Listing',
-      description: 'Review processed DTR records, verify computed hours, and export payroll-ready reports.',
-      route: '/hris-biometrix/dtr-listing',
-      badge: 'DTR',
-      actionText: 'Open DTR Listing',
-      svgIcon: calendarIcon,
-      features: [
-        'Branch Filter',
-        'Payroll Period',
-        'Excel Export'
-      ]
+  private getDesignation(): string {
+    const extendedAuth =
+      this.auth as AuthFacadeService & DashboardAuthExtension;
+
+    const designationFromFacade =
+      extendedAuth.designation?.();
+
+    const designationFromUser =
+      extendedAuth.currentUser?.()?.designation;
+
+    const fallbackDepartment =
+      this.auth.department?.();
+
+    return (
+      designationFromFacade ||
+      designationFromUser ||
+      fallbackDepartment ||
+      ''
+    )
+      .trim()
+      .toUpperCase();
+  }
+
+  readonly normalizedDesignation = computed(() => {
+    return this.getDesignation();
+  });
+
+  readonly normalizedDepartment = computed(() => {
+    return (this.auth.department() || '')
+      .trim()
+      .toUpperCase();
+  });
+
+  readonly workspaceName = computed(() => {
+    const designation = this.normalizedDesignation();
+    const department = this.normalizedDepartment();
+
+    if (
+      designation.startsWith('PURCHASING') ||
+      department.startsWith('PURCHASING') ||
+      department.startsWith('PURCH')
+    ) {
+      return 'Purchasing Workspace';
     }
-  ];
+
+    if (
+      designation.startsWith('WAREHOUSE') ||
+      designation.startsWith('STOCKROOM') ||
+      department.startsWith('WAREHOUSE') ||
+      department.startsWith('STOCKROOM')
+    ) {
+      return 'Warehouse Workspace';
+    }
+
+    if (
+      designation.startsWith('ACCOUNTING') ||
+      designation.startsWith('FINANCE') ||
+      department.startsWith('ACCOUNTING') ||
+      department.startsWith('FINANCE')
+    ) {
+      return 'Accounting Workspace';
+    }
+
+    if (
+      designation === 'HR' ||
+      designation === 'HRD' ||
+      designation.startsWith('HUMAN RESOURCE') ||
+      department === 'HR' ||
+      department === 'HRD' ||
+      department.startsWith('HUMAN RESOURCE')
+    ) {
+      return 'Human Resources Workspace';
+    }
+
+    if (
+      designation.startsWith('ADMIN') ||
+      designation.startsWith('IT') ||
+      department.startsWith('ADMIN') ||
+      department.startsWith('IT')
+    ) {
+      return 'Administration Workspace';
+    }
+
+    if (
+      designation.startsWith('PRODUCTION') ||
+      designation.startsWith('OPERATIONS') ||
+      department.startsWith('PRODUCTION') ||
+      department.startsWith('OPERATIONS')
+    ) {
+      return 'Operations Workspace';
+    }
+
+    if (
+      designation.startsWith('SALES') ||
+      department.startsWith('SALES')
+    ) {
+      return 'Sales Workspace';
+    }
+
+    return 'TwinBee Inventory System';
+  });
+
+  readonly workspaceDescription = computed(() => {
+    const designation = this.normalizedDesignation();
+    const department = this.normalizedDepartment();
+
+    if (
+      designation.startsWith('PURCHASING') ||
+      department.startsWith('PURCHASING') ||
+      department.startsWith('PURCH')
+    ) {
+      return 'Manage purchasing, receiving, material issuance, and other inventory transactions assigned to your account.';
+    }
+
+    if (
+      designation.startsWith('WAREHOUSE') ||
+      designation.startsWith('STOCKROOM') ||
+      department.startsWith('WAREHOUSE') ||
+      department.startsWith('STOCKROOM')
+    ) {
+      return 'Manage receiving, warehouse inventory, stock movement, and material issuance transactions assigned to your account.';
+    }
+
+    if (
+      designation.startsWith('ACCOUNTING') ||
+      designation.startsWith('FINANCE') ||
+      department.startsWith('ACCOUNTING') ||
+      department.startsWith('FINANCE')
+    ) {
+      return 'Review acceptance documents, depreciation records, posting transactions, and other financial records assigned to your account.';
+    }
+
+    if (
+      designation === 'HR' ||
+      designation === 'HRD' ||
+      designation.startsWith('HUMAN RESOURCE') ||
+      department === 'HR' ||
+      department === 'HRD' ||
+      department.startsWith('HUMAN RESOURCE')
+    ) {
+      return 'Manage biometric attendance logs, DTR processing, and payroll-ready attendance records assigned to your account.';
+    }
+
+    if (
+      designation.startsWith('ADMIN') ||
+      designation.startsWith('IT') ||
+      department.startsWith('ADMIN') ||
+      department.startsWith('IT')
+    ) {
+      return 'Manage system modules, user access, operational records, and administrative transactions assigned to your account.';
+    }
+
+    if (
+      designation.startsWith('PRODUCTION') ||
+      designation.startsWith('OPERATIONS') ||
+      department.startsWith('PRODUCTION') ||
+      department.startsWith('OPERATIONS')
+    ) {
+      return 'Access operational, material issuance, inventory, and production-related modules assigned to your account.';
+    }
+
+    if (
+      designation.startsWith('SALES') ||
+      department.startsWith('SALES')
+    ) {
+      return 'Access sales, inventory, customer, and transaction modules assigned to your account.';
+    }
+
+    return 'Use the navigation menu to access the modules assigned to your account.';
+  });
+
+  readonly departmentDisplayName = computed(() => {
+    const designation = this.normalizedDesignation();
+    const department = this.normalizedDepartment();
+
+    if (
+      designation.startsWith('PURCHASING') ||
+      department.startsWith('PURCHASING') ||
+      department.startsWith('PURCH')
+    ) {
+      return 'PURCHASING';
+    }
+
+    if (
+      designation.startsWith('WAREHOUSE') ||
+      designation.startsWith('STOCKROOM') ||
+      department.startsWith('WAREHOUSE') ||
+      department.startsWith('STOCKROOM')
+    ) {
+      return 'WAREHOUSE';
+    }
+
+    if (
+      designation.startsWith('ACCOUNTING') ||
+      designation.startsWith('FINANCE') ||
+      department.startsWith('ACCOUNTING') ||
+      department.startsWith('FINANCE')
+    ) {
+      return 'ACCOUNTING';
+    }
+
+    if (
+      designation === 'HR' ||
+      designation === 'HRD' ||
+      designation.startsWith('HUMAN RESOURCE') ||
+      department === 'HR' ||
+      department === 'HRD' ||
+      department.startsWith('HUMAN RESOURCE')
+    ) {
+      return 'HUMAN RESOURCES';
+    }
+
+    if (
+      designation.startsWith('ADMIN') ||
+      designation.startsWith('IT') ||
+      department.startsWith('ADMIN') ||
+      department.startsWith('IT')
+    ) {
+      return 'ADMINISTRATION';
+    }
+
+    if (
+      designation.startsWith('PRODUCTION') ||
+      designation.startsWith('OPERATIONS') ||
+      department.startsWith('PRODUCTION') ||
+      department.startsWith('OPERATIONS')
+    ) {
+      return 'OPERATIONS';
+    }
+
+    if (
+      designation.startsWith('SALES') ||
+      department.startsWith('SALES')
+    ) {
+      return 'SALES';
+    }
+
+    return designation || department || 'N/A';
+  });
 
   readonly infoCards = computed<DashboardInfoCard[]>(() => [
     {
       label: 'Logged in as',
-      value: this.auth.displayName() || 'N/A'
+      value: this.auth.displayName()?.trim() || 'N/A'
     },
     {
       label: 'Branch',
-      value: this.auth.branch() || 'N/A'
+      value: this.auth.branch()?.trim() || 'N/A'
     },
     {
       label: 'Department',
-      value: this.auth.department() || 'N/A'
+      value: this.departmentDisplayName()
     }
   ]);
 
-  readonly guideSteps: DashboardGuideStep[] = [
+  readonly statusItems = computed<DashboardStatusItem[]>(() => [
     {
-      number: '01',
-      title: 'Upload attendance',
-      description: 'Open HRIS Biometrix, select the date range, payroll period, branch, and ATTLOG.DAT file.',
-      svgIcon: uploadIcon
-    },
-    {
-      number: '02',
-      title: 'Review processed DTR',
-      description: 'Go to DTR Listing, select branch and payroll period, then load the processed attendance records.',
-      svgIcon: calendarIcon
-    },
-    {
-      number: '03',
-      title: 'Export payroll report',
-      description: 'Review edited hours and OT, rename the file if needed, then download the Excel report.',
-      svgIcon: fileExcelIcon
-    }
-  ];
-
-  readonly reminderItems = [
-    'Confirm the correct branch before loading records.',
-    'Make sure the payroll period is selected.',
-    'Review edited hours and OT before exporting.',
-    'Use a clear filename for payroll reports.'
-  ];
-
-  readonly statusItems = [
-    {
-      label: 'API Status',
+      label: 'System Status',
       value: 'Connected',
       type: 'success'
     },
     {
-      label: 'Module',
-      value: 'Processed Attendance',
-      type: 'warning'
+      label: 'Workspace',
+      value: this.workspaceName()
+        .replace(' Workspace', '')
+        .trim(),
+      type: 'neutral'
     },
     {
-      label: 'Workflow',
-      value: 'Payroll Ready',
+      label: 'Access',
+      value: 'Permission Based',
       type: 'neutral'
     }
-  ];
+  ]);
 }

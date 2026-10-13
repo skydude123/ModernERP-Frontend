@@ -1,0 +1,100 @@
+.app-toolbar-shell {
+  width: 100%;
+  display: grid;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.toolbar-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.toolbar-title-wrap {
+  min-width: 0;
+}
+
+.toolbar-title {
+  margin: 0;
+  color: #111827;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.toolbar-subtitle {
+  margin: 3px 0 0;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.global-toolbar,
+.erp-toolbar {
+  border: 1px solid #dbe3ef;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+  overflow: hidden;
+}
+
+:host ::ng-deep .erp-toolbar .k-toolbar {
+  gap: 6px;
+  padding: 8px;
+}
+
+:host ::ng-deep .erp-toolbar .k-toolbar-button {
+  min-height: 34px;
+  font-weight: 600;
+}
+
+:host ::ng-deep .erp-toolbar .k-toolbar-separator {
+  margin-inline: 4px;
+}
+
+:host ::ng-deep .erp-toolbar .k-disabled,
+:host ::ng-deep .erp-toolbar [disabled] {
+  cursor: not-allowed;
+}
+
+@media (max-width: 760px) {
+  .app-toolbar-shell {
+    gap: 8px;
+  }
+
+  .toolbar-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .toolbar-title {
+    font-size: 19px;
+  }
+
+  :host ::ng-deep .erp-toolbar .k-toolbar {
+    padding: 6px;
+  }
+}
+
+
+/* =========================================================
+   GLOBAL TOOLBAR DISABLED BUTTON STYLE
+   ========================================================= */
+
+:host ::ng-deep .erp-toolbar button:disabled,
+:host ::ng-deep .erp-toolbar .k-button:disabled,
+:host ::ng-deep .erp-toolbar .k-button.k-disabled {
+  opacity: 0.35 !important;
+  cursor: not-allowed !important;
+  filter: grayscale(25%);
+}
+
+/* Disabled text + icon */
+:host ::ng-deep .erp-toolbar button:disabled .k-button-text,
+:host ::ng-deep .erp-toolbar button:disabled .k-svg-icon,
+:host ::ng-deep .erp-toolbar .k-button.k-disabled .k-button-text,
+:host ::ng-deep .erp-toolbar .k-button.k-disabled .k-svg-icon {
+  opacity: 0.65 !important;
+}

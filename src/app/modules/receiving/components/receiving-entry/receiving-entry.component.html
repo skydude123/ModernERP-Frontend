@@ -1,0 +1,628 @@
+<section class="receiving-page">
+  <app-toolbar
+    [config]="toolbarService.config()"
+    [formValid]="form.valid"
+    [editMode]="!!form.get('rrNo')?.value"
+    [postingMode]="canPost()"
+    [reverseMode]="canReverse()"
+    title="Receiving Entry"
+    subtitle="Receive approved Purchase Orders or enter non-PO receiving drafts."
+    (onNew)="newReceiving()"
+    (onSave)="saveDraft()"
+    (onPost)="approve()"
+    (onReverse)="reverse()"
+    (onList)="goToList()"
+  >
+  </app-toolbar>
+
+  <form [formGroup]="form" class="entry-shell">
+    <div class="entry-header">
+      <div>
+        <span class="eyebrow">Accounting Receiving</span>
+        <h1>{{ form.get("rrNo")?.value || "NEW RECEIVING" }}</h1>
+      </div>
+
+      <div class="header-status">
+        <span class="status-pill" [ngClass]="statusClass(targetStatus())">
+          {{ statusText() }}
+        </span>
+
+        <span class="type-pill">
+          {{ form.get("transType")?.value }}
+        </span>
+      </div>
+    </div>
+
+    <section class="erp-section">
+      <div class="section-heading">
+        <span>Header</span>
+        <small> Draft saves do not update PO received quantity. </small>
+      </div>
+
+      <div class="header-grid">
+        <kendo-formfield>
+          <kendo-label text="RR No."></kendo-label>
+
+          <kendo-textbox
+            formControlName="rrNo"
+            [readonly]="true"
+            placeholder="NEW"
+          >
+          </kendo-textbox>
+        </kendo-formfield>
+
+        <kendo-formfield>
+          <kendo-label text="RR Date" class="required-label"> </kendo-label>
+
+          <kendo-datepicker formControlName="rrDate"> </kendo-datepicker>
+
+          @if (form.controls.rrDate.invalid && form.controls.rrDate.touched) {
+            <kendo-formerror> RR Date is required. </kendo-formerror>
+          }
+        </kendo-formfield>
+
+        <kendo-formfield>
+          <kendo-label text="Type" class="required-label"> </kendo-label>
+
+          <kendo-dropdownlist
+            formControlName="transType"
+            [data]="[
+              {
+                text: 'RPO - With Purchase Order',
+                value: 'RPO',
+              },
+              {
+                text: 'RWP - Without Purchase Order',
+                value: 'RWP',
+              },
+            ]"
+            textField="text"
+            valueField="value"
+            [valuePrimitive]="true"
+          >
+          </kendo-dropdownlist>
+
+          @if (
+            form.controls.transType.invalid && form.controls.transType.touched
+          ) {
+            <kendo-formerror> Receiving Type is required. </kendo-formerror>
+          }
+        </kendo-formfield>
+
+        <!-- <kendo-formfield>
+          <kendo-label text="Branch" class="required-label"> </kendo-label>
+
+          <kendo-dropdownlist
+            formControlName="branchname"
+            [data]="facade.branches()"
+            textField="branchname"
+            valueField="branchname"
+            [valuePrimitive]="true"
+          >
+          </kendo-dropdownlist>
+
+          @if (
+            form.controls.branchname.invalid && form.controls.branchname.touched
+          ) {
+            <kendo-formerror> Branch is required. </kendo-formerror>
+          }
+        </kendo-formfield> -->
+
+        <kendo-formfield>
+          <kendo-label text="Storage" class="required-label"> </kendo-label>
+          <kendo-dropdownlist
+            formControlName="whseCode"
+            [data]="facade.warehouses()"
+            textField="whseDesc"
+            valueField="whseCode"
+            [valuePrimitive]="true"
+          >
+          </kendo-dropdownlist>
+
+          @if (
+            form.controls.whseCode.invalid && form.controls.whseCode.touched
+          ) {
+            <kendo-formerror>
+              Storage / Warehouse is required.
+            </kendo-formerror>
+          }
+        </kendo-formfield>
+
+        <kendo-formfield>
+          <kendo-label text="Supplier" class="required-label"> </kendo-label>
+
+          <kendo-combobox
+            formControlName="suppCode"
+            [data]="facade.suppliers()"
+            textField="suppName"
+            valueField="suppCode"
+            [valuePrimitive]="true"
+            [filterable]="true"
+            [allowCustom]="false"
+            [kendoDropDownFilter]="filterSettings"
+            placeholder="Select supplier"
+          >
+          </kendo-combobox>
+
+          @if (
+            form.controls.suppCode.invalid && form.controls.suppCode.touched
+          ) {
+            <kendo-formerror> Supplier is required. </kendo-formerror>
+          }
+        </kendo-formfield>
+
+        <kendo-formfield>
+          <kendo-label text="Reference" class="required-label"> </kendo-label>
+
+          <kendo-textbox formControlName="reference"> </kendo-textbox>
+
+          @if (
+            form.controls.reference.invalid && form.controls.reference.touched
+          ) {
+            <kendo-formerror> Reference is required. </kendo-formerror>
+          }
+        </kendo-formfield>
+
+        <kendo-formfield class="wide">
+          <kendo-label text="Remarks"></kendo-label>
+
+          <kendo-textarea
+            formControlName="remarks"
+            [rows]="2"
+            resizable="vertical"
+          >
+          </kendo-textarea>
+        </kendo-formfield>
+      </div>
+    </section>
+
+    <section class="erp-section detail-section">
+      <div class="section-heading">
+        <span>Details</span>
+
+        <small>
+          {{ details().length }} lines, {{ totalQty() | number: "1.2-2" }} total
+          qty, {{ totalAmount() | number: "1.2-2" }} total amount
+        </small>
+      </div>
+
+      <!--
+        Detail entry now follows the same Kendo Grid event-handler pattern
+        used by the Purchase Order source:
+        add, edit, save, cancel, and remove.
+      -->
+
+      <kendo-grid
+        class="detail-grid receiving-event-grid"
+        [data]="details()"
+        [height]="360"
+        [resizable]="true"
+        [navigable]="true"
+        [selectable]="{ mode: 'single' }"
+        (add)="addHandler($event)"
+        (edit)="editHandler($event)"
+        (cancel)="cancelHandler($event)"
+        (save)="saveHandler($event)"
+        (remove)="removeHandler($event)"
+      >
+        <kendo-toolbar class="detail-toolbar" overflow="scroll">
+          <!--
+            MODIFIED:
+            RPO displays Add PO Line.
+            RNP displays Add Non-PO Line.
+          -->
+
+          <kendo-toolbar-button
+            kendoGridAddTool
+            [text]="transType() === 'RPO' ? 'Add PO Line' : 'Add Non-PO Line'"
+            themeColor="success"
+            [disabled]="isReadOnly()"
+          >
+          </kendo-toolbar-button>
+
+          <kendo-toolbar-button
+            kendoGridEditTool
+            text="Edit"
+            themeColor="warning"
+            [disabled]="isReadOnly() || details().length === 0"
+          >
+          </kendo-toolbar-button>
+
+          <kendo-toolbar-spacer> </kendo-toolbar-spacer>
+
+          <kendo-toolbar-button
+            kendoGridRemoveTool
+            text="Remove"
+            themeColor="error"
+            [disabled]="isReadOnly() || details().length === 0"
+          >
+          </kendo-toolbar-button>
+
+          <kendo-toolbar-button
+            kendoGridSaveTool
+            text="Save Line"
+            themeColor="primary"
+          >
+          </kendo-toolbar-button>
+
+          <kendo-toolbar-button
+            kendoGridCancelTool
+            text="Cancel"
+            themeColor="error"
+          >
+          </kendo-toolbar-button>
+        </kendo-toolbar>
+
+        <kendo-grid-column
+          title="#"
+          [width]="52"
+          [headerClass]="'headerCustomClass'"
+        >
+          <ng-template kendoGridCellTemplate let-rowIndex="rowIndex">
+            {{ rowIndex + 1 }}
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="poNo"
+          title="PO No."
+          [width]="150"
+          [headerClass]="'headerCustomClass'"
+        >
+          <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+            @if (transType() === "RPO") {
+              <kendo-multicolumncombobox
+                kendoGridFocusable
+                class="grid-po-line-combo"
+                [formControl]="formGroup.get('poLineNo')"
+                [data]="facade.openPoLines()"
+                textField="poNo"
+                valueField="poLineNo"
+                [valuePrimitive]="true"
+                [allowCustom]="false"
+                [filterable]="true"
+                [clearButton]="true"
+                [loading]="facade.openPoLinesLoading()"
+                [popupSettings]="poPopupSettings"
+                placeholder="Select PO line"
+                required
+                (filterChange)="onGridPoFilterChange($event)"
+                (selectionChange)="onGridPoLineSelected(formGroup, $event)"
+              >
+                <kendo-combobox-column
+                  field="poNo"
+                  title="PO No."
+                  [width]="120"
+                >
+                </kendo-combobox-column>
+
+                <kendo-combobox-column
+                  field="itemCode"
+                  title="Item"
+                  [width]="140"
+                >
+                </kendo-combobox-column>
+
+                <kendo-combobox-column
+                  field="itemDesc"
+                  title="Description"
+                  [width]="500"
+                >
+                </kendo-combobox-column>
+
+                <kendo-combobox-column
+                  field="qtyPo"
+                  title="Ordered"
+                  [width]="100"
+                >
+                </kendo-combobox-column>
+
+                <kendo-combobox-column
+                  field="qtyRcv"
+                  title="Received"
+                  [width]="105"
+                >
+                </kendo-combobox-column>
+
+                <kendo-combobox-column
+                  field="openQty"
+                  title="Open"
+                  [width]="90"
+                >
+                </kendo-combobox-column>
+
+                <kendo-combobox-column field="poUm" title="U/M" [width]="80">
+                </kendo-combobox-column>
+
+                <kendo-combobox-column
+                  field="unitPrice"
+                  title="Unit Price"
+                  [width]="110"
+                >
+                </kendo-combobox-column>
+
+                <ng-template kendoMultiColumnComboBoxNoDataTemplate>
+                  <div class="po-line-no-data">
+                    No approved open PO line found.
+                  </div>
+                </ng-template>
+              </kendo-multicolumncombobox>
+            } @else {
+              <span class="rnp-label"> NON-PO </span>
+            }
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="itemCode"
+          title="Item Code"
+          [width]="260"
+          [headerClass]="'headerCustomClass'"
+        >
+          <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+            @if (transType() === "RWP") {
+              <kendo-multicolumncombobox
+                kendoGridFocusable
+                class="grid-item-combo"
+                [formControl]="formGroup.get('itemCode')"
+                [data]="facade.items()"
+                textField="itemCode"
+                valueField="itemCode"
+                [valuePrimitive]="true"
+                [allowCustom]="false"
+                [filterable]="true"
+                [clearButton]="true"
+                [loading]="facade.itemsLoading()"
+                [popupSettings]="itemPopupSettings"
+                placeholder="Select item"
+                (filterChange)="onGridItemFilterChange($event)"
+                (selectionChange)="onGridItemSelected(formGroup, $event)"
+              >
+                <kendo-combobox-column
+                  field="itemCode"
+                  title="Item Code"
+                  [width]="220"
+                >
+                </kendo-combobox-column>
+
+                <kendo-combobox-column
+                  field="itemDesc"
+                  title="Description"
+                  [width]="620"
+                >
+                </kendo-combobox-column>
+
+                <kendo-combobox-column
+                  field="baseUm"
+                  title="Base U/M"
+                  [width]="100"
+                >
+                </kendo-combobox-column>
+
+                <kendo-combobox-column
+                  field="unitPrice"
+                  title="Unit Price"
+                  [width]="120"
+                >
+                </kendo-combobox-column>
+
+                <ng-template kendoMultiColumnComboBoxNoDataTemplate>
+                  <div class="po-line-no-data">No item found.</div>
+                </ng-template>
+              </kendo-multicolumncombobox>
+            } @else {
+              <input
+                title="Item Code"
+                kendoTextBox
+                [formControl]="formGroup.get('itemCode')"
+                [readonly]="true"
+              />
+            }
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="itemDesc"
+          title="Description"
+          [width]="270"
+          [headerClass]="'headerCustomClass'"
+        >
+          <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+            <input
+              title="Description"
+              kendoTextBox
+              [formControl]="formGroup.get('itemDesc')"
+              [readonly]="transType() === 'RPO'"
+            />
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="qtyRcv"
+          title="Received Qty"
+          [width]="120"
+          [headerClass]="'headerCustomClass'"
+        >
+          <ng-template kendoGridCellTemplate let-dataItem>
+            {{ dataItem.qtyRcv | number: "1.2-2" }}
+          </ng-template>
+
+          <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+            <kendo-numerictextbox
+              [formControl]="formGroup.get('qtyRcv')"
+              [min]="0.01"
+              [max]="
+                transType() === 'RPO'
+                  ? formGroup.get('openQty')?.value || null
+                  : null
+              "
+              [decimals]="2"
+              format="n2"
+            >
+            </kendo-numerictextbox>
+          </ng-template>
+
+          <ng-template kendoGridFooterTemplate>
+            <strong>
+              {{ totalQty() | number: "1.2-2" }}
+            </strong>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="poUm"
+          title="PO U/M"
+          [width]="95"
+          [headerClass]="'headerCustomClass'"
+        >
+          <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+            <input
+              title="PO U/M"
+              kendoTextBox
+              [formControl]="formGroup.get('poUm')"
+              [readonly]="transType() === 'RPO'"
+            />
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="baseUm"
+          title="Base U/M"
+          [width]="100"
+          [headerClass]="'headerCustomClass'"
+        >
+          <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+            <input
+              title="Base U/M"
+              kendoTextBox
+              [formControl]="formGroup.get('baseUm')"
+              [readonly]="transType() === 'RPO'"
+            />
+          </ng-template>
+        </kendo-grid-column>
+
+        <!--
+        <kendo-grid-column
+          field="poConvFactor"
+          title="Conv."
+          [width]="110"
+        >
+          <ng-template
+            kendoGridCellTemplate
+            let-dataItem
+            let-rowIndex="rowIndex"
+          >
+            @if (!isReadOnly()) {
+              <kendo-numerictextbox
+                [value]="dataItem.poConvFactor"
+                [min]="0"
+                [decimals]="4"
+                format="n4"
+                (valueChange)="
+                  updateRowNumber(
+                    rowIndex,
+                    'poConvFactor',
+                    $event
+                  )
+                "
+              >
+              </kendo-numerictextbox>
+            } @else {
+              {{
+                dataItem.poConvFactor
+                  | number: "1.4-4"
+              }}
+            }
+          </ng-template>
+        </kendo-grid-column>
+        -->
+
+        <kendo-grid-column
+          field="poConvFactor"
+          title="Conv."
+          [width]="100"
+          [headerClass]="'headerCustomClass'"
+        >
+          <ng-template kendoGridCellTemplate let-dataItem>
+            {{ dataItem.poConvFactor | number: "1.4-4" }}
+          </ng-template>
+
+          <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+            <kendo-numerictextbox
+              [formControl]="formGroup.get('poConvFactor')"
+              [min]="0.0001"
+              [decimals]="4"
+              format="n4"
+            >
+            </kendo-numerictextbox>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          field="unitPrice"
+          title="Unit Price"
+          [width]="120"
+          [headerClass]="'headerCustomClass'"
+        >
+          <ng-template kendoGridCellTemplate let-dataItem>
+            {{ dataItem.unitPrice | number: "1.2-2" }}
+          </ng-template>
+
+          <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+            <kendo-numerictextbox
+              [formControl]="formGroup.get('unitPrice')"
+              [min]="0"
+              [decimals]="4"
+              format="n4"
+            >
+            </kendo-numerictextbox>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column
+          title="Amount"
+          [width]="120"
+          [headerClass]="'headerCustomClass'"
+        >
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <strong>
+              {{ lineAmount(dataItem) | number: "1.2-2" }}
+            </strong>
+          </ng-template>
+
+          <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+            <strong>
+              {{ lineAmountFromForm(formGroup) | number: "1.2-2" }}
+            </strong>
+          </ng-template>
+
+          <ng-template kendoGridFooterTemplate>
+            <strong>
+              {{ totalAmount() | number: "1.2-2" }}
+            </strong>
+          </ng-template>
+        </kendo-grid-column>
+
+        <ng-template kendoGridNoRecordsTemplate>
+          <div class="grid-empty-state">
+            <strong> No receiving lines yet. </strong>
+
+            <span>
+              Click
+              {{ transType() === "RPO" ? "Add PO Line" : "Add Non-PO Line" }}
+              to enter a receiving line.
+            </span>
+          </div>
+        </ng-template>
+      </kendo-grid>
+
+      @if (validationMessage()) {
+        <div class="validation-box">
+          {{ validationMessage() }}
+        </div>
+      }
+    </section>
+  </form>
+</section>
+
+<div kendoDialogContainer></div>

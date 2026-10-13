@@ -33,13 +33,15 @@ export const authGuard: CanActivateFn = (route, state) => {
   const permissionKey = route.data?.['permissionKey'] as string | undefined;
 
   if (permissionKey) {
-    const allowed = auth.permissions().some(p =>
-      normalize(p.permissionKey) === normalize(permissionKey) && p.canOpen
-    );
-
-    if (allowed) {
+    if (auth.hasPermission(permissionKey, 'open')) {
       return true;
     }
+
+    return router.createUrlTree(['/unauthorized'], {
+      queryParams: {
+        returnUrl: state.url
+      }
+    });
   }
   /* end of update */
 
@@ -78,7 +80,7 @@ function buildAccessContext(auth: AuthFacadeService): AccessContext {
   }
 
   const roles = new Set<string>();
-  const userRights = normalize(user.userights);
+  const userRights = normalize(auth.role());
   const department = normalize(user.dept);
   const adminFlag = normalize(user.administrator);
 

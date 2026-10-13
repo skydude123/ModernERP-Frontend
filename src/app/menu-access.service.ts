@@ -102,40 +102,7 @@ export class MenuAccessService {
       return true;
     }
 
-    // ADDED:
-    // Admin / IT bypass para makita dayon ang BIOMETRIX menus.
-    // Proper DB permissions should still be added later.
-    if (this.isAdminOrIt()) {
-      return true;
-    }
-
-    const permissionKey = normalize(item.permissionKey);
-    const permissions = this.auth.permissions();
-
-    return permissions.some((p: any) => {
-      const userPermissionKey = normalize(
-        p.permissionKey ??
-          p.PermissionKey ??
-          p.moduleCode ??
-          p.ModuleCode ??
-          p.module_code ??
-          p.Module_Code
-      );
-
-      const canView =
-        p.canView === true ||
-        p.CanView === true ||
-        p.can_view === true ||
-        p.canView === 1 ||
-        p.CanView === 1 ||
-        p.can_view === 1 ||
-        p.canView === '1' ||
-        p.CanView === '1' ||
-        p.can_view === '1' ||
-        normalize(String(p.canView ?? p.CanView ?? p.can_view ?? '')) === 'TRUE';
-
-      return userPermissionKey === permissionKey && canView;
-    });
+    return this.auth.hasPermission(item.permissionKey, 'view');
   }
 
   private isAdminOrIt(): boolean {

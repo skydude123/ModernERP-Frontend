@@ -1,0 +1,655 @@
+:host {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+.fuel-page {
+  width: 100%;
+  max-width: 1366px;
+  margin: 0 auto;
+  padding: 8px 10px 12px;
+  box-sizing: border-box;
+  color: #172033;
+}
+
+.entry-shell {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+.erp-section {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid #d9e1ea;
+  border-radius: 7px;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   ENTRY HEADER
+   ========================================================= */
+
+.entry-header,
+.section-heading,
+.header-status {
+  display: flex;
+  align-items: center;
+}
+
+.entry-header,
+.section-heading {
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.entry-header {
+  min-height: 34px;
+}
+
+.entry-header h1 {
+  margin: 0;
+  font-size: 1.08rem;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.eyebrow {
+  display: block;
+  margin-bottom: 2px;
+  color: #536376;
+  font-size: 0.64rem;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.header-status {
+  gap: 6px;
+  min-height: 30px;
+}
+
+/* =========================================================
+   SECTION HEADING
+   ========================================================= */
+
+.section-heading {
+  min-height: 24px;
+}
+
+.section-heading span {
+  color: #111827;
+  font-size: 0.82rem;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.section-heading small {
+  max-width: 65%;
+  color: #64748b;
+  font-size: 0.7rem;
+  line-height: 1.2;
+  text-align: right;
+}
+
+/* =========================================================
+   HEADER FORM
+   ========================================================= */
+
+.header-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(145px, 1fr));
+  gap: 7px 9px;
+  width: 100%;
+  min-width: 0;
+}
+
+.header-grid > * {
+  min-width: 0;
+}
+
+.wide {
+  grid-column: span 2;
+}
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.status-pill,
+.type-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 23px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  line-height: 1;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.status-draft {
+  color: #075985;
+  background: #e0f2fe;
+}
+
+.status-posted {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.status-reversed {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.type-pill {
+  color: #9a3412;
+  background: #ffedd5;
+}
+
+/* =========================================================
+   DETAILS SECTION
+   ========================================================= */
+
+.detail-section {
+  gap: 7px;
+  overflow: hidden;
+}
+
+.detail-grid {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* =========================================================
+   SUMMARY
+   ========================================================= */
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(105px, 1fr));
+  gap: 6px;
+  width: 100%;
+}
+
+.summary-grid article {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  padding: 8px 9px;
+  border: 1px solid #d9e1ea;
+  border-radius: 6px;
+  background: #f8fafc;
+}
+
+.summary-grid article span {
+  overflow: hidden;
+  color: #64748b;
+  font-size: 0.64rem;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.summary-grid article strong {
+  color: #172033;
+  font-size: 0.86rem;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+
+.summary-grid article.net {
+  border-color: #7dd3fc;
+  background: #f0f9ff;
+}
+
+.summary-grid article.net strong {
+  color: #075985;
+}
+
+.amount-warning {
+  padding: 7px 9px;
+  border: 1px solid #fca5a5;
+  border-radius: 6px;
+  color: #991b1b;
+  background: #fef2f2;
+  font-size: 0.72rem;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.grid-empty-state {
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  padding: 14px;
+  color: #64748b;
+  font-size: 0.73rem;
+  text-align: center;
+}
+
+/* =========================================================
+   KENDO COMPACT FORM STYLES
+   ========================================================= */
+
+:host ::ng-deep .fuel-page {
+  .k-form-field {
+    min-width: 0;
+    margin: 0;
+  }
+
+  .k-label,
+  .k-form-field > label {
+    margin-bottom: 3px;
+    color: #334155;
+    font-size: 0.7rem;
+    line-height: 1.15;
+    font-weight: 700;
+  }
+
+  .k-form-hint,
+  .k-form-error {
+    margin-top: 3px;
+    font-size: 0.62rem;
+    line-height: 1.15;
+  }
+
+  .k-input,
+  .k-picker,
+  .k-textbox,
+  .k-numerictextbox,
+  .k-dropdownlist,
+  .k-combobox {
+    width: 100%;
+    min-width: 0;
+    min-height: 32px;
+    height: 32px;
+    font-size: 0.73rem;
+  }
+
+  .k-input-inner {
+    min-height: 30px;
+    padding: 4px 8px;
+  }
+
+  .k-textarea {
+    width: 100%;
+    min-height: 54px;
+    height: auto;
+    font-size: 0.73rem;
+  }
+
+  .k-textarea .k-input-inner,
+  textarea.k-input-inner {
+    min-height: 52px;
+    height: auto;
+    padding: 6px 8px;
+    line-height: 1.3;
+  }
+
+  .k-readonly,
+  input[readonly],
+  textarea[readonly] {
+    color: #475569;
+    background: #f8fafc;
+  }
+}
+
+/* =========================================================
+   GRID TOOLBAR
+   ========================================================= */
+
+:host ::ng-deep .fuel-event-grid .k-grid-toolbar {
+  min-height: 40px;
+  padding: 5px 7px;
+  border-bottom: 1px solid #d9e1ea;
+  background: #f8fafc;
+}
+
+:host ::ng-deep .detail-toolbar .k-button {
+  min-width: 74px;
+  min-height: 29px;
+  height: 29px;
+  padding: 3px 8px;
+  font-size: 0.7rem;
+}
+
+/* =========================================================
+   ORANGE GRID HEADER
+   ========================================================= */
+
+:host ::ng-deep .fuel-event-grid .k-grid-header,
+:host ::ng-deep .fuel-event-grid .headerCustomClass,
+:host ::ng-deep .fuel-event-grid .k-grid-header th {
+  color: #ffffff !important;
+  background-color: #fa8128 !important;
+}
+
+:host ::ng-deep .fuel-event-grid .k-grid-header th {
+  height: 30px;
+  padding: 5px 7px;
+  font-size: 0.69rem;
+  line-height: 1.15;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+:host ::ng-deep .fuel-event-grid .k-grid-header .k-link,
+:host ::ng-deep .fuel-event-grid .k-grid-header .k-sort-icon {
+  color: #ffffff !important;
+}
+
+/* =========================================================
+   COMPACT GRID ROWS
+   ========================================================= */
+
+:host ::ng-deep .fuel-event-grid.k-grid {
+  border: 1px solid #d9e1ea;
+  border-radius: 6px;
+  font-size: 0.71rem;
+}
+
+:host ::ng-deep .fuel-event-grid .k-grid-content td {
+  height: 33px;
+  padding: 4px 6px;
+  line-height: 1.2;
+  vertical-align: middle;
+}
+
+:host ::ng-deep .fuel-event-grid .k-table-row:nth-child(even) > td {
+  background: #f8fafc;
+}
+
+:host ::ng-deep .fuel-event-grid .k-table-row.k-selected > td {
+  background: #fff3e8;
+}
+
+:host ::ng-deep .fuel-event-grid .k-grid-edit-row td {
+  height: 38px;
+  padding: 4px 5px;
+  vertical-align: middle;
+  background: #fffaf5;
+}
+
+/* =========================================================
+   GRID EDITORS
+   ========================================================= */
+
+:host ::ng-deep .fuel-event-grid .k-grid-edit-row {
+  .k-input,
+  .k-picker,
+  .k-textbox,
+  .k-numerictextbox,
+  .k-dropdownlist {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    height: 31px;
+    min-height: 31px;
+    max-height: 31px;
+    border-radius: 5px;
+    font-size: 0.7rem;
+  }
+
+  .k-input-inner {
+    box-sizing: border-box;
+    height: 29px;
+    min-height: 29px;
+    padding: 3px 6px;
+    overflow: hidden;
+    line-height: 23px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .k-input-button {
+    width: 32px;
+    min-width: 32px;
+    height: 29px;
+    min-height: 29px;
+  }
+
+  .k-numerictextbox .k-input-spinner {
+    width: 21px;
+    min-width: 21px;
+    height: 29px;
+  }
+
+  .k-numerictextbox .k-input-spinner .k-button {
+    width: 21px !important;
+    min-width: 21px !important;
+    height: 50% !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+  }
+
+  input[readonly],
+  .k-disabled .k-input-inner {
+    color: #64748b;
+    background: #f1f5f9;
+  }
+}
+
+/* Keep disabled toolbar buttons visible instead of looking broken. */
+
+:host ::ng-deep .fuel-event-grid .k-disabled,
+:host ::ng-deep .fuel-event-grid [disabled] {
+  opacity: 1;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1150px) {
+  .header-grid {
+    grid-template-columns: repeat(2, minmax(145px, 1fr));
+  }
+
+  .summary-grid {
+    grid-template-columns: repeat(4, minmax(105px, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .fuel-page {
+    padding: 7px;
+  }
+
+  .entry-header,
+  .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .header-status {
+    align-self: flex-start;
+  }
+
+  .section-heading small {
+    max-width: 100%;
+    text-align: left;
+  }
+
+  .header-grid,
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .wide {
+    grid-column: auto;
+  }
+}
+
+/* =========================================================
+   PRINT
+   ========================================================= */
+
+@media print {
+  app-toolbar,
+  .k-grid-toolbar,
+  .amount-warning {
+    display: none !important;
+  }
+
+  .fuel-page {
+    max-width: none;
+    padding: 0;
+  }
+
+  .erp-section {
+    break-inside: avoid;
+    border-color: #cbd5e1;
+  }
+}
+
+/* =========================================================
+   FUEL ACCEPTANCE ENTRY
+   Dark + Bold Values
+   ========================================================= */
+
+/* Header values */
+:host ::ng-deep .fuel-page .entry-shell .k-input-inner,
+:host ::ng-deep .fuel-page .entry-shell .k-input-value-text,
+:host ::ng-deep .fuel-page .entry-shell input[kendoTextBox],
+:host ::ng-deep .fuel-page .entry-shell textarea[kendoTextArea] {
+  color: #111827 !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+/* Dropdown / ComboBox / DatePicker / NumericTextbox */
+:host ::ng-deep .fuel-page .k-dropdownlist .k-input-value-text,
+:host ::ng-deep .fuel-page .k-combobox .k-input-value-text,
+:host ::ng-deep .fuel-page .k-picker .k-input-value-text,
+:host ::ng-deep .fuel-page .k-numerictextbox .k-input-inner {
+  color: #111827 !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+/* =========================================================
+   POSTED / REVERSED / READONLY VALUES
+   ========================================================= */
+
+:host ::ng-deep .fuel-page .k-disabled,
+:host ::ng-deep .fuel-page .k-readonly,
+:host ::ng-deep .fuel-page input:disabled,
+:host ::ng-deep .fuel-page textarea:disabled,
+:host ::ng-deep .fuel-page input[readonly],
+:host ::ng-deep .fuel-page textarea[readonly] {
+  opacity: 1 !important;
+}
+
+:host ::ng-deep .fuel-page .k-disabled .k-input-inner,
+:host ::ng-deep .fuel-page .k-disabled .k-input-value-text,
+:host ::ng-deep .fuel-page .k-readonly .k-input-inner,
+:host ::ng-deep .fuel-page input:disabled,
+:host ::ng-deep .fuel-page textarea:disabled,
+:host ::ng-deep .fuel-page input[readonly],
+:host ::ng-deep .fuel-page textarea[readonly] {
+  color: #111827 !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+/* =========================================================
+   FUEL DETAIL GRID
+   ========================================================= */
+
+:host ::ng-deep
+  .fuel-page
+  .fuel-event-grid
+  .k-grid-content
+  td,
+:host ::ng-deep
+  .fuel-page
+  .fuel-event-grid
+  .k-grid-content
+  .k-table-td {
+  color: #111827 !important;
+  font-weight: 700 !important;
+}
+
+/* Detail grid edit values */
+:host ::ng-deep
+  .fuel-page
+  .fuel-event-grid
+  .k-grid-edit-row
+  .k-input-inner,
+:host ::ng-deep
+  .fuel-page
+  .fuel-event-grid
+  .k-grid-edit-row
+  .k-input-value-text {
+  color: #111827 !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+/* Summary / totals */
+:host ::ng-deep .fuel-page .summary-grid strong {
+  color: #111827 !important;
+  font-weight: 700 !important;
+}
+
+/* =========================================================
+   FORM HINT / VALIDATION STYLING
+   ========================================================= */
+
+/* Normal helper / guide text */
+:host ::ng-deep kendo-formhint,
+:host ::ng-deep .k-form-hint {
+  color: #555555 !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  margin-top: 3px !important;
+}
+
+/* Actual validation errors */
+:host ::ng-deep kendo-formerror,
+:host ::ng-deep .k-form-error {
+  color: #d32f2f !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  margin-top: 3px !important;
+}
+
+/* Red border when invalid */
+:host ::ng-deep .k-invalid {
+  border-color: #d32f2f !important;
+}
+
+/* Kendo textbox / combobox / numeric textbox invalid */
+:host ::ng-deep .k-input-solid.k-invalid,
+:host ::ng-deep .k-picker-solid.k-invalid,
+:host ::ng-deep .ng-invalid.ng-touched .k-input-solid,
+:host ::ng-deep .ng-invalid.ng-touched .k-picker-solid {
+  border-color: #d32f2f !important;
+  box-shadow: 0 0 0 1px #d32f2f !important;
+}
+
+/* Required asterisk */
+.required,
+.required-star,
+label .required,
+label .required-star {
+  color: #d32f2f !important;
+  font-weight: 700 !important;
+}

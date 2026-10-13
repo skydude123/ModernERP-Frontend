@@ -43,11 +43,13 @@
           </ng-template>
         </kendo-dropdownbutton>
 
-        <div class="export-indicator" *ngIf="exportStatus() as status">
-          <kendo-svgicon class="export-indicator-icon" [icon]="clockSvgIcon">
-          </kendo-svgicon>
-          <span>{{ status }}</span>
-        </div>
+        @if (exportStatus(); as status) {
+          <div class="export-indicator">
+            <kendo-svgicon class="export-indicator-icon" [icon]="clockSvgIcon">
+            </kendo-svgicon>
+            <span>{{ status }}</span>
+          </div>
+        }
       </div>
     </div>
   </section>
@@ -103,52 +105,50 @@
       </div>
     </div>
 
-    <div class="error-banner" *ngIf="facade.error() as errorMessage">
-      {{ errorMessage }}
-    </div>
+    @if (facade.error(); as errorMessage) {
+      <div class="error-banner">
+        {{ errorMessage }}
+      </div>
+    }
   </section>
 
-  <section class="summary-card" *ngIf="facade.batchDetail() as batch">
-    <div class="summary-header">
-      <div>
-        <h2>Upload Summary</h2>
-        <p>Batch {{ batch.uploadBatchId }} · {{ batch.originalFileName }}</p>
+  @if (facade.batchDetail(); as batch) {
+    <section class="summary-card">
+      <div class="summary-header">
+        <div>
+          <h2>Upload Summary</h2>
+          <p>Batch {{ batch.uploadBatchId }} · {{ batch.originalFileName }}</p>
+        </div>
+        <div class="status-pill" [class.status-failed]="batch.processingStatus === 'FAILED'">
+          <kendo-svgicon class="status-icon" [icon]="checkSvgIcon">
+          </kendo-svgicon>
+          {{ batch.processingStatus }}
+        </div>
       </div>
-
-      <div class="status-pill" [class.status-failed]="batch.processingStatus === 'FAILED'">
-        <kendo-svgicon class="status-icon" [icon]="checkSvgIcon">
-        </kendo-svgicon>
-        {{ batch.processingStatus }}
+      <div class="summary-grid">
+        <div class="summary-item">
+          <span class="summary-label">Date Range</span>
+          <strong>{{ batch.dateFrom }} to {{ batch.dateTo }}</strong>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Created At</span>
+          <strong>{{ batch.createdAt }}</strong>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Processed At</span>
+          <strong>{{ batch.processedAt || 'Pending' }}</strong>
+        </div>
+        <div class="metric-box">
+          <span class="metric-label">Total Result Rows</span>
+          <strong>{{ facade.summary().totalRows }}</strong>
+        </div>
+        <div class="metric-box">
+          <span class="metric-label">Total OT</span>
+          <strong>{{ facade.summary().totalOt | number:'1.2-2' }}</strong>
+        </div>
       </div>
-    </div>
-
-    <div class="summary-grid">
-      <div class="summary-item">
-        <span class="summary-label">Date Range</span>
-        <strong>{{ batch.dateFrom }} to {{ batch.dateTo }}</strong>
-      </div>
-
-      <div class="summary-item">
-        <span class="summary-label">Created At</span>
-        <strong>{{ batch.createdAt }}</strong>
-      </div>
-
-      <div class="summary-item">
-        <span class="summary-label">Processed At</span>
-        <strong>{{ batch.processedAt || 'Pending' }}</strong>
-      </div>
-
-      <div class="metric-box">
-        <span class="metric-label">Total Result Rows</span>
-        <strong>{{ facade.summary().totalRows }}</strong>
-      </div>
-
-      <div class="metric-box">
-        <span class="metric-label">Total OT</span>
-        <strong>{{ facade.summary().totalOt | number:'1.2-2' }}</strong>
-      </div>
-    </div>
-  </section>
+    </section>
+  }
 
   <section class="result-card">
     <div class="result-header">
@@ -160,35 +160,37 @@
         </p>
       </div>
 
-      <div class="loading-indicator" *ngIf="facade.loading() || facade.hasSavingOt() || isExporting()">
-        <kendo-svgicon class="loading-icon" [icon]="clockSvgIcon">
-        </kendo-svgicon>
-
-        {{
-        isExporting()
-        ? 'Exporting...'
-        : facade.hasSavingOt()
-        ? 'Saving OT...'
-        : 'Processing...'
-        }}
-      </div>
+      @if (facade.loading() || facade.hasSavingOt() || isExporting()) {
+        <div class="loading-indicator">
+          <kendo-svgicon class="loading-icon" [icon]="clockSvgIcon">
+          </kendo-svgicon>
+          {{
+          isExporting()
+          ? 'Exporting...'
+          : facade.hasSavingOt()
+          ? 'Saving OT...'
+          : 'Processing...'
+          }}
+        </div>
+      }
     </div>
 
-    <div class="selected-row-panel" *ngIf="selectedAttendanceRow as selected">
-      <div>
-        <span class="selected-row-label">Selected Row</span>
-        <strong>
-          IDNO {{ selected.idno || 'N/A' }} · {{ selected.date || 'No Date' }}
-        </strong>
+    @if (selectedAttendanceRow; as selected) {
+      <div class="selected-row-panel">
+        <div>
+          <span class="selected-row-label">Selected Row</span>
+          <strong>
+            IDNO {{ selected.idno || 'N/A' }} · {{ selected.date || 'No Date' }}
+          </strong>
+        </div>
+        <div class="selected-row-meta">
+          <span>Time In: {{ selected.timeIn || '-' }}</span>
+          <span>Time Out: {{ selected.timeOut || '-' }}</span>
+          <span>Hours: {{ selected.noOfHoursWork || 0 }}</span>
+          <span>OT: {{ selected.ot || 0 }}</span>
+        </div>
       </div>
-
-      <div class="selected-row-meta">
-        <span>Time In: {{ selected.timeIn || '-' }}</span>
-        <span>Time Out: {{ selected.timeOut || '-' }}</span>
-        <span>Hours: {{ selected.noOfHoursWork || 0 }}</span>
-        <span>OT: {{ selected.ot || 0 }}</span>
-      </div>
-    </div>
+    }
 
     <kendo-grid #attendanceGrid class="attendance-grid" [kendoGridBinding]="gridRowsForDisplay()" [height]="520"
       [sortable]="true" filterable="row" [resizable]="true" [reorderable]="true" [selectable]="selectableSettings"
@@ -213,28 +215,28 @@
       <kendo-grid-column field="timeIn" title="TIME-IN" filter="text" [width]="120"></kendo-grid-column>
       <kendo-grid-column field="timeOut" title="TIME-OUT" filter="text" [width]="120"></kendo-grid-column>
       <kendo-grid-column field="noOfHoursWork" title="NO. OF HOURS WORK" filter="numeric"
-        [width]="170"></kendo-grid-column>
+      [width]="170"></kendo-grid-column>
 
       <kendo-grid-column field="ot" title="OT" filter="numeric" [width]="170">
         <ng-template kendoGridCellTemplate let-dataItem>
-          <ng-container *ngIf="isExporting(); else otEditorTemplate">
+          @if (isExporting()) {
             <span class="export-cell-value">
               {{ toNumber(dataItem.ot) | number:'1.2-2' }}
             </span>
-          </ng-container>
-
-          <ng-template #otEditorTemplate>
+          } @else {
             <div class="ot-cell">
               <kendo-numerictextbox class="ot-editor" [value]="toNumber(dataItem.ot)" [min]="0" [max]="24"
                 [decimals]="2" [format]="'n2'" [step]="0.25" [spinners]="true" [disabled]="isOtSaving(dataItem)"
                 (valueChange)="onOtValueChange(dataItem, $event)">
               </kendo-numerictextbox>
-
-              <span class="ot-dirty-pill" *ngIf="isOtDirty(dataItem)">
-                Edited
-              </span>
+              @if (isOtDirty(dataItem)) {
+                <span class="ot-dirty-pill">
+                  Edited
+                </span>
+              }
             </div>
-          </ng-template>
+          }
+
         </ng-template>
       </kendo-grid-column>
 
@@ -258,9 +260,11 @@
             </button>
           </div>
 
-          <div class="ot-save-error" *ngIf="getOtSaveError(dataItem) as saveError">
-            {{ saveError }}
-          </div>
+          @if (getOtSaveError(dataItem); as saveError) {
+            <div class="ot-save-error">
+              {{ saveError }}
+            </div>
+          }
         </ng-template>
       </kendo-grid-column>
     </kendo-grid>

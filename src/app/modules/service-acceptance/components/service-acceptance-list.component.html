@@ -1,0 +1,181 @@
+<section class="list-page">
+  <app-toolbar
+    title="Service Acceptance Register"
+    subtitle="Service PO → Service Acceptance → VP → CD"
+    [config]="toolbar.config()"
+    (onNew)="newDocument()"
+    (onPrint)="print()"
+    (onRefresh)="refresh()"
+    (onToday)="today()"
+    (onYesterday)="yesterday()"
+    (onThisMonth)="thisMonth()"
+    (onLastMonth)="lastMonth()"
+    (onThisYear)="thisYear()"
+    (onLastYear)="lastYear()"
+  >
+  </app-toolbar>
+
+  <form class="filters" [formGroup]="filters" (ngSubmit)="applyFilters()">
+    <label
+      >Date From<kendo-datepicker formControlName="fromDate"></kendo-datepicker
+    ></label>
+    <label
+      >Date To<kendo-datepicker formControlName="toDate"></kendo-datepicker
+    ></label>
+    <label
+      >Status
+      <kendo-dropdownlist
+        formControlName="status"
+        [data]="['ALL', 'DRAFT', 'SUBMITTED', 'ACCEPTED', 'POSTED', 'REVERSED']"
+      ></kendo-dropdownlist>
+    </label>
+    <label
+      >Branch<kendo-textbox
+        formControlName="branchName"
+        placeholder="All branches"
+      ></kendo-textbox
+    ></label>
+    <label class="search"
+      >Search
+      <kendo-textbox
+        formControlName="search"
+        placeholder="SA, PO, supplier, project"
+      ></kendo-textbox>
+    </label>
+    <button kendoButton type="submit" themeColor="primary">Apply</button>
+    <button kendoButton type="button" (click)="clear()">Clear</button>
+  </form>
+
+  <div class="grid-card">
+    <kendo-grid
+      [data]="gridData()"
+      [skip]="state().skip || 0"
+      [pageSize]="state().take || 50"
+      [pageable]="true"
+      [sortable]="true"
+      [sort]="state().sort || []"
+      [loading]="facade.listLoading()"
+      [selectable]="{ mode: 'single' }"
+      [height]="650"
+      (dataStateChange)="dataStateChange($event)"
+      (selectionChange)="selectionChange($event)"
+    >
+      <kendo-grid-column
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder',
+        }"
+        field="serviceAcceptanceNo"
+        title="SA No"
+        [width]="165"
+      >
+        <ng-template kendoGridCellTemplate let-row>
+          <a (click)="open(row)">{{ row.serviceAcceptanceNo }}</a>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder',
+        }"
+        field="acceptanceDate"
+        title="Date"
+        [width]="115"
+      >
+        <ng-template kendoGridCellTemplate let-row>{{
+          row.acceptanceDate | date: "MM/dd/yyyy"
+        }}</ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder',
+        }"
+        field="poNo"
+        title="PO"
+        [width]="120"
+      ></kendo-grid-column>
+      <kendo-grid-column
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder',
+        }"
+        field="suppName"
+        title="Supplier"
+        [width]="210"
+      ></kendo-grid-column>
+      <kendo-grid-column
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder',
+        }"
+        field="serviceType"
+        title="Service Type"
+        [width]="165"
+      ></kendo-grid-column>
+      <kendo-grid-column
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder',
+        }"
+        field="branchName"
+        title="Branch"
+        [width]="115"
+      ></kendo-grid-column>
+      <!-- <kendo-grid-column
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder',
+        }"
+        field="projectNo"
+        title="Project"
+        [width]="125"
+      ></kendo-grid-column> -->
+      <kendo-grid-column
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder',
+        }"
+        field="completionPercent"
+        title="Completion"
+        [width]="115"
+        format="{0:n2}%"
+      ></kendo-grid-column>
+      <kendo-grid-column
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder',
+        }"
+        field="totalAcceptedAmount"
+        title="Amount"
+        [width]="135"
+        format="{0:n2}"
+      ></kendo-grid-column>
+      <kendo-grid-column
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder',
+        }"
+        field="status"
+        title="Status"
+        [width]="110"
+      >
+        <ng-template kendoGridCellTemplate let-row>
+          <span class="status" [class]="'status ' + row.status.toLowerCase()">{{
+            row.status
+          }}</span>
+        </ng-template>
+      </kendo-grid-column>
+    </kendo-grid>
+  </div>
+</section>

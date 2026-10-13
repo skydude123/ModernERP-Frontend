@@ -1,0 +1,476 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.list-page {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  max-width: 1550px;
+  margin: 0 auto;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   FILTER CARD
+   ========================================================= */
+
+.filter-card {
+  padding: 12px;
+  border: 1px solid #dce3ed;
+  border-radius: 9px;
+  background: #ffffff;
+  box-shadow: 0 4px 16px rgb(15 23 42 / 5%);
+}
+
+/* =========================================================
+   QUICK DATE RANGES
+   ========================================================= */
+
+.quick-ranges {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.quick-ranges strong {
+  margin-right: 7px;
+  color: #475569;
+  font-size: 0.69rem;
+  line-height: 1;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+:host ::ng-deep
+  .quick-ranges
+  .k-button {
+  min-height: 28px;
+  padding: 3px 8px;
+  font-size: 0.72rem;
+}
+
+/* =========================================================
+   FILTER FIELDS
+   ========================================================= */
+
+.filters {
+  display: grid;
+  grid-template-columns:
+    145px
+    145px
+    175px
+    175px
+    minmax(280px, 1fr)
+    auto
+    auto;
+  align-items: end;
+  gap: 9px;
+}
+
+.filters .search {
+  min-width: 0;
+}
+
+:host ::ng-deep
+  .filters
+  .k-form-field {
+  min-width: 0;
+  margin: 0;
+}
+
+:host ::ng-deep
+  .filters
+  .k-label {
+  margin-bottom: 3px;
+  color: #334155;
+  font-size: 0.7rem;
+  line-height: 1.1;
+  font-weight: 700;
+}
+
+:host ::ng-deep
+  .filters
+  .k-form-hint {
+  margin-top: 3px;
+  color: #64748b;
+  font-size: 0.62rem;
+  line-height: 1.15;
+}
+
+:host ::ng-deep
+  .filters
+  .k-input,
+:host ::ng-deep
+  .filters
+  .k-picker,
+:host ::ng-deep
+  .filters
+  .k-textbox {
+  width: 100%;
+  min-width: 0;
+  min-height: 32px;
+  height: 32px;
+  font-size: 0.73rem;
+}
+
+:host ::ng-deep
+  .filters
+  .k-input-inner {
+  min-height: 30px;
+  padding: 4px 8px;
+}
+
+:host ::ng-deep
+  .filters
+  > .k-button {
+  min-width: 70px;
+  min-height: 32px;
+  height: 32px;
+  padding: 4px 10px;
+  font-size: 0.73rem;
+}
+
+/* =========================================================
+   GRID META
+   ========================================================= */
+
+.grid-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 20px;
+  padding: 0 2px;
+  color: #536376;
+  font-size: 0.73rem;
+  line-height: 1.2;
+}
+
+.grid-meta strong {
+  color: #172033;
+}
+
+.loading-text {
+  color: #0369a1;
+  font-weight: 700;
+}
+
+/* =========================================================
+   GRID CARD
+   ========================================================= */
+
+.grid-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #dce3ed;
+  border-radius: 9px;
+  background: #ffffff;
+}
+
+/* =========================================================
+   DOCUMENT LINK
+   ========================================================= */
+
+.document-link {
+  padding: 0;
+  border: 0;
+  color: #0369a1;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 750;
+  text-decoration: underline;
+}
+
+.document-link:hover {
+  color: #075985;
+}
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 68px;
+  min-height: 23px;
+  padding: 0 8px;
+  border-radius: 999px;
+  color: #ffffff;
+  background: #64748b;
+  font-size: 0.63rem;
+  line-height: 1;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.status.posted {
+  background: #15803d;
+}
+
+.status.reversed {
+  background: #b91c1c;
+}
+
+/* =========================================================
+   ORANGE KENDO GRID HEADER
+   ========================================================= */
+
+:host ::ng-deep
+  .register-grid
+  .headerCustomClass {
+  color: #ffffff !important;
+  background-color: #fa8128 !important;
+  font-weight: 750 !important;
+  text-align: center !important;
+}
+
+:host ::ng-deep
+  .register-grid
+  .k-grid-header
+  th {
+  height: 32px;
+  padding: 5px 7px;
+  color: #ffffff;
+  background-color: #fa8128;
+  font-size: 0.69rem;
+  line-height: 1.15;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+:host ::ng-deep
+  .register-grid
+  .k-grid-header
+  .k-link {
+  color: #ffffff;
+}
+
+:host ::ng-deep
+  .register-grid
+  .k-grid-header
+  .k-sort-icon {
+  color: #ffffff;
+}
+
+/* =========================================================
+   COMPACT GRID ROWS
+   ========================================================= */
+
+:host ::ng-deep
+  .register-grid.k-grid {
+  border: 0;
+  font-size: 0.72rem;
+}
+
+:host ::ng-deep
+  .register-grid
+  .k-grid-content
+  td {
+  height: 34px;
+  padding: 5px 7px;
+  line-height: 1.2;
+  vertical-align: middle;
+}
+
+:host ::ng-deep
+  .register-grid
+  .k-table-row:nth-child(even)
+  > td {
+  background: #f8fafc;
+}
+
+:host ::ng-deep
+  .register-grid
+  .k-table-row.k-selected
+  > td {
+  background: #fff3e8;
+}
+
+:host ::ng-deep
+  .register-grid
+  .k-button {
+  min-height: 27px;
+  padding: 3px 8px;
+  font-size: 0.68rem;
+}
+
+/* =========================================================
+   GRID PAGER
+   ========================================================= */
+
+:host ::ng-deep
+  .register-grid
+  .k-grid-pager {
+  min-height: 42px;
+  padding: 5px 8px;
+  border-top: 1px solid #dce3ed;
+  font-size: 0.7rem;
+}
+
+:host ::ng-deep
+  .register-grid
+  .k-pager-numbers
+  .k-button,
+:host ::ng-deep
+  .register-grid
+  .k-pager-nav {
+  min-width: 28px;
+  min-height: 28px;
+  padding: 3px;
+}
+
+/* =========================================================
+   EMPTY GRID
+   ========================================================= */
+
+.grid-empty-state {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 24px;
+  color: #64748b;
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.grid-empty-state strong {
+  color: #334155;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1250px) {
+  .filters {
+    grid-template-columns:
+      repeat(
+        4,
+        minmax(145px, 1fr)
+      );
+  }
+
+  .filters .search {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 900px) {
+  .filters {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(140px, 1fr)
+      );
+  }
+
+  .filters .search {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 650px) {
+  .list-page {
+    padding: 7px;
+  }
+
+  .filter-card {
+    padding: 9px;
+  }
+
+  .filters {
+    grid-template-columns: 1fr;
+  }
+
+  .filters .search {
+    grid-column: auto;
+  }
+
+  .quick-ranges {
+    align-items: flex-start;
+  }
+
+  .grid-meta {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
+  }
+}
+
+/* =========================================================
+   PRINT
+   ========================================================= */
+
+@media print {
+  app-toolbar,
+  .filter-card,
+  .grid-meta,
+  .k-grid-pager {
+    display: none !important;
+  }
+
+  .list-page {
+    max-width: none;
+    padding: 0;
+  }
+
+  .grid-card {
+    border: 0;
+  }
+}
+
+/* =========================================================
+   FUEL ACCEPTANCE LISTING
+   Dark + Bold Grid Values
+   ========================================================= */
+
+:host ::ng-deep
+  .list-page
+  .register-grid
+  .k-grid-content
+  td,
+:host ::ng-deep
+  .list-page
+  .register-grid
+  .k-grid-content
+  .k-table-td {
+  color: #111827 !important;
+  font-weight: 700 !important;
+}
+
+/* Acceptance No. clickable button */
+:host ::ng-deep
+  .list-page
+  .register-grid
+  .document-link {
+  color: #111827 !important;
+  font-weight: 700 !important;
+}
+
+/* Status */
+:host ::ng-deep
+  .list-page
+  .register-grid
+  .status {
+  font-weight: 700 !important;
+}
+
+/* All strong amount values */
+:host ::ng-deep
+  .list-page
+  .register-grid
+  strong {
+  color: #111827 !important;
+  font-weight: 700 !important;
+}
+

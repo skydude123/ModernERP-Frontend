@@ -1,0 +1,692 @@
+<section class="fuel-page">
+  <!-- =========================================================
+       MAIN TOOLBAR
+       ========================================================= -->
+
+  <app-toolbar
+    title="Fuel Acceptance Entry"
+    subtitle="Accept fuel from one supplier using one or more approved Purchase Orders."
+    [config]="toolbar.config()"
+    [formValid]="form.valid && details().length > 0 && isEditable()"
+    [editMode]="!!form.controls.fuelAcceptanceNo.value"
+    [postingMode]="canPost()"
+    [reverseMode]="canReverse()"
+    (onNew)="newDocument()"
+    (onSave)="save()"
+    (onPrint)="print()"
+    (onPost)="post()"
+    (onReverse)="requestReverse()"
+    (onDataList)="list()"
+    (onRefresh)="refresh()"
+  >
+  </app-toolbar>
+
+  <form [formGroup]="form" class="entry-shell" novalidate>
+    <!-- =======================================================
+         TITLE
+         ======================================================= -->
+
+    <div class="entry-header">
+      <div>
+        <span class="eyebrow"> Accounting Fuel Acceptance </span>
+
+        <h1>
+          {{ form.controls.fuelAcceptanceNo.value || "NEW FUEL ACCEPTANCE" }}
+        </h1>
+      </div>
+
+      <div class="header-status">
+        <span
+          class="status-pill"
+          [class.status-draft]="isDraftStatus()"
+          [class.status-posted]="isPostedStatus()"
+          [class.status-reversed]="isReversedStatus()"
+        >
+          {{ statusLabel() }}
+        </span>
+
+        <span class="type-pill"> GASOLINE </span>
+      </div>
+    </div>
+
+    <!-- =======================================================
+         HEADER
+         ======================================================= -->
+
+    <section class="erp-section">
+      <div class="section-heading">
+        <span> Header </span>
+
+        <small>
+          @if (isDraftStatus()) {
+            Select Supplier first, then add open PO lines.
+          } @else if (isPostedStatus()) {
+            Posted document is read-only and ready for Voucher Payable.
+          } @else {
+            Reversed document.
+          }
+        </small>
+      </div>
+
+      <div class="header-grid">
+        <!-- ===================================================
+             ACCEPTANCE NO
+             =================================================== -->
+
+        <kendo-formfield>
+          <kendo-label text="Acceptance No."> </kendo-label>
+
+          <kendo-textbox
+            formControlName="fuelAcceptanceNo"
+            [readonly]="true"
+            placeholder="NEW"
+          >
+          </kendo-textbox>
+
+          <kendo-formhint>
+            Generated automatically when first saved.
+          </kendo-formhint>
+        </kendo-formfield>
+
+        <!-- ===================================================
+             ACCEPTANCE DATE
+             =================================================== -->
+
+        <kendo-formfield>
+          <kendo-label>
+            Acceptance Date
+
+            <span class="required-star"> * </span>
+          </kendo-label>
+
+          <kendo-datepicker
+            formControlName="acceptanceDate"
+            [readonly]="!isEditable()"
+          >
+          </kendo-datepicker>
+
+          @if (isInvalid(form.controls.acceptanceDate)) {
+            <kendo-formerror> Acceptance Date is required. </kendo-formerror>
+          }
+        </kendo-formfield>
+
+        <!-- ===================================================
+             SUPPLIER
+             =================================================== -->
+
+        <kendo-formfield class="wide">
+          <kendo-label>
+            Supplier
+
+            <span class="required-star"> * </span>
+          </kendo-label>
+
+          <kendo-multicolumncombobox
+            formControlName="suppCode"
+            [data]="supplierData()"
+            textField="suppName"
+            valueField="suppCode"
+            [valuePrimitive]="true"
+            [filterable]="true"
+            [allowCustom]="false"
+            [clearButton]="true"
+            [loading]="facade.suppliersLoading()"
+            [readonly]="!isEditable()"
+            placeholder="Select supplier"
+            (filterChange)="facade.searchSuppliers($event)"
+            (valueChange)="supplierChanged($event)"
+            (selectionChange)="supplierChanged($event)"
+          >
+            <kendo-combobox-column
+              field="suppCode"
+              title="Supplier Code"
+              [width]="150"
+            >
+            </kendo-combobox-column>
+
+            <kendo-combobox-column
+              field="suppName"
+              title="Supplier Name"
+              [width]="350"
+            >
+            </kendo-combobox-column>
+
+            <ng-template kendoMultiColumnComboBoxNoDataTemplate>
+              <div class="po-line-no-data">No supplier found.</div>
+            </ng-template>
+          </kendo-multicolumncombobox>
+
+          <kendo-formhint>
+            Open PO lines below will come from this supplier.
+          </kendo-formhint>
+
+          @if (isInvalid(form.controls.suppCode)) {
+            <kendo-formerror> Supplier is required. </kendo-formerror>
+          }
+        </kendo-formfield>
+
+        <!-- ===================================================
+             BRANCH
+             =================================================== -->
+
+        <kendo-formfield>
+          <kendo-label>
+            Branch
+
+            <span class="required-star"> * </span>
+          </kendo-label>
+
+          <kendo-dropdownlist
+            formControlName="branchName"
+            [data]="branchData()"
+            textField="branchName"
+            valueField="branchName"
+            [valuePrimitive]="true"
+            [readonly]="!isEditable()"
+          >
+          </kendo-dropdownlist>
+
+          @if (isInvalid(form.controls.branchName)) {
+            <kendo-formerror> Branch is required. </kendo-formerror>
+          }
+        </kendo-formfield>
+
+        <!-- ===================================================
+     REFERENCE
+     =================================================== -->
+
+        <kendo-formfield>
+          <kendo-label>
+            Reference
+
+            <span class="required-star"> * </span>
+          </kendo-label>
+
+          <kendo-textbox
+            formControlName="reference"
+            [readonly]="!isEditable()"
+            [maxlength]="20"
+            placeholder="Enter reference"
+          >
+          </kendo-textbox>
+
+          @if (isInvalid(form.controls.reference)) {
+            <kendo-formerror>
+              @if (form.controls.reference.hasError("required")) {
+                Reference is required.
+              } @else if (form.controls.reference.hasError("maxlength")) {
+                Reference cannot exceed 20 characters.
+              }
+            </kendo-formerror>
+          }
+        </kendo-formfield>
+
+        <!-- ===================================================
+             PLATE NO
+             =================================================== -->
+
+        <kendo-formfield>
+          <kendo-label>
+            Plate No.
+
+            <span class="required-star"> * </span>
+          </kendo-label>
+
+          <kendo-textbox formControlName="plateNo" [readonly]="!isEditable()">
+          </kendo-textbox>
+
+          @if (isInvalid(form.controls.plateNo)) {
+            <kendo-formerror> Plate No. is required. </kendo-formerror>
+          }
+        </kendo-formfield>
+
+        <!-- ===================================================
+             DRIVER
+             =================================================== -->
+
+        <kendo-formfield>
+          <kendo-label>
+            Driver Name
+
+            <span class="required-star"> * </span>
+          </kendo-label>
+
+          <kendo-textbox
+            formControlName="driverName"
+            [readonly]="!isEditable()"
+          >
+          </kendo-textbox>
+
+          @if (isInvalid(form.controls.driverName)) {
+            <kendo-formerror> Driver Name is required. </kendo-formerror>
+          }
+        </kendo-formfield>
+
+        <!-- ===================================================
+             REMARKS
+             =================================================== -->
+
+        <kendo-formfield class="wide">
+          <kendo-label text="Remarks"> </kendo-label>
+
+          <kendo-textarea
+            formControlName="remarks"
+            [rows]="2"
+            [readonly]="!isEditable()"
+            resizable="vertical"
+          >
+          </kendo-textarea>
+
+          <kendo-formhint> Optional, maximum 500 characters. </kendo-formhint>
+
+          @if (form.controls.remarks.hasError("maxlength")) {
+            <kendo-formerror>
+              Remarks cannot exceed 500 characters.
+            </kendo-formerror>
+          }
+        </kendo-formfield>
+      </div>
+    </section>
+
+    <!-- =======================================================
+         DETAILS
+         ======================================================= -->
+
+    <section class="erp-section detail-section">
+      <div class="section-heading">
+        <span> Fuel PO Details </span>
+
+        <!--
+          MODIFIED:
+          Removed Total Quantity and Gross Amount from heading.
+          Keep only line count.
+        -->
+
+        <small>
+          {{ details().length }}
+          line(s)
+        </small>
+      </div>
+
+      <kendo-grid
+        class="detail-grid fuel-event-grid"
+        [data]="details()"
+        [height]="390"
+        [resizable]="true"
+        [navigable]="true"
+        [selectable]="{
+          mode: 'single',
+        }"
+        (add)="addHandler($event)"
+        (edit)="editHandler($event)"
+        (save)="saveHandler($event)"
+        (cancel)="cancelHandler($event)"
+        (remove)="removeHandler($event)"
+      >
+        <!-- ===================================================
+             TOOLBAR
+             =================================================== -->
+
+        <kendo-toolbar class="detail-toolbar" overflow="scroll">
+          <kendo-toolbar-button
+            kendoGridAddTool
+            text="Add Fuel Line"
+            themeColor="success"
+            [disabled]="!isEditable() || !form.controls.suppCode.value"
+          >
+          </kendo-toolbar-button>
+
+          <kendo-toolbar-button
+            kendoGridEditTool
+            text="Edit"
+            themeColor="warning"
+            [disabled]="!isEditable() || details().length === 0"
+          >
+          </kendo-toolbar-button>
+
+          <kendo-toolbar-spacer> </kendo-toolbar-spacer>
+
+          <kendo-toolbar-button
+            kendoGridRemoveTool
+            text="Remove"
+            themeColor="error"
+            [disabled]="!isEditable() || details().length === 0"
+          >
+          </kendo-toolbar-button>
+
+          <kendo-toolbar-button
+            kendoGridSaveTool
+            text="Save Line"
+            themeColor="primary"
+          >
+          </kendo-toolbar-button>
+
+          <kendo-toolbar-button
+            kendoGridCancelTool
+            text="Cancel"
+            themeColor="error"
+          >
+          </kendo-toolbar-button>
+        </kendo-toolbar>
+
+        <!-- ===================================================
+             #
+             =================================================== -->
+
+        <kendo-grid-column
+          title="#"
+          [width]="52"
+          [headerClass]="'headerCustomClass'"
+        >
+          <ng-template kendoGridCellTemplate let-rowIndex="rowIndex">
+            {{ rowIndex + 1 }}
+          </ng-template>
+        </kendo-grid-column>
+
+        <!-- ===================================================
+             PO NO DROPDOWN
+             PO LINE remains hidden internally
+             =================================================== -->
+
+        <kendo-grid-column
+          field="poNo"
+          title="PO No."
+          [width]="210"
+          [headerClass]="'headerCustomClass'"
+        >
+          <ng-template kendoGridCellTemplate let-row>
+            <strong>
+              {{ row.poNo }}
+            </strong>
+          </ng-template>
+
+          <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+            <kendo-multicolumncombobox
+              kendoGridFocusable
+              class="grid-po-line-combo"
+              [formControl]="formGroup.get('poNo')"
+              [data]="facade.purchaseOrderLines()"
+              textField="poNo"
+              valueField="poNo"
+              [valuePrimitive]="true"
+              [allowCustom]="false"
+              [filterable]="true"
+              [clearButton]="true"
+              [loading]="facade.purchaseOrderLinesLoading()"
+              [popupSettings]="poLinePopupSettings"
+              placeholder="Select PO No."
+              (filterChange)="facade.searchOpenPoLines($event)"
+              (selectionChange)="onGridPoLineSelected(formGroup, $event)"
+            >
+              <kendo-combobox-column field="poNo" title="PO No." [width]="120">
+              </kendo-combobox-column>
+
+              <kendo-combobox-column
+                field="poDate"
+                title="PO Date"
+                [width]="115"
+              >
+                <ng-template
+                  kendoMultiColumnComboBoxColumnCellTemplate
+                  let-dataItem
+                >
+                  {{ dataItem.poDate | date: "MM/dd/yyyy" }}
+                </ng-template>
+              </kendo-combobox-column>
+
+              <!--
+              PO Line intentionally hidden.
+
+              <kendo-combobox-column
+                field="poLineNo"
+                title="PO Line"
+                [width]="90"
+              >
+              </kendo-combobox-column>
+              -->
+
+              <kendo-combobox-column
+                field="itemCode"
+                title="Item Code"
+                [width]="140"
+              >
+              </kendo-combobox-column>
+
+              <kendo-combobox-column
+                field="itemDesc"
+                title="Description"
+                [width]="250"
+              >
+              </kendo-combobox-column>
+
+              <kendo-combobox-column
+                field="openQty"
+                title="Open Qty"
+                [width]="105"
+              >
+                <ng-template
+                  kendoMultiColumnComboBoxColumnCellTemplate
+                  let-dataItem
+                >
+                  {{ dataItem.openQty | number: "1.4-4" }}
+                </ng-template>
+              </kendo-combobox-column>
+
+              <kendo-combobox-column field="poUm" title="PO U/M" [width]="85">
+              </kendo-combobox-column>
+
+              <kendo-combobox-column
+                field="unitPrice"
+                title="Unit Price"
+                [width]="115"
+              >
+                <ng-template
+                  kendoMultiColumnComboBoxColumnCellTemplate
+                  let-dataItem
+                >
+                  {{ dataItem.unitPrice | number: "1.2-4" }}
+                </ng-template>
+              </kendo-combobox-column>
+
+              <ng-template kendoMultiColumnComboBoxNoDataTemplate>
+                <div class="po-line-no-data">
+                  No open PO found for this supplier.
+                </div>
+              </ng-template>
+            </kendo-multicolumncombobox>
+          </ng-template>
+        </kendo-grid-column>
+
+        <!-- ===================================================
+             ITEM CODE
+             =================================================== -->
+
+        <kendo-grid-column
+          field="itemCode"
+          title="Item Code"
+          [width]="145"
+          [headerClass]="'headerCustomClass'"
+        >
+          <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+            <input
+              kendoTextBox
+              title="Item Code"
+              [formControl]="formGroup.get('itemCode')"
+              [readonly]="true"
+            />
+          </ng-template>
+        </kendo-grid-column>
+
+        <!-- ===================================================
+             DESCRIPTION
+             =================================================== -->
+
+        <kendo-grid-column
+          field="itemDesc"
+          title="Description"
+          [width]="240"
+          [headerClass]="'headerCustomClass'"
+        >
+          <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+            <input
+              kendoTextBox
+              title="Description"
+              [formControl]="formGroup.get('itemDesc')"
+              [readonly]="true"
+            />
+          </ng-template>
+        </kendo-grid-column>
+
+        <!-- ===================================================
+             OPEN QTY
+             =================================================== -->
+
+        <kendo-grid-column
+          field="openQty"
+          title="Open Qty"
+          [width]="110"
+          [headerClass]="'headerCustomClass'"
+        >
+          <ng-template kendoGridCellTemplate let-row>
+            <strong>
+              {{ row.openQty ?? row.liters | number: "1.4-4" }}
+            </strong>
+          </ng-template>
+
+          <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+            <kendo-numerictextbox
+              [formControl]="formGroup.get('openQty')"
+              [readonly]="true"
+              [decimals]="4"
+              format="n4"
+            >
+            </kendo-numerictextbox>
+          </ng-template>
+        </kendo-grid-column>
+
+        <!-- ===================================================
+             PO UM
+             =================================================== -->
+
+        <kendo-grid-column
+          field="poUm"
+          title="PO U/M"
+          [width]="90"
+          [headerClass]="'headerCustomClass'"
+        >
+          <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+            <input
+              kendoTextBox
+              title="PO U/M"
+              [formControl]="formGroup.get('poUm')"
+              [readonly]="true"
+            />
+          </ng-template>
+        </kendo-grid-column>
+
+        <!-- ===================================================
+             UNIT PRICE
+             =================================================== -->
+
+        <kendo-grid-column
+          field="unitPrice"
+          title="Unit Price"
+          [width]="115"
+          [headerClass]="'headerCustomClass'"
+        >
+          <ng-template kendoGridCellTemplate let-row>
+            {{ row.unitPrice | number: "1.2-4" }}
+          </ng-template>
+
+          <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+            <kendo-numerictextbox
+              [formControl]="formGroup.get('unitPrice')"
+              [readonly]="true"
+              [decimals]="4"
+              format="n4"
+            >
+            </kendo-numerictextbox>
+          </ng-template>
+        </kendo-grid-column>
+
+        <!-- ===================================================
+             AMOUNT
+
+             MODIFIED:
+             Amount column is now visible.
+             Total Amount is shown in the grid footer.
+             =================================================== -->
+
+        <kendo-grid-column
+          title="Amount"
+          [width]="175"
+          [headerClass]="'headerCustomClass'"
+        >
+          <!-- ROW AMOUNT -->
+
+          <ng-template kendoGridCellTemplate let-row>
+            <strong>
+              {{ row.grossAmount | number: "1.2-2" }}
+            </strong>
+          </ng-template>
+
+          <!-- EDIT ROW AMOUNT -->
+
+          <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+            <strong>
+              {{
+                (formGroup.get("openQty")?.value || 0) *
+                  (formGroup.get("unitPrice")?.value || 0) | number: "1.2-2"
+              }}
+            </strong>
+          </ng-template>
+
+          <!-- =============================================
+               TOTAL AMOUNT FOOTER
+               ============================================= -->
+
+          <ng-template kendoGridFooterTemplate>
+            <div class="fuel-total-footer">
+              <span class="fuel-total-label"> Total: </span>
+
+              <strong class="fuel-total-value">
+                {{ totals().gross | number: "1.2-2" }}
+              </strong>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+
+        <!-- ===================================================
+             EMPTY
+             =================================================== -->
+
+        <ng-template kendoGridNoRecordsTemplate>
+          <div class="empty-grid">
+            No Fuel PO lines added.
+
+            @if (isEditable() && form.controls.suppCode.value) {
+              Select
+
+              <strong> Add Fuel Line </strong>
+
+              to choose an open PO line.
+            } @else if (isEditable()) {
+              Select a Supplier first.
+            }
+          </div>
+        </ng-template>
+      </kendo-grid>
+    </section>
+
+    <!-- =======================================================
+         SUMMARY REMOVED
+
+         Previous:
+         - Total Quantity
+         - Gross Amount
+         - Net Amount
+
+         Total Amount now appears in grid footer only.
+         ======================================================= -->
+  </form>
+</section>

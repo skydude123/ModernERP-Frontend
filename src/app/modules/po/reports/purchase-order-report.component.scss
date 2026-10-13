@@ -1,0 +1,544 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+.po-reports {
+  min-width: 0;
+  padding: 10px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  background: #f4f6f8;
+
+  color: #1f2937;
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   ERP HEADER
+   ========================================================= */
+
+.erp-header {
+  min-height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 7px 10px;
+
+  background: #ffffff;
+  border: 1px solid #d9dee5;
+  border-radius: 4px;
+
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.erp-header-left {
+  min-width: 0;
+}
+
+.erp-title {
+  color: #111827;
+
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.erp-subtitle {
+  margin-top: 1px;
+
+  color: #6b7280;
+
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.erp-header-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+}
+
+
+/* =========================================================
+   COMMON ERP PANEL
+   ========================================================= */
+
+.erp-panel {
+  min-width: 0;
+
+  background: #ffffff;
+
+  border: 1px solid #d9dee5;
+  border-radius: 4px;
+
+  overflow: hidden;
+}
+
+.panel-header {
+  min-height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 8px;
+
+  padding: 6px 9px;
+
+  background: #f8fafc;
+
+  border-bottom: 1px solid #dfe4ea;
+}
+
+.panel-title {
+  display: inline-block;
+
+  color: #1f2937;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.panel-subtitle {
+  margin-left: 8px;
+
+  color: #89929e;
+
+  font-size: 10px;
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   FILTERS
+   ========================================================= */
+
+.filter-form {
+  padding: 8px;
+}
+
+.erp-field {
+  min-width: 0;
+}
+
+.erp-field label {
+  display: block;
+
+  margin: 0 0 2px;
+
+  color: #4b5563;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  line-height: 1.25;
+}
+
+.erp-field kendo-datepicker,
+.erp-field kendo-dropdownlist,
+.erp-field input {
+  width: 100%;
+}
+
+
+/* Compact Kendo controls */
+
+:host ::ng-deep .filter-panel .k-input,
+:host ::ng-deep .filter-panel .k-picker {
+  min-height: 28px;
+  height: 28px;
+
+  font-size: 11px;
+}
+
+:host ::ng-deep .filter-panel .k-input-inner {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+
+/* =========================================================
+   SUPPLIER PANEL
+   ========================================================= */
+
+.supplier-header {
+  flex-wrap: wrap;
+}
+
+.supplier-count {
+  margin-left: 8px;
+
+  color: #6b7280;
+
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.supplier-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 5px;
+}
+
+.supplier-search {
+  width: 230px;
+  min-width: 160px;
+}
+
+.supplier-grid {
+  border: 0;
+}
+
+
+/* =========================================================
+   TABSTRIP
+   ========================================================= */
+
+.report-panel {
+  overflow: visible;
+}
+
+.report-tabstrip {
+  width: 100%;
+}
+
+
+/*
+   Modern ERP tab header
+*/
+
+:host ::ng-deep .report-tabstrip .k-tabstrip-items-wrapper {
+  background: #f8fafc;
+
+  border-bottom: 1px solid #d9dee5;
+}
+
+:host ::ng-deep .report-tabstrip .k-tabstrip-items {
+  padding: 0 6px;
+}
+
+:host ::ng-deep .report-tabstrip .k-tabstrip-item {
+  min-height: 34px;
+
+  padding-left: 12px;
+  padding-right: 12px;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+:host ::ng-deep .report-tabstrip .k-tabstrip-item.k-active {
+  font-weight: 700;
+}
+
+:host ::ng-deep .report-tabstrip .k-content {
+  padding: 0;
+
+  border: 0;
+}
+
+
+/* =========================================================
+   REPORT CONTENT
+   ========================================================= */
+
+.report-content {
+  min-width: 0;
+}
+
+.report-info-bar {
+  min-height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  padding: 5px 9px;
+
+  background: #ffffff;
+
+  border-bottom: 1px solid #e3e7ec;
+}
+
+.report-info-bar strong {
+  color: #1f2937;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.report-info-bar span {
+  margin-left: 8px;
+
+  color: #7b8490;
+
+  font-size: 10px;
+}
+
+.record-count {
+  white-space: nowrap;
+
+  color: #4b5563;
+
+  font-size: 10px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   MAIN REPORT GRID
+   ========================================================= */
+
+.report-grid {
+  border: 0;
+}
+
+:host ::ng-deep .report-grid .k-grid-header {
+  background: #f5f7f9;
+}
+
+:host ::ng-deep .report-grid .k-grid-header th {
+  padding: 5px 7px;
+
+  color: #3f4752;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  border-color: #dfe3e8;
+}
+
+:host ::ng-deep .report-grid .k-table-td {
+  padding: 4px 7px;
+
+  font-size: 11px;
+
+  border-color: #edf0f3;
+}
+
+:host ::ng-deep .report-grid .k-table-row:hover {
+  background: #f4f8fc;
+}
+
+:host ::ng-deep .report-grid .k-pager {
+  min-height: 34px;
+
+  padding: 4px 7px;
+
+  font-size: 10px;
+
+  border-top: 1px solid #dfe3e8;
+}
+
+
+/* =========================================================
+   SUPPLIER GRID COMPACT
+   ========================================================= */
+
+:host ::ng-deep .supplier-grid .k-grid-header th {
+  padding: 4px 7px;
+
+  background: #f5f7f9;
+
+  color: #4b5563;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+:host ::ng-deep .supplier-grid .k-table-td {
+  padding: 3px 7px;
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   NUMERIC
+   ========================================================= */
+
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+:host ::ng-deep .num-header {
+  text-align: right !important;
+}
+
+
+/* =========================================================
+   STATUS BADGES
+   ========================================================= */
+
+.status-badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  min-height: 20px;
+
+  padding: 1px 7px;
+
+  border-radius: 10px;
+
+  background: #eef1f4;
+
+  color: #4b5563;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.status-open {
+  background: #fff4db;
+  color: #8a5a00;
+}
+
+.status-partial {
+  background: #e8f3ff;
+  color: #1769aa;
+}
+
+.status-closed {
+  background: #e8f7ee;
+  color: #237a46;
+}
+
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.erp-error {
+  margin: 6px 8px;
+  padding: 6px 8px;
+
+  background: #fef2f2;
+
+  border: 1px solid #fecaca;
+  border-radius: 3px;
+
+  color: #b42318;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   KENDO BUTTON COMPACT
+   ========================================================= */
+
+:host ::ng-deep .k-button-sm {
+  min-height: 27px;
+
+  padding: 3px 9px;
+
+  font-size: 10px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   GENERAL KENDO COMPACT INPUT
+   ========================================================= */
+
+:host ::ng-deep .k-input,
+:host ::ng-deep .k-picker {
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1200px) {
+
+  .filter-form kendo-gridlayout {
+    grid-template-columns:
+      repeat(
+        3,
+        minmax(150px, 1fr)
+      ) !important;
+  }
+
+}
+
+
+@media (max-width: 900px) {
+
+  .po-reports {
+    padding: 6px;
+  }
+
+  .erp-header {
+    align-items: flex-start;
+  }
+
+  .filter-form kendo-gridlayout {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(145px, 1fr)
+      ) !important;
+  }
+
+  .supplier-header {
+    align-items: flex-start;
+  }
+
+  .supplier-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .supplier-search {
+    flex: 1;
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .erp-header {
+    flex-direction: column;
+  }
+
+  .erp-header-actions {
+    width: 100%;
+  }
+
+  .filter-form kendo-gridlayout {
+    grid-template-columns:
+      1fr !important;
+  }
+
+  .report-info-bar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+}

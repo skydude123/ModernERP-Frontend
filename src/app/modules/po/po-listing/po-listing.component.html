@@ -1,0 +1,289 @@
+<section class="po-list-page compact-erp-page">
+  <div class="page-shell compact-erp-shell">
+    <app-toolbar class="po-list-toolbar" [config]="toolbarService.config()" [formValid]="true" [postingMode]="canPost()"
+      [reverseMode]="canReverse()" title="Purchase Order Listing"
+      subtitle="Server-side paging, workflow commands, and date-range shortcuts." (onNew)="newPo()"
+      (onPrint)="printSelected()" (onPost)="openPost()" (onReverse)="openReverse()" (onRefresh)="refresh()"
+      (onToday)="applyQuickDate('TODAY')" (onYesterday)="applyQuickDate('YESTERDAY')"
+      (onThisMonth)="applyQuickDate('THIS_MONTH')" (onLastMonth)="applyQuickDate('LAST_MONTH')"
+      (onThisYear)="applyQuickDate('THIS_YEAR')" (onLastYear)="applyQuickDate('LAST_YEAR')">
+    </app-toolbar>
+
+    <!-- <form [formGroup]="filterForm" class="filter-card">
+    <div class="filter-header">
+      <div>
+        <h1>Purchase Order Listing</h1>
+        <p>Server-side paging, filtering, sorting, posting, and approval workflow.</p>
+      </div>
+
+      <div class="selected-chip" *ngIf="selectedPo()">
+        Selected: <strong>{{ selectedStatusText() }}</strong>
+      </div>
+    </div>
+
+    <div class="filter-grid">
+      <kendo-formfield>
+        <kendo-label text="From Date"></kendo-label>
+        <kendo-datepicker formControlName="fromDate"></kendo-datepicker>
+      </kendo-formfield>
+
+      <kendo-formfield>
+        <kendo-label text="To Date"></kendo-label>
+        <kendo-datepicker formControlName="toDate"></kendo-datepicker>
+      </kendo-formfield>
+
+      <kendo-formfield>
+        <kendo-label text="Status"></kendo-label>
+        <kendo-dropdownlist
+          formControlName="status"
+            [data]="[
+              { value: 'ALL', text: 'ALL STATUS' },
+              { value: 'N', text: 'DRAFT' },
+              { value: 'P', text: 'POSTED' },
+              { value: 'A', text: 'APPROVED' }
+            ]"
+          textField="text"
+          valueField="value"
+          [valuePrimitive]="true">
+        </kendo-dropdownlist>
+      </kendo-formfield>
+
+      <kendo-formfield>
+        <kendo-label text="Branch"></kendo-label>
+        <kendo-dropdownlist
+          formControlName="branchName"
+          [data]="facade.branches()"
+          textField="branchName"
+          valueField="branchName"
+          [valuePrimitive]="true">
+        </kendo-dropdownlist>
+      </kendo-formfield>
+
+      <kendo-formfield class="search-field">
+        <kendo-label text="Search"></kendo-label>
+        <input kendoTextBox formControlName="search" placeholder="PO No, supplier, SO No, remarks" />
+      </kendo-formfield>
+
+      <div class="filter-actions">
+        <button kendoButton type="button" themeColor="primary" icon="search" (click)="applyFilters()">
+          Search
+        </button>
+
+        <button kendoButton type="button" fillMode="outline" icon="filter-clear" (click)="clearFilters()">
+          Clear
+        </button>
+      </div>
+    </div>
+  </form> -->
+
+  <div class="grid-card compact-grid-card">
+    <div class="grid-meta compact-grid-meta">
+      <span class="record-count">Total Records: <strong>{{ facade.poTotal() | number }}</strong></span>
+      @if (facade.poListLoading()) {
+        <span class="loading-text">Loading...</span>
+      }
+    </div>
+
+    <!-- <div class="grid-meta-actions">
+    <button
+      kendoButton
+      type="button"
+      size="small"
+      fillMode="outline"
+      themeColor="primary"
+      (click)="testConfirmDialog()">
+      Test Confirm
+    </button>
+  </div> -->
+
+
+
+  <!-- This grid uses server-side paging, so do not use kendoGridBinding.
+  dataStateChange sends skip/take/sort information to the API. -->
+      <kendo-grid class="po-list-grid compact-po-grid" [data]="gridData()" [height]="620" [pageable]="{
+    buttonCount: 5,
+    info: true,
+    type: 'numeric',
+    pageSizes: [25, 50, 100, 250],
+    previousNext: true,
+    responsive: true
+  }" [sortable]="true" [resizable]="true" [skip]="gridState().skip || 0" [pageSize]="gridState().take || 50"
+    [sort]="gridState().sort || []" [selectable]="{ mode: 'single' }" [loading]="facade.poListLoading()"
+    (dataStateChange)="dataStateChange($event)" (selectionChange)="onSelectionChange($event)">
+
+    <kendo-toolbar class="grid-search-toolbar" overflow="scroll">
+      <kendo-toolbar-spacer></kendo-toolbar-spacer>
+
+      <kendo-grid-smartbox-tool [searchMode]="searchSettings" (search)="onGridSearch($event)">
+      </kendo-grid-smartbox-tool>
+
+      <kendo-toolbar-spacer></kendo-toolbar-spacer>
+    </kendo-toolbar>
+
+    <kendo-grid-column field="poNo" title="PO No." [width]="80">
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <button class="po-link-button" kendoButton fillMode="link" type="button"
+          (click)="selectedPo.set(dataItem); editSelected()">
+          {{ dataItem.poNo }}
+        </button>
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column field="poDate" title="PO Date" filter="date" [width]="80" format="{0:MM/dd/yyyy}">
+      <ng-template kendoGridCellTemplate let-dataItem>
+        {{ dataItem.poDate | date:'MM/dd/yyyy' }}
+      </ng-template>
+    </kendo-grid-column>
+
+    <!-- <kendo-grid-column field="poDelDate" title="Delivery" [width]="130">
+    <ng-template kendoGridCellTemplate let-dataItem>
+      {{ dataItem.poDelDate | date:'MM/dd/yyyy' }}
+    </ng-template>
+  </kendo-grid-column> -->
+
+  <kendo-grid-column field="status" title="Status" [width]="100">
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <span class="status-pill" [ngClass]="statusClass(dataItem.status)">
+        {{ dataItem.statusName }}
+      </span>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column field="branchName" title="Branch" [width]="120"></kendo-grid-column>
+
+  <!-- <kendo-grid-column field="suppCode" title="Supplier Code" [width]="140"></kendo-grid-column> -->
+
+  <kendo-grid-column field="suppName" title="Supplier Name" [width]="300"></kendo-grid-column>
+
+  <kendo-grid-column field="termCode" title="Terms" [width]="100"></kendo-grid-column>
+
+  <kendo-grid-column field="vatType" title="VAT" [width]="100"></kendo-grid-column>
+
+  <!-- <kendo-grid-column field="chequeTypeName" title="Cheque" [width]="110"></kendo-grid-column> -->
+
+  <kendo-grid-column field="soNo" title="SO No." [width]="110"></kendo-grid-column>
+
+  <!-- <kendo-grid-column field="lineCount" title="Lines" [width]="90">
+  <ng-template kendoGridCellTemplate let-dataItem>
+    {{ dataItem.lineCount | number }}
+  </ng-template>
+</kendo-grid-column> -->
+
+<kendo-grid-column field="totalAmount" title="Amount" [width]="150" class="text-right">
+  <ng-template kendoGridCellTemplate let-dataItem>
+    <strong>{{ dataItem.totalAmount | number:'1.2-2' }}</strong>
+  </ng-template>
+</kendo-grid-column>
+
+<!-- <kendo-grid-column field="userId" title="User" [width]="120"></kendo-grid-column> -->
+
+<!-- <kendo-grid-column field="dateChanged" title="Updated" [width]="170">
+<ng-template kendoGridCellTemplate let-dataItem>
+  {{ dataItem.dateChanged | date:'MM/dd/yyyy hh:mm a' }}
+</ng-template>
+</kendo-grid-column> -->
+
+<!-- <kendo-grid-column title="Actions" [width]="220" [locked]="false">
+<ng-template kendoGridCellTemplate let-dataItem>
+  <div class="row-actions">
+    <button kendoButton type="button" size="small" fillMode="outline" (click)="selectedPo.set(dataItem); editSelected()">
+      Edit
+    </button>
+
+    <button
+      kendoButton
+      type="button"
+      size="small"
+      [disabled]="dataItem.status !== 'N'"
+      (click)="selectedPo.set(dataItem); openAction('POST')">
+      Post
+    </button>
+
+    <button
+      kendoButton
+      type="button"
+      size="small"
+      themeColor="primary"
+      [disabled]="dataItem.status !== 'P'"
+      (click)="selectedPo.set(dataItem); openAction('APPROVE')">
+      Approve
+    </button>
+  </div>
+</ng-template>
+</kendo-grid-column> -->
+</kendo-grid>
+
+<!-- <div class="error-box" *ngIf="facade.actionError()">
+{{ facade.actionError() }}
+</div>
+
+<div class="success-box" *ngIf="facade.lastAction()">
+  {{ facade.lastAction()?.poNo }} is now {{ facade.lastAction()?.statusName }}.
+</div> -->
+</div>
+</div>
+</section>
+
+@if (showActionDialog()) {
+  <kendo-dialog class="po-action-dialog" [title]="actionMode() + ' PURCHASE ORDER'"
+    [width]="520" (close)="closeActionDialog()">
+    <div class="dialog-content compact-dialog-content">
+      <p>
+        You are about to <strong>{{ actionMode() }}</strong>
+        PO <strong>{{ selectedPo()?.poNo }}</strong>.
+      </p>
+      <form [formGroup]="actionForm">
+        <kendo-formfield>
+          <kendo-label text="Remarks"></kendo-label>
+          <textarea kendoTextArea rows="4" formControlName="remarks" placeholder="Optional remarks"></textarea>
+        </kendo-formfield>
+      </form>
+    </div>
+    <kendo-dialog-actions>
+      <button kendoButton type="button" (click)="closeActionDialog()">Cancel</button>
+      <button kendoButton type="button" themeColor="primary" [disabled]="facade.actionBusy()" (click)="confirmAction()">
+        Confirm
+      </button>
+    </kendo-dialog-actions>
+  </kendo-dialog>
+}
+
+<div kendoDialogContainer></div>
+
+@if (showPrintDialog()) {
+  <kendo-dialog
+    class="po-print-dialog"
+    [title]="'Purchase Order Print Preview - ' + printPoNo()"
+    [width]="1180"
+    [height]="790"
+    [minWidth]="700"
+    (close)="closePrintDialog()">
+    <!-- <div class="po-print-dialog-body">
+    <iframe
+      *ngIf="printViewerUrl() as viewerUrl"
+      class="po-print-frame"
+      [src]="viewerUrl"
+      title="'Purchase Order ' + printPoNo()">
+    </iframe>
+  </div> -->
+  <tr-viewer
+    [containerStyle]="viewerContainerStyle"
+    [serviceUrl]= "reportingServiceUrl"
+    [reportSource]="rs"
+    [viewMode]="'PRINT_PREVIEW'"
+    [scaleMode]="'SPECIFIC'"
+    [scale]="1.0">
+  </tr-viewer>
+  <kendo-dialog-actions layout="end">
+    <button
+      kendoButton
+      type="button"
+      fillMode="outline"
+      (click)="closePrintDialog()">
+      Close
+    </button>
+  </kendo-dialog-actions>
+</kendo-dialog>
+}
+
+<div kendoDialogContainer></div>

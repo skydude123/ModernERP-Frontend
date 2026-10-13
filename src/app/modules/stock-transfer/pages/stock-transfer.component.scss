@@ -1,0 +1,1421 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.stock-transfer-page {
+  display: block;
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.stock-transfer-toolbar-host {
+  margin-bottom: 10px;
+}
+
+.stock-transfer-card,
+.page-shell {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   ENTRY HEADER
+   ========================================================= */
+
+.stock-transfer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+
+  padding: 18px 20px;
+
+  border: 1px solid #d9dde3;
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  margin-bottom: 12px;
+}
+
+.stock-transfer-title {
+  min-width: 0;
+}
+
+.stock-transfer-title h1 {
+  margin: 4px 0 4px;
+  font-size: 22px;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.stock-transfer-title p {
+  margin: 0;
+  color: #667085;
+  font-size: 13px;
+}
+
+.stock-transfer-eyebrow,
+.detail-eyebrow {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: #667085;
+}
+
+.stock-transfer-header-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.stock-transfer-number-box {
+  min-width: 125px;
+
+  border: 1px solid #d9dde3;
+  border-radius: 6px;
+
+  padding: 8px 12px;
+
+  background: #f8fafc;
+}
+
+.stock-transfer-number-box span {
+  display: block;
+  font-size: 10px;
+  color: #667085;
+  text-transform: uppercase;
+}
+
+.stock-transfer-number-box strong {
+  display: block;
+  margin-top: 2px;
+
+  font-size: 15px;
+  color: #101828;
+}
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 70px;
+
+  padding: 5px 10px;
+
+  border-radius: 999px;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  background: #f2f4f7;
+  color: #344054;
+
+  border: 1px solid #d0d5dd;
+}
+
+.status-pill.posted {
+  background: #ecfdf3;
+  color: #027a48;
+  border-color: #abefc6;
+}
+
+/* =========================================================
+   ERP SECTION
+   ========================================================= */
+
+.erp-section {
+  border: 1px solid #d9dde3;
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  margin-bottom: 12px;
+
+  overflow: hidden;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  min-height: 38px;
+
+  padding: 8px 14px;
+
+  border-bottom: 1px solid #e4e7ec;
+
+  background: #f8fafc;
+}
+
+.section-title span {
+  font-size: 13px;
+  font-weight: 700;
+  color: #101828;
+}
+
+.section-title small {
+  color: #667085;
+  font-size: 11px;
+}
+
+.erp-section fieldset {
+  border: 0;
+  padding: 14px;
+  margin: 0;
+}
+
+/* =========================================================
+   HEADER FORM
+   ========================================================= */
+
+.form-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(180px, 1fr)
+    );
+
+  gap: 12px 14px;
+}
+
+.remarks-field {
+  grid-column: span 2;
+}
+
+.required-field {
+  position: relative;
+}
+
+.required-field kendo-label::after {
+  content: ' *';
+  color: #d92d20;
+  font-weight: 700;
+}
+
+/* =========================================================
+   DETAILS
+   ========================================================= */
+
+.detail-card {
+  border: 1px solid #d9dde3;
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  overflow: hidden;
+}
+
+.detail-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 12px 14px;
+
+  border-bottom: 1px solid #e4e7ec;
+}
+
+.detail-heading h2 {
+  margin: 2px 0 2px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.detail-heading p {
+  margin: 0;
+  color: #667085;
+  font-size: 12px;
+}
+
+.source-warning {
+  color: #b54708;
+  font-weight: 600;
+}
+
+/* =========================================================
+   DETAIL TOOLBAR
+   ========================================================= */
+
+.detail-toolbar {
+  border-bottom: 1px solid #d9dde3;
+}
+
+/* =========================================================
+   GRID
+   ========================================================= */
+
+.detail-grid,
+.stock-transfer-list-grid {
+  border: 0;
+}
+
+:host ::ng-deep .headerCustomClass {
+  font-weight: 700;
+}
+
+:host ::ng-deep .k-grid-header {
+  font-size: 12px;
+}
+
+:host ::ng-deep .k-grid td {
+  font-size: 12px;
+}
+
+:host ::ng-deep .numeric {
+  text-align: right;
+}
+
+.field-error {
+  display: block;
+
+  color: #d92d20;
+
+  margin-top: 4px;
+
+  font-size: 11px;
+}
+
+.item-no-data {
+  padding: 12px;
+
+  font-size: 12px;
+
+  color: #667085;
+}
+
+/* =========================================================
+   TOTALS
+   ========================================================= */
+
+.totals-band {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  gap: 26px;
+
+  padding: 10px 14px;
+
+  border-top: 1px solid #e4e7ec;
+
+  background: #f8fafc;
+
+  font-size: 12px;
+}
+
+.totals-band span {
+  color: #667085;
+}
+
+.totals-band strong {
+  margin-left: 6px;
+  color: #101828;
+}
+
+/* =========================================================
+   LIST FILTERS
+   ========================================================= */
+
+.compact-filter-band,
+.filter-band {
+  display: grid;
+
+  grid-template-columns:
+    150px
+    150px
+    150px
+    minmax(180px, 1fr)
+    minmax(180px, 1fr)
+    auto;
+
+  align-items: end;
+
+  gap: 10px;
+
+  padding: 12px;
+
+  margin-bottom: 10px;
+
+  background: #ffffff;
+
+  border: 1px solid #d9dde3;
+
+  border-radius: 8px;
+}
+
+.filter-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  padding-bottom: 1px;
+}
+
+/* =========================================================
+   LIST GRID CARD
+   ========================================================= */
+
+.grid-card {
+  border: 1px solid #d9dde3;
+
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  overflow: hidden;
+}
+
+.grid-meta {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  min-height: 38px;
+
+  padding: 8px 12px;
+
+  border-bottom: 1px solid #e4e7ec;
+
+  background: #f8fafc;
+
+  font-size: 12px;
+}
+
+.record-count {
+  color: #475467;
+}
+
+.record-count strong {
+  color: #101828;
+}
+
+.loading-text {
+  color: #667085;
+}
+
+/* =========================================================
+   SMARTBOX TOOLBAR
+   ========================================================= */
+
+.grid-search-toolbar {
+  border-bottom: 1px solid #e4e7ec;
+}
+
+/* =========================================================
+   EXTERNAL EDIT LINK
+   ========================================================= */
+
+.stock-transfer-link-button {
+  padding: 0 !important;
+
+  min-width: 0 !important;
+
+  font-weight: 700;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1200px) {
+  .form-grid {
+    grid-template-columns:
+      repeat(
+        3,
+        minmax(180px, 1fr)
+      );
+  }
+
+  .compact-filter-band,
+  .filter-band {
+    grid-template-columns:
+      repeat(
+        3,
+        minmax(180px, 1fr)
+      );
+  }
+}
+
+@media (max-width: 900px) {
+  .stock-transfer-header {
+    flex-direction: column;
+  }
+
+  .stock-transfer-header-meta {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .form-grid {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(160px, 1fr)
+      );
+  }
+
+  .compact-filter-band,
+  .filter-band {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(160px, 1fr)
+      );
+  }
+
+  .remarks-field {
+    grid-column: span 2;
+  }
+
+  .totals-band {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 600px) {
+  .form-grid,
+  .compact-filter-band,
+  .filter-band {
+    grid-template-columns: 1fr;
+  }
+
+  .remarks-field {
+    grid-column: span 1;
+  }
+
+  .stock-transfer-header-meta {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+/* =========================================================
+   STOCK TRANSFER GRID - ORANGE HEADER / COMPACT ERP
+   Applies to:
+   - Stock Transfer Entry detail grid
+   - Stock Transfer Listing grid
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   GRID HEADER
+   Orange background + black text
+   --------------------------------------------------------- */
+
+:host ::ng-deep .detail-grid .k-grid-header,
+:host ::ng-deep .stock-transfer-list-grid .k-grid-header {
+  background: #f97316;
+  border-color: #ea580c;
+}
+
+:host ::ng-deep .detail-grid .k-grid-header-wrap,
+:host ::ng-deep .stock-transfer-list-grid .k-grid-header-wrap {
+  background: #f97316;
+}
+
+:host ::ng-deep .detail-grid .k-grid-header .k-table-th,
+:host ::ng-deep .stock-transfer-list-grid .k-grid-header .k-table-th {
+  background: #f97316 !important;
+  color: #000000 !important;
+  border-color: #ea580c !important;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  padding: 5px 8px !important;
+  height: 30px;
+}
+
+:host ::ng-deep .detail-grid .k-column-title,
+:host ::ng-deep .stock-transfer-list-grid .k-column-title {
+  color: #000000 !important;
+  font-weight: 700;
+}
+
+/* Header hover / sortable state */
+:host ::ng-deep .detail-grid .k-grid-header .k-table-th:hover,
+:host ::ng-deep .stock-transfer-list-grid .k-grid-header .k-table-th:hover {
+  background: #f97316 !important;
+  color: #000000 !important;
+}
+
+/* =========================================================
+   COMPACT GRID ROWS
+   ========================================================= */
+
+:host ::ng-deep .detail-grid .k-table-td,
+:host ::ng-deep .stock-transfer-list-grid .k-table-td {
+  padding: 4px 8px !important;
+
+  font-size: 12px;
+  line-height: 1.25;
+
+  height: 28px;
+}
+
+/* Reduce default button spacing inside grid */
+:host ::ng-deep .detail-grid .k-button,
+:host ::ng-deep .stock-transfer-list-grid .k-button {
+  min-height: 26px;
+  padding: 3px 8px;
+
+  font-size: 12px;
+}
+
+/* =========================================================
+   ENTRY DETAIL TOOLBAR
+   ========================================================= */
+
+:host ::ng-deep .detail-grid .k-toolbar {
+  min-height: 38px;
+
+  padding: 4px 7px !important;
+
+  gap: 5px;
+
+  background: #f8fafc;
+  border-bottom: 1px solid #d0d5dd;
+}
+
+:host ::ng-deep .detail-grid .k-toolbar .k-button {
+  min-height: 29px;
+
+  padding: 4px 10px;
+
+  font-size: 12px;
+}
+
+/* =========================================================
+   LIST SMARTBOX TOOLBAR
+   ========================================================= */
+
+:host ::ng-deep .stock-transfer-list-grid .k-toolbar {
+  min-height: 38px;
+
+  padding: 4px 8px !important;
+
+  background: #f8fafc;
+
+  border-bottom: 1px solid #d0d5dd;
+}
+
+/* =========================================================
+   ENTRY DETAIL SECTION - MORE COMPACT
+   ========================================================= */
+
+.detail-heading {
+  min-height: 50px;
+
+  padding: 7px 12px !important;
+}
+
+.detail-heading h2 {
+  margin: 1px 0;
+
+  font-size: 15px;
+  line-height: 1.15;
+}
+
+.detail-heading p {
+  margin: 2px 0 0;
+
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.detail-eyebrow {
+  font-size: 10px;
+  line-height: 1.1;
+}
+
+.source-warning {
+  font-size: 11px;
+}
+
+/* =========================================================
+   TOTAL BAND - COMPACT
+   ========================================================= */
+
+.totals-band {
+  min-height: 34px;
+
+  padding: 5px 12px !important;
+
+  gap: 20px;
+
+  font-size: 11px;
+}
+
+.totals-band strong {
+  font-size: 11px;
+}
+
+/* =========================================================
+   LIST GRID META - COMPACT
+   ========================================================= */
+
+.grid-meta {
+  min-height: 32px;
+
+  padding: 5px 10px !important;
+
+  font-size: 11px;
+}
+
+/* =========================================================
+   LIST FILTER AREA - COMPACT
+   ========================================================= */
+
+.compact-filter-band,
+.filter-band {
+  padding: 8px 10px !important;
+
+  gap: 7px 9px;
+
+  margin-bottom: 8px;
+}
+
+:host ::ng-deep .compact-filter-band .k-label,
+:host ::ng-deep .filter-band .k-label {
+  font-size: 11px;
+  margin-bottom: 2px;
+}
+
+:host ::ng-deep .compact-filter-band .k-input,
+:host ::ng-deep .compact-filter-band .k-picker,
+:host ::ng-deep .filter-band .k-input,
+:host ::ng-deep .filter-band .k-picker {
+  min-height: 30px;
+  font-size: 12px;
+}
+
+/* =========================================================
+   GRID PAGER - COMPACT
+   ========================================================= */
+
+:host ::ng-deep .stock-transfer-list-grid .k-pager {
+  min-height: 38px;
+
+  padding: 4px 8px;
+
+  font-size: 11px;
+}
+
+:host ::ng-deep .stock-transfer-list-grid .k-pager .k-button {
+  min-width: 28px;
+  height: 28px;
+
+  padding: 2px 5px;
+}
+
+/* =========================================================
+   MULTICOLUMN COMBOBOX POPUP
+   Orange header + compact rows
+   ========================================================= */
+
+:host ::ng-deep .k-animation-container .k-table-header,
+:host ::ng-deep .k-animation-container .k-grid-header,
+:host ::ng-deep .k-animation-container .k-table-th {
+  background: #f97316 !important;
+  color: #000000 !important;
+
+  font-weight: 700;
+}
+
+/* MultiColumnComboBox popup column headers */
+:host ::ng-deep .k-animation-container .k-table-th {
+  padding: 5px 8px !important;
+
+  font-size: 12px;
+
+  border-color: #ea580c !important;
+}
+
+/* Popup rows */
+:host ::ng-deep .k-animation-container .k-table-td {
+  padding: 4px 8px !important;
+
+  font-size: 12px;
+
+  line-height: 1.25;
+}
+
+/* =========================================================
+   HORIZONTAL SCROLLBAR / GRID
+   ========================================================= */
+
+:host ::ng-deep .detail-grid .k-grid-content,
+:host ::ng-deep .stock-transfer-list-grid .k-grid-content {
+  font-size: 12px;
+}
+
+/* =========================================================
+   ST NUMBER LINK
+   ========================================================= */
+
+.stock-transfer-link-button {
+  font-size: 12px;
+
+  font-weight: 700;
+
+  padding: 0 !important;
+}
+
+/* =========================================================
+   ULTRA COMPACT STOCK TRANSFER PAGE
+   Add this at the VERY BOTTOM of stock-transfer.component.scss
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   WHOLE PAGE
+   --------------------------------------------------------- */
+
+.stock-transfer-page {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.stock-transfer-card,
+.page-shell,
+.compact-erp-shell {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.stock-transfer-toolbar-host {
+  margin-bottom: 4px !important;
+}
+
+/* ---------------------------------------------------------
+   ENTRY HEADER - COMPACT
+   --------------------------------------------------------- */
+
+.stock-transfer-header {
+  min-height: 0 !important;
+
+  padding: 7px 10px !important;
+  margin-bottom: 5px !important;
+
+  gap: 10px !important;
+
+  border-radius: 5px !important;
+}
+
+.stock-transfer-title h1 {
+  margin: 1px 0 !important;
+
+  font-size: 16px !important;
+  line-height: 1.1 !important;
+}
+
+.stock-transfer-title p {
+  margin: 1px 0 0 !important;
+
+  font-size: 10px !important;
+  line-height: 1.15 !important;
+}
+
+.stock-transfer-eyebrow {
+  font-size: 9px !important;
+  line-height: 1 !important;
+}
+
+.stock-transfer-header-meta {
+  gap: 6px !important;
+}
+
+.stock-transfer-number-box {
+  min-width: 100px !important;
+
+  padding: 4px 8px !important;
+
+  border-radius: 4px !important;
+}
+
+.stock-transfer-number-box span {
+  font-size: 9px !important;
+}
+
+.stock-transfer-number-box strong {
+  margin-top: 0 !important;
+
+  font-size: 12px !important;
+  line-height: 1.15 !important;
+}
+
+.status-pill {
+  min-width: 58px !important;
+
+  padding: 3px 7px !important;
+
+  font-size: 9px !important;
+}
+
+/* ---------------------------------------------------------
+   HEADER INFORMATION SECTION
+   --------------------------------------------------------- */
+
+.erp-section {
+  margin-bottom: 5px !important;
+
+  border-radius: 5px !important;
+}
+
+.section-title {
+  min-height: 27px !important;
+
+  padding: 3px 8px !important;
+}
+
+.section-title span {
+  font-size: 11px !important;
+}
+
+.section-title small {
+  font-size: 9px !important;
+}
+
+.erp-section fieldset {
+  padding: 7px 8px !important;
+}
+
+/* ---------------------------------------------------------
+   FORM GRID
+   --------------------------------------------------------- */
+
+.form-grid {
+  grid-template-columns:
+    repeat(
+      4,
+      minmax(150px, 1fr)
+    ) !important;
+
+  column-gap: 8px !important;
+  row-gap: 4px !important;
+}
+
+/* Compact Kendo labels */
+:host ::ng-deep .form-grid .k-form-field {
+  margin: 0 !important;
+}
+
+:host ::ng-deep .form-grid .k-label,
+:host ::ng-deep .form-grid kendo-label {
+  margin-bottom: 1px !important;
+
+  font-size: 10px !important;
+  line-height: 1.1 !important;
+}
+
+/* TextBox / DropDown / DatePicker */
+:host ::ng-deep .form-grid .k-input,
+:host ::ng-deep .form-grid .k-picker,
+:host ::ng-deep .form-grid .k-dropdownlist,
+:host ::ng-deep .form-grid .k-combobox {
+  min-height: 27px !important;
+  height: 27px !important;
+
+  font-size: 11px !important;
+}
+
+/* Inner input */
+:host ::ng-deep .form-grid .k-input-inner {
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+
+  font-size: 11px !important;
+}
+
+/* Picker button */
+:host ::ng-deep .form-grid .k-input-button,
+:host ::ng-deep .form-grid .k-button {
+  min-width: 27px !important;
+  width: 27px !important;
+  height: 27px !important;
+}
+
+/* Remarks */
+:host ::ng-deep .form-grid textarea.k-input-inner,
+:host ::ng-deep .form-grid textarea {
+  min-height: 42px !important;
+  height: 42px !important;
+
+  padding: 4px 6px !important;
+
+  font-size: 11px !important;
+}
+
+.remarks-field {
+  grid-column: span 2;
+}
+
+/* Form errors */
+:host ::ng-deep .form-grid .k-form-error,
+.field-error {
+  margin-top: 1px !important;
+
+  font-size: 9px !important;
+  line-height: 1.05 !important;
+}
+
+/* ---------------------------------------------------------
+   DETAIL CARD
+   --------------------------------------------------------- */
+
+.detail-card {
+  border-radius: 5px !important;
+}
+
+.detail-heading {
+  min-height: 36px !important;
+
+  padding: 4px 8px !important;
+}
+
+.detail-heading h2 {
+  margin: 0 !important;
+
+  font-size: 12px !important;
+  line-height: 1.05 !important;
+}
+
+.detail-heading p {
+  margin-top: 1px !important;
+
+  font-size: 9px !important;
+  line-height: 1.05 !important;
+}
+
+.detail-eyebrow {
+  font-size: 8px !important;
+}
+
+.source-warning {
+  font-size: 9px !important;
+}
+
+/* ---------------------------------------------------------
+   DETAIL TOOLBAR
+   --------------------------------------------------------- */
+
+:host ::ng-deep .detail-grid .k-toolbar {
+  min-height: 31px !important;
+
+  padding: 2px 5px !important;
+
+  gap: 3px !important;
+}
+
+:host ::ng-deep .detail-grid .k-toolbar .k-button {
+  min-height: 25px !important;
+  height: 25px !important;
+
+  padding: 2px 8px !important;
+
+  font-size: 10px !important;
+}
+
+/* ---------------------------------------------------------
+   ENTRY DETAIL GRID
+   --------------------------------------------------------- */
+
+:host ::ng-deep .detail-grid .k-grid-header .k-table-th {
+  height: 26px !important;
+
+  padding: 3px 6px !important;
+
+  font-size: 10px !important;
+}
+
+:host ::ng-deep .detail-grid .k-table-td {
+  height: 25px !important;
+
+  padding: 2px 6px !important;
+
+  font-size: 10px !important;
+  line-height: 1.1 !important;
+}
+
+/* Grid editors */
+:host ::ng-deep .detail-grid .k-input,
+:host ::ng-deep .detail-grid .k-picker,
+:host ::ng-deep .detail-grid .k-numerictextbox {
+  min-height: 25px !important;
+  height: 25px !important;
+
+  font-size: 10px !important;
+}
+
+:host ::ng-deep .detail-grid .k-input-inner {
+  padding: 2px 4px !important;
+}
+
+/* ---------------------------------------------------------
+   TOTALS BAND
+   --------------------------------------------------------- */
+
+.totals-band {
+  min-height: 27px !important;
+
+  padding: 3px 8px !important;
+
+  gap: 14px !important;
+
+  font-size: 9px !important;
+}
+
+.totals-band strong {
+  margin-left: 3px !important;
+
+  font-size: 10px !important;
+}
+
+/* ---------------------------------------------------------
+   STOCK TRANSFER LIST FILTERS
+   --------------------------------------------------------- */
+
+.compact-filter-band,
+.filter-band {
+  grid-template-columns:
+    125px
+    125px
+    125px
+    minmax(150px, 1fr)
+    minmax(150px, 1fr)
+    auto !important;
+
+  padding: 5px 7px !important;
+
+  gap: 4px 6px !important;
+
+  margin-bottom: 4px !important;
+
+  border-radius: 5px !important;
+}
+
+:host ::ng-deep .compact-filter-band .k-label,
+:host ::ng-deep .filter-band .k-label {
+  margin-bottom: 1px !important;
+
+  font-size: 9px !important;
+}
+
+:host ::ng-deep .compact-filter-band .k-input,
+:host ::ng-deep .compact-filter-band .k-picker,
+:host ::ng-deep .filter-band .k-input,
+:host ::ng-deep .filter-band .k-picker {
+  min-height: 27px !important;
+  height: 27px !important;
+
+  font-size: 10px !important;
+}
+
+.filter-actions {
+  gap: 4px !important;
+}
+
+.filter-actions button {
+  min-height: 27px !important;
+
+  padding: 3px 8px !important;
+
+  font-size: 10px !important;
+}
+
+/* ---------------------------------------------------------
+   LIST GRID META
+   --------------------------------------------------------- */
+
+.grid-meta {
+  min-height: 26px !important;
+
+  padding: 3px 7px !important;
+
+  font-size: 9px !important;
+}
+
+/* ---------------------------------------------------------
+   STOCK TRANSFER LIST GRID
+   --------------------------------------------------------- */
+
+.grid-card {
+  border-radius: 5px !important;
+}
+
+:host ::ng-deep .stock-transfer-list-grid .k-grid-header .k-table-th {
+  height: 27px !important;
+
+  padding: 3px 6px !important;
+
+  font-size: 10px !important;
+}
+
+:host ::ng-deep .stock-transfer-list-grid .k-table-td {
+  height: 25px !important;
+
+  padding: 2px 6px !important;
+
+  font-size: 10px !important;
+  line-height: 1.1 !important;
+}
+
+.stock-transfer-link-button {
+  font-size: 10px !important;
+}
+
+/* ---------------------------------------------------------
+   SMART SEARCH BAR
+   --------------------------------------------------------- */
+
+:host ::ng-deep .stock-transfer-list-grid .k-toolbar {
+  min-height: 31px !important;
+
+  padding: 2px 5px !important;
+}
+
+:host ::ng-deep .stock-transfer-list-grid .k-toolbar .k-input {
+  min-height: 26px !important;
+  height: 26px !important;
+
+  font-size: 10px !important;
+}
+
+/* ---------------------------------------------------------
+   PAGER
+   --------------------------------------------------------- */
+
+:host ::ng-deep .stock-transfer-list-grid .k-pager {
+  min-height: 31px !important;
+
+  padding: 2px 5px !important;
+
+  font-size: 9px !important;
+}
+
+:host ::ng-deep .stock-transfer-list-grid .k-pager .k-button {
+  min-width: 24px !important;
+  width: 24px !important;
+
+  height: 24px !important;
+
+  padding: 1px 3px !important;
+}
+
+/* ---------------------------------------------------------
+   MULTICOLUMNCOMBOBOX POPUP
+   --------------------------------------------------------- */
+
+:host ::ng-deep .k-animation-container .k-table-th {
+  height: 27px !important;
+
+  padding: 3px 6px !important;
+
+  font-size: 10px !important;
+}
+
+:host ::ng-deep .k-animation-container .k-table-td {
+  height: 25px !important;
+
+  padding: 2px 6px !important;
+
+  font-size: 10px !important;
+  line-height: 1.1 !important;
+}
+
+/* ---------------------------------------------------------
+   RESPONSIVE
+   --------------------------------------------------------- */
+
+@media (max-width: 1200px) {
+  .form-grid {
+    grid-template-columns:
+      repeat(
+        3,
+        minmax(150px, 1fr)
+      ) !important;
+  }
+
+  .compact-filter-band,
+  .filter-band {
+    grid-template-columns:
+      repeat(
+        3,
+        minmax(145px, 1fr)
+      ) !important;
+  }
+}
+
+@media (max-width: 850px) {
+  .form-grid {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(140px, 1fr)
+      ) !important;
+  }
+
+  .compact-filter-band,
+  .filter-band {
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(140px, 1fr)
+      ) !important;
+  }
+}
+
+/* =========================================================
+   STOCK TRANSFER ENTRY
+   Dark + Bold Header / Input Values
+   ========================================================= */
+
+/* TextBox, TextArea, DatePicker, Dropdown values */
+:host ::ng-deep .stock-transfer-page .stock-transfer-card .k-input-inner,
+:host ::ng-deep .stock-transfer-page .stock-transfer-card .k-input-value-text,
+:host ::ng-deep .stock-transfer-page .stock-transfer-card input[kendoTextBox],
+:host ::ng-deep .stock-transfer-page .stock-transfer-card textarea[kendoTextArea] {
+  color: #111827 !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+/* Dropdown selected values */
+:host ::ng-deep
+  .stock-transfer-page
+  .stock-transfer-card
+  .k-dropdownlist
+  .k-input-value-text,
+:host ::ng-deep
+  .stock-transfer-page
+  .stock-transfer-card
+  .k-picker
+  .k-input-value-text {
+  color: #111827 !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
+}
+
+/* =========================================================
+   DISABLED / READONLY ENTRY VALUES
+   Important for POSTED document
+   ========================================================= */
+
+:host ::ng-deep .stock-transfer-page .stock-transfer-card .k-disabled,
+:host ::ng-deep .stock-transfer-page .stock-transfer-card .k-disabled .k-input-inner,
+:host ::ng-deep .stock-transfer-page .stock-transfer-card .k-disabled .k-input-value-text,
+:host ::ng-deep .stock-transfer-page .stock-transfer-card input:disabled,
+:host ::ng-deep .stock-transfer-page .stock-transfer-card textarea:disabled,
+:host ::ng-deep .stock-transfer-page .stock-transfer-card input[readonly],
+:host ::ng-deep .stock-transfer-page .stock-transfer-card textarea[readonly] {
+  opacity: 1 !important;
+}
+
+:host ::ng-deep .stock-transfer-page .stock-transfer-card .k-disabled .k-input-inner,
+:host ::ng-deep .stock-transfer-page .stock-transfer-card .k-disabled .k-input-value-text,
+:host ::ng-deep .stock-transfer-page .stock-transfer-card input:disabled,
+:host ::ng-deep .stock-transfer-page .stock-transfer-card textarea:disabled,
+:host ::ng-deep .stock-transfer-page .stock-transfer-card input[readonly],
+:host ::ng-deep .stock-transfer-page .stock-transfer-card textarea[readonly] {
+  color: #111827 !important;
+  font-weight: 700 !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+/* =========================================================
+   STOCK TRANSFER ENTRY DETAIL GRID
+   ========================================================= */
+
+:host ::ng-deep
+  .stock-transfer-card
+  .detail-grid
+  .k-grid-content
+  td,
+:host ::ng-deep
+  .stock-transfer-card
+  .detail-grid
+  .k-grid-content
+  .k-table-td {
+  color: #111827 !important;
+  font-weight: 700 !important;
+}
+
+/* Grid edit controls */
+:host ::ng-deep
+  .stock-transfer-card
+  .detail-grid
+  .k-grid-edit-row
+  .k-input-inner,
+:host ::ng-deep
+  .stock-transfer-card
+  .detail-grid
+  .k-grid-edit-row
+  .k-input-value-text {
+  color: #111827 !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+
+/* =========================================================
+   STOCK TRANSFER LISTING
+   Dark + Bold Grid Data
+   ========================================================= */
+
+:host ::ng-deep
+  .compact-erp-page
+  .stock-transfer-list-grid
+  .k-grid-content
+  td,
+:host ::ng-deep
+  .compact-erp-page
+  .stock-transfer-list-grid
+  .k-grid-content
+  .k-table-td {
+  color: #111827 !important;
+  font-weight: 700 !important;
+}
+
+/* ST No. clickable link */
+:host ::ng-deep
+  .compact-erp-page
+  .stock-transfer-list-grid
+  .stock-transfer-link-button {
+  color: #111827 !important;
+  font-weight: 700 !important;
+}
+
+/* Status pill text */
+:host ::ng-deep
+  .compact-erp-page
+  .stock-transfer-list-grid
+  .status-pill {
+  font-weight: 700 !important;
+}
+
+/* Numeric columns */
+:host ::ng-deep
+  .compact-erp-page
+  .stock-transfer-list-grid
+  td.numeric {
+  color: #111827 !important;
+  font-weight: 700 !important;
+}

@@ -1,0 +1,87 @@
+:host {
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #111827;
+}
+
+.erp-notify-card__module {
+  flex: 0 0 auto;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #64748b;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+
+.erp-notify-card__message {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #334155;
+  margin-bottom: 6px;
+  word-break: break-word;
+}
+
+.erp-notify-card__meta {
+  font-size: 12px;
+  color: #475569;
+}
+
+.erp-notify-card--success {
+  border-left: 6px solid #16a34a;
+}
+
+.erp-notify-card--success .erp-notify-card__icon {
+  background: linear-gradient(135deg, #dcfce7, #86efac);
+  color: #166534;
+}
+
+.erp-notify-card--error {
+  border-left: 6px solid #dc2626;
+}
+
+.erp-notify-card--error .erp-notify-card__icon {
+  background: linear-gradient(135deg, #fee2e2, #fca5a5);
+  color: #991b1b;
+}
+
+.erp-notify-card--warning {
+  border-left: 6px solid #ea580c;
+}
+
+.erp-notify-card--warning .erp-notify-card__icon {
+  background: linear-gradient(135deg, #ffedd5, #fdba74);
+  color: #9a3412;
+}
+
+.erp-notify-card--info {
+  border-left: 6px solid #2563eb;
+}
+
+.erp-notify-card--info .erp-notify-card__icon {
+  background: linear-gradient(135deg, #dbeafe, #93c5fd);
+  color: #1d4ed8;
+}
+
+@media (max-width: 640px) {
+  .erp-notify-card {
+    grid-template-columns: 52px 1fr;
+    padding: 12px 14px;
+  }
+
+  .erp-notify-card__icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    font-size: 24px;
+  }
+
+  .erp-notify-card__title-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

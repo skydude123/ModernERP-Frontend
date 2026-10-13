@@ -1,0 +1,1712 @@
+<main class="asset-entry-page">
+  <app-toolbar
+    [config]="toolbar.config()"
+    [formValid]="canSave()"
+    [editMode]="!!documentNo()"
+    [postingMode]="canPost()"
+    title="Asset Acceptance Entry"
+    subtitle="Inspect, configure, and register fixed assets without creating the VP accounting entry."
+    (onNew)="newDocument()"
+    (onSave)="requestSave()"
+    (onPrint)="print()"
+    (onPost)="requestWorkflow('post')"
+    (onList)="goToList()"
+  >
+  </app-toolbar>
+
+  @if (facade.documentLoading()) {
+    <div class="lookup-message page-message">Loading asset acceptance...</div>
+  }
+
+  @if (facade.documentError()) {
+    <div class="lookup-error page-message">
+      {{ facade.documentError() }}
+    </div>
+  }
+
+  <section class="workflow-strip">
+    @for (
+      step of ["DRAFT", "SUBMITTED", "ACCEPTED", "POSTED"];
+      track step;
+      let index = $index
+    ) {
+      <div
+        class="workflow-step"
+        [class.active]="status() === step"
+        [class.done]="
+          ['SUBMITTED', 'ACCEPTED', 'POSTED'].indexOf(status()) >= index
+        "
+      >
+        <span>{{ index + 1 }}</span>
+
+        {{ step }}
+      </div>
+    }
+
+    @if (status() === "CANCELLED") {
+      <span class="cancelled-chip"> CANCELLED </span>
+    }
+
+    <div class="workflow-actions">
+      <button
+        kendoButton
+        themeColor="primary"
+        [disabled]="
+          facade.commandBusy() || status() !== 'DRAFT' || !documentNo()
+        "
+        (click)="requestWorkflow('submit')"
+      >
+        Submit
+      </button>
+
+      <button
+        kendoButton
+        themeColor="primary"
+        [disabled]="
+          facade.commandBusy() || status() !== 'SUBMITTED' || !documentNo()
+        "
+        (click)="requestWorkflow('accept')"
+      >
+        Accept
+      </button>
+
+      <button
+        kendoButton
+        [disabled]="
+          facade.commandBusy() || status() !== 'DRAFT' || !documentNo()
+        "
+        (click)="requestWorkflow('delete')"
+      >
+        Delete
+      </button>
+
+      <button
+        kendoButton
+        [disabled]="
+          facade.commandBusy() ||
+          status() === 'POSTED' ||
+          status() === 'CANCELLED' ||
+          !documentNo()
+        "
+        (click)="requestWorkflow('cancel')"
+      >
+        Cancel
+      </button>
+    </div>
+  </section>
+
+  <form class="entry-form" [formGroup]="form">
+    <section class="card header-card">
+      <div class="section-heading">
+        <h2>Acceptance Header</h2>
+
+        <span class="document-no">
+          {{ documentNo() || "AUTO-GENERATED" }}
+        </span>
+      </div>
+
+      <!-- =====================================================
+           OLD HEADER CODE - COMMENTED ONLY
+           ===================================================== -->
+
+      <!--
+      <div class="form-grid header-grid">
+        <label>
+          Acceptance Date *
+
+          <kendo-datepicker
+            formControlName="acceptanceDate"
+            format="MM/dd/yyyy">
+          </kendo-datepicker>
+        </label>
+
+        <label>
+          Fixed Asset PO *
+
+          <kendo-multicolumncombobox
+            [data]="facade.fixedAssetPos()"
+            [value]="selectedPo()"
+            textField="poNo"
+            valueField="poNo"
+            [valuePrimitive]="false"
+            [filterable]="true"
+            [allowCustom]="false"
+            [disabled]="!isEditable()"
+            [listHeight]="320"
+            [popupSettings]="{
+              width: 'min(900px, calc(100vw - 24px))',
+              height: 340
+            }"
+            (filterChange)="facade.setPoSearch($event)"
+            (valueChange)="poChanged($event)"
+            placeholder="Approved/open FAP">
+
+            <kendo-combobox-column
+              field="poNo"
+              title="PO Number"
+              [width]="100">
+            </kendo-combobox-column>
+
+            <kendo-combobox-column
+              field="suppCode"
+              title="Supplier Code"
+              [width]="115">
+            </kendo-combobox-column>
+
+            <kendo-combobox-column
+              field="suppName"
+              title="Supplier">
+
+              <ng-template
+                kendoMultiColumnComboBoxColumnCellTemplate
+                let-po>
+
+                <span
+                  class="supplier-name-cell"
+                  [title]="po.suppName">
+                  {{ po.suppName }}
+                </span>
+
+              </ng-template>
+
+            </kendo-combobox-column>
+
+            <kendo-combobox-column
+              field="branchName"
+              title="Branch"
+              [width]="110">
+            </kendo-combobox-column>
+
+            <kendo-combobox-column
+              field="openLineCount"
+              title="Open Lines"
+              [width]="95">
+            </kendo-combobox-column>
+
+          </kendo-multicolumncombobox>
+
+          @if (facade.fixedAssetPosLoading()) {
+            <small class="lookup-message">
+              Loading fixed-asset POs...
+            </small>
+          }
+
+          @if (facade.fixedAssetPoError()) {
+            <small class="lookup-error">
+              {{ facade.fixedAssetPoError() }}
+            </small>
+          }
+        </label>
+
+        <label>
+          Supplier Code *
+
+          <input
+            kendoTextBox
+            formControlName="suppCode"
+            readonly />
+        </label>
+
+        <label class="span-2">
+          Supplier
+
+          <input
+            kendoTextBox
+            formControlName="suppName"
+            readonly />
+        </label>
+
+        <label>
+          Category *
+
+          <kendo-dropdownlist
+            formControlName="assetCategoryCode"
+            [data]="facade.categories()"
+            textField="name"
+            valueField="code"
+            [valuePrimitive]="true"
+            [defaultItem]="{
+              code: '',
+              name: 'Select category'
+            }">
+          </kendo-dropdownlist>
+        </label>
+
+        <label>
+          Branch *
+
+          <input
+            kendoTextBox
+            formControlName="branchName" />
+        </label>
+
+        <label>
+          Department *
+
+          <input
+            kendoTextBox
+            formControlName="department" />
+        </label>
+
+        <label>
+          Received By *
+
+          <input
+            kendoTextBox
+            formControlName="receivedBy" />
+        </label>
+
+        <label>
+          Accepted By *
+
+          <input
+            kendoTextBox
+            formControlName="acceptedBy" />
+        </label>
+
+        <label>
+          In Service Date *
+
+          <kendo-datepicker
+            formControlName="inServiceDate"
+            format="MM/dd/yyyy">
+          </kendo-datepicker>
+        </label>
+
+        <label>
+          Default Location *
+
+          <kendo-dropdownlist
+            formControlName="assetLocationCode"
+            [data]="facade.locations()"
+            textField="name"
+            valueField="code"
+            [valuePrimitive]="true"
+            [defaultItem]="{
+              code: '',
+              name: 'Select location'
+            }">
+          </kendo-dropdownlist>
+        </label>
+
+        <label class="span-2">
+          Remarks
+
+          <textarea
+            kendoTextArea
+            formControlName="remarks"
+            rows="2">
+          </textarea>
+        </label>
+      </div>
+      -->
+
+      <div class="form-grid header-grid">
+        <!-- REQUIRED: acceptanceDate -->
+        <label>
+          <span class="required-field-label">
+            Acceptance Date
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <kendo-datepicker
+            formControlName="acceptanceDate"
+            format="MM/dd/yyyy"
+          >
+          </kendo-datepicker>
+        </label>
+
+        <!-- REQUIRED: poNo -->
+        <label>
+          <span class="required-field-label">
+            Fixed Asset PO
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <kendo-multicolumncombobox
+            class="fixed-asset-po-combobox"
+            [data]="facade.fixedAssetPos()"
+            [value]="selectedPo()"
+            textField="poNo"
+            valueField="poNo"
+            [valuePrimitive]="false"
+            [filterable]="true"
+            [allowCustom]="false"
+            [disabled]="!isEditable()"
+            [listHeight]="320"
+            [popupSettings]="{
+              width: 'min(900px, calc(100vw - 24px))',
+              height: 340,
+            }"
+            (filterChange)="facade.setPoSearch($event)"
+            (valueChange)="poChanged($event)"
+            placeholder="Approved/open FAP"
+          >
+            <kendo-combobox-column field="poNo" title="PO Number" [width]="100">
+            </kendo-combobox-column>
+
+            <kendo-combobox-column
+              field="suppCode"
+              title="Supplier Code"
+              [width]="115"
+            >
+            </kendo-combobox-column>
+
+            <kendo-combobox-column field="suppName" title="Supplier">
+              <ng-template kendoMultiColumnComboBoxColumnCellTemplate let-po>
+                <span class="supplier-name-cell" [title]="po.suppName">
+                  {{ po.suppName }}
+                </span>
+              </ng-template>
+            </kendo-combobox-column>
+
+            <kendo-combobox-column
+              field="branchName"
+              title="Branch"
+              [width]="110"
+            >
+            </kendo-combobox-column>
+
+            <kendo-combobox-column
+              field="openLineCount"
+              title="Open Lines"
+              [width]="95"
+            >
+            </kendo-combobox-column>
+          </kendo-multicolumncombobox>
+
+          @if (facade.fixedAssetPosLoading()) {
+            <small class="lookup-message"> Loading fixed-asset POs... </small>
+          }
+
+          @if (facade.fixedAssetPoError()) {
+            <small class="lookup-error">
+              {{ facade.fixedAssetPoError() }}
+            </small>
+          }
+        </label>
+
+        <!-- REQUIRED: suppCode -->
+        <label>
+          <span class="required-field-label">
+            Supplier Code
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <input kendoTextBox formControlName="suppCode" readonly />
+        </label>
+
+        <!-- NOT REQUIRED -->
+        <label class="span-2">
+          <span>Supplier</span>
+
+          <input kendoTextBox formControlName="suppName" readonly />
+        </label>
+
+        <!-- REQUIRED: assetCategoryCode -->
+        <label>
+          <span class="required-field-label">
+            Category
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <kendo-dropdownlist
+            formControlName="assetCategoryCode"
+            [data]="facade.categories()"
+            textField="name"
+            valueField="code"
+            [valuePrimitive]="true"
+            [defaultItem]="{
+              code: '',
+              name: 'Select category',
+            }"
+          >
+          </kendo-dropdownlist>
+        </label>
+
+        <!-- REQUIRED: branchName -->
+        <label>
+          <span class="required-field-label">
+            Branch
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <input kendoTextBox formControlName="branchName" />
+        </label>
+
+        <!-- REQUIRED: department -->
+        <label>
+          <span class="required-field-label">
+            Department
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <input kendoTextBox formControlName="department" />
+        </label>
+
+        <!-- REQUIRED: receivedBy -->
+        <label>
+          <span class="required-field-label">
+            Received By
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <input kendoTextBox formControlName="receivedBy" readonly />
+        </label>
+
+        <!-- REQUIRED: acceptedBy -->
+        <label>
+          <span class="required-field-label">
+            Accepted By
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <input kendoTextBox formControlName="acceptedBy" />
+        </label>
+
+        <!-- REQUIRED: inServiceDate -->
+        <label>
+          <span class="required-field-label">
+            In Service Date
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <kendo-datepicker formControlName="inServiceDate" format="MM/dd/yyyy">
+          </kendo-datepicker>
+        </label>
+
+        <!-- REQUIRED: assetLocationCode -->
+        <label>
+          <span class="required-field-label">
+            Default Location
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <kendo-dropdownlist
+            formControlName="assetLocationCode"
+            [data]="facade.locations()"
+            textField="name"
+            valueField="code"
+            [valuePrimitive]="true"
+            [defaultItem]="{
+              code: '',
+              name: 'Select location',
+            }"
+          >
+          </kendo-dropdownlist>
+        </label>
+
+        <!-- NOT REQUIRED -->
+        <label class="span-2">
+          <span>Remarks</span>
+
+          <textarea kendoTextArea formControlName="remarks" rows="2">
+          </textarea>
+        </label>
+      </div>
+    </section>
+
+    <section class="card finance-card">
+      <div class="section-heading">
+        <h2>Acquisition & Financing</h2>
+
+        <small> Information only; VP accounting is created later. </small>
+      </div>
+
+      <!-- =====================================================
+           OLD FINANCE CODE - COMMENTED ONLY
+           ===================================================== -->
+
+      <!--
+      <div class="form-grid finance-grid">
+        <label>
+          Mode *
+
+          <kendo-dropdownlist
+            formControlName="acquisitionMode"
+            [data]="['CASH', 'FINANCED']">
+          </kendo-dropdownlist>
+        </label>
+
+        <label>
+          Downpayment
+
+          <kendo-numerictextbox
+            formControlName="downpaymentAmount"
+            [min]="0"
+            format="n2">
+          </kendo-numerictextbox>
+        </label>
+
+        <label>
+          Financed Amount
+
+          <kendo-numerictextbox
+            formControlName="financedAmount"
+            [min]="0"
+            format="n2">
+          </kendo-numerictextbox>
+        </label>
+
+        <label>
+          Financing Company
+
+          <input
+            kendoTextBox
+            formControlName="financingCompany" />
+        </label>
+
+        <label>
+          Loan Reference
+
+          <input
+            kendoTextBox
+            formControlName="loanReference" />
+        </label>
+
+        <div class="finance-total">
+          <span>Financing allocation</span>
+
+          <strong>
+            {{ financingBalance() | number:'1.2-2' }}
+          </strong>
+        </div>
+      </div>
+      -->
+
+      <div class="form-grid finance-grid">
+        <!-- REQUIRED: acquisitionMode -->
+        <label>
+          <span class="required-field-label">
+            Mode
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <kendo-dropdownlist
+            formControlName="acquisitionMode"
+            [data]="['NORMAL AP', 'FINANCED']"
+          >
+          </kendo-dropdownlist>
+        </label>
+
+        <!-- REQUIRED: downpaymentAmount -->
+        <label>
+          <span class="required-field-label">
+            Downpayment
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <kendo-numerictextbox
+            formControlName="downpaymentAmount"
+            [min]="0"
+            format="n2"
+          >
+          </kendo-numerictextbox>
+        </label>
+
+        <!-- REQUIRED: financedAmount -->
+        <label>
+          <span class="required-field-label">
+            Financed Amount
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <kendo-numerictextbox
+            formControlName="financedAmount"
+            [min]="0"
+            format="n2"
+          >
+          </kendo-numerictextbox>
+        </label>
+
+        <!-- CONDITIONALLY REQUIRED -->
+        <label>
+          <span class="required-field-label">
+            Financing Company
+
+            @if (form.controls.acquisitionMode.value === "FINANCED") {
+              <span class="required-mark" aria-hidden="true"> * </span>
+            }
+          </span>
+
+          <input kendoTextBox formControlName="financingCompany" />
+        </label>
+
+        <!-- CONDITIONALLY REQUIRED -->
+        <label>
+          <span class="required-field-label">
+            Loan Reference
+
+            @if (form.controls.acquisitionMode.value === "FINANCED") {
+              <span class="required-mark" aria-hidden="true"> * </span>
+            }
+          </span>
+
+          <input kendoTextBox formControlName="loanReference" />
+        </label>
+
+        <div class="finance-total">
+          <span>Financing allocation</span>
+
+          <strong>
+            {{ financingBalance() | number: "1.2-2" }}
+          </strong>
+        </div>
+      </div>
+    </section>
+  </form>
+
+  <section class="card po-card">
+    <div class="section-heading">
+      <h2>Open PO Lines</h2>
+
+      <small> Only remaining fixed-asset quantities can be accepted. </small>
+    </div>
+
+    <div class="po-picker">
+      <kendo-combobox
+        [data]="facade.poLines()"
+        [value]="selectedPoLine()"
+        textField="description"
+        valueField="poSeq"
+        [valuePrimitive]="false"
+        [disabled]="
+          !isEditable() || !form.controls.poNo.value || facade.poLinesLoading()
+        "
+        (valueChange)="poLineChanged($event)"
+        placeholder="Select remaining PO line"
+      >
+        <ng-template kendoComboBoxItemTemplate let-line>
+          <strong> {{ line.poSeq }} · {{ line.assetCode }} </strong>
+
+          —
+
+          {{ line.description }}
+
+          (Open {{ line.openQty | number }})
+        </ng-template>
+      </kendo-combobox>
+
+      <button
+        kendoButton
+        themeColor="primary"
+        [svgIcon]="plusIcon"
+        [disabled]="facade.commandBusy() || !selectedPoLine() || !isEditable()"
+        (click)="preparePoLine()"
+      >
+        Configure Asset
+      </button>
+    </div>
+
+    @if (facade.poLinesLoading()) {
+      <div class="lookup-message">Loading PO lines...</div>
+    }
+
+    @if (facade.poLinesError()) {
+      <div class="lookup-error">
+        {{ facade.poLinesError() }}
+      </div>
+    }
+  </section>
+
+  @if (lineForm.controls.poSeq.value) {
+    <section class="card line-editor" [formGroup]="lineForm">
+      <div class="section-heading">
+        <h2>
+          {{ editingLineNo() ? "Edit" : "Configure" }}
+          Asset Line
+        </h2>
+
+        <button kendoButton fillMode="flat" (click)="clearLineEditor()">
+          Close
+        </button>
+      </div>
+
+      <!-- =====================================================
+           OLD LINE SUMMARY CODE - COMMENTED ONLY
+           ===================================================== -->
+
+      <!--
+      <div class="line-summary">
+        <label>
+          PO Seq
+
+          <input
+            kendoTextBox
+            formControlName="poSeq"
+            readonly />
+        </label>
+
+        <label>
+          Asset Code
+
+          <input
+            kendoTextBox
+            formControlName="assetCode" />
+        </label>
+
+        <label>
+          Description
+
+          <input
+            kendoTextBox
+            formControlName="description" />
+        </label>
+
+        <label>
+          Open PO Qty
+
+          <input
+            kendoTextBox
+            formControlName="openPoQty"
+            readonly />
+        </label>
+
+        <label>
+          Accept Qty *
+
+          <kendo-numerictextbox
+            formControlName="qty"
+            [min]="0.0001"
+            [max]="lineForm.controls.openPoQty.value || 0">
+          </kendo-numerictextbox>
+        </label>
+
+        <label>
+          Unit Cost *
+
+          <kendo-numerictextbox
+            formControlName="unitCost"
+            [min]="0"
+            format="n2">
+          </kendo-numerictextbox>
+        </label>
+
+        <label>
+          Tracking *
+
+          <kendo-dropdownlist
+            formControlName="trackingMode"
+            [data]="['INDIVIDUAL', 'GROUPED']">
+          </kendo-dropdownlist>
+        </label>
+
+        <label>
+          Condition *
+
+          <kendo-dropdownlist
+            formControlName="conditionStatus"
+            [data]="[
+              'GOOD',
+              'DAMAGED',
+              'FOR REPAIR',
+              'REJECTED'
+            ]"
+            [popupSettings]="{
+              width: 190
+            }">
+          </kendo-dropdownlist>
+        </label>
+      </div>
+      -->
+
+      <div class="line-summary">
+        <!-- REQUIRED: poSeq -->
+        <label>
+          <span class="required-field-label">
+            PO Seq
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <input kendoTextBox formControlName="poSeq" readonly />
+        </label>
+
+        <!-- REQUIRED: assetCode -->
+        <label>
+          <span class="required-field-label">
+            Asset Code
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <input kendoTextBox formControlName="assetCode" />
+        </label>
+
+        <!-- REQUIRED: description -->
+        <label>
+          <span class="required-field-label">
+            Description
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <input kendoTextBox formControlName="description" />
+        </label>
+
+        <!-- NOT REQUIRED -->
+        <label>
+          <span>Open PO Qty</span>
+
+          <input kendoTextBox formControlName="openPoQty" readonly />
+        </label>
+
+        <!-- REQUIRED: qty -->
+        <label>
+          <span class="required-field-label">
+            Accept Qty
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <kendo-numerictextbox
+            formControlName="qty"
+            [min]="0.0001"
+            [max]="lineForm.controls.openPoQty.value || 0"
+          >
+          </kendo-numerictextbox>
+        </label>
+
+        <!-- REQUIRED: unitCost -->
+        <label>
+          <span class="required-field-label">
+            Unit Cost
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <kendo-numerictextbox
+            formControlName="unitCost"
+            [min]="0"
+            format="n2"
+          >
+          </kendo-numerictextbox>
+        </label>
+
+        <!-- REQUIRED: trackingMode -->
+        <label>
+          <span class="required-field-label">
+            Tracking
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <kendo-dropdownlist
+            formControlName="trackingMode"
+            [data]="['INDIVIDUAL', 'GROUPED']"
+          >
+          </kendo-dropdownlist>
+        </label>
+
+        <!-- REQUIRED: conditionStatus -->
+        <label>
+          <span class="required-field-label">
+            Condition
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <kendo-dropdownlist
+            formControlName="conditionStatus"
+            [data]="[
+              'NEW',
+              'FAIR',
+              'GOOD',
+              'DAMAGED',
+              'FOR REPAIR',
+              'REJECTED',
+            ]"
+            [popupSettings]="{
+              width: 190,
+            }"
+          >
+          </kendo-dropdownlist>
+        </label>
+      </div>
+
+      <h3>Physical Identification</h3>
+
+      <div class="form-grid identification-grid">
+        <label>
+          Serial No.
+
+          <input kendoTextBox formControlName="serialNo" />
+        </label>
+
+        <label>
+          Engine No.
+
+          <input kendoTextBox formControlName="engineNo" />
+        </label>
+
+        <label>
+          Chassis No.
+
+          <input kendoTextBox formControlName="chassisNo" />
+        </label>
+
+        <label>
+          Plate No.
+
+          <input kendoTextBox formControlName="plateNo" />
+        </label>
+
+        <label class="span-2">
+          Warranty Information
+
+          <input kendoTextBox formControlName="warrantyInfo" />
+        </label>
+
+        <label class="span-2">
+          Line Remarks
+
+          <input kendoTextBox formControlName="remarks" />
+        </label>
+      </div>
+
+      <h3>Depreciation, Custody & GL Mapping</h3>
+
+      <!-- =====================================================
+           OLD DEPRECIATION CODE - COMMENTED ONLY
+           ===================================================== -->
+
+      <!--
+      <div class="form-grid depreciation-grid">
+        <label>
+          Method *
+
+          <kendo-dropdownlist
+            formControlName="depreciationMethodCode"
+            [data]="facade.depreciationMethods()"
+            textField="name"
+            valueField="code"
+            [valuePrimitive]="true"
+            [defaultItem]="{
+              code: '',
+              name: 'Select method'
+            }">
+          </kendo-dropdownlist>
+        </label>
+
+        <label>
+          Useful Life (Months) *
+
+          <kendo-numerictextbox
+            formControlName="usefulLifeMonths"
+            [min]="1"
+            [decimals]="0">
+          </kendo-numerictextbox>
+        </label>
+
+        <label>
+          Residual Value *
+
+          <kendo-numerictextbox
+            formControlName="residualValue"
+            [min]="0"
+            format="n2">
+          </kendo-numerictextbox>
+        </label>
+
+        <label>
+          Depreciation Start *
+
+          <kendo-datepicker
+            formControlName="depreciationStartDate"
+            format="MM/dd/yyyy">
+          </kendo-datepicker>
+        </label>
+
+        <label>
+          Asset Cost Account *
+
+          <kendo-dropdownlist
+            formControlName="assetCostAccount"
+            [data]="facade.accounts()"
+            textField="name"
+            valueField="code"
+            [valuePrimitive]="true"
+            [defaultItem]="{
+              code: '',
+              name: 'Select account'
+            }">
+          </kendo-dropdownlist>
+        </label>
+
+        <label>
+          Depreciation Expense *
+
+          <kendo-dropdownlist
+            formControlName="depreciationExpenseAccount"
+            [data]="facade.accounts()"
+            textField="name"
+            valueField="code"
+            [valuePrimitive]="true"
+            [defaultItem]="{
+              code: '',
+              name: 'Select account'
+            }">
+          </kendo-dropdownlist>
+        </label>
+
+        <label>
+          Accumulated Depreciation *
+
+          <kendo-dropdownlist
+            formControlName="accumulatedDepreciationAccount"
+            [data]="facade.accounts()"
+            textField="name"
+            valueField="code"
+            [valuePrimitive]="true"
+            [defaultItem]="{
+              code: '',
+              name: 'Select account'
+            }">
+          </kendo-dropdownlist>
+        </label>
+
+        <label>
+          Custodian *
+
+          <kendo-dropdownlist
+            formControlName="custodianCode"
+            [data]="facade.custodians()"
+            textField="name"
+            valueField="code"
+            [valuePrimitive]="true"
+            [defaultItem]="{
+              code: '',
+              name: 'Select custodian'
+            }">
+          </kendo-dropdownlist>
+        </label>
+
+        <label>
+          Asset Location *
+
+          <kendo-dropdownlist
+            formControlName="assetLocationCode"
+            [data]="facade.locations()"
+            textField="name"
+            valueField="code"
+            [valuePrimitive]="true"
+            [defaultItem]="{
+              code: '',
+              name: 'Select location'
+            }">
+          </kendo-dropdownlist>
+        </label>
+      </div>
+      -->
+
+      <div class="form-grid depreciation-grid">
+        <!-- REQUIRED: depreciationMethodCode -->
+        <label>
+          <span class="required-field-label">
+            Method
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <kendo-dropdownlist
+            formControlName="depreciationMethodCode"
+            [data]="facade.depreciationMethods()"
+            textField="name"
+            valueField="code"
+            [valuePrimitive]="true"
+            [defaultItem]="{
+              code: '',
+              name: 'Select method',
+            }"
+          >
+          </kendo-dropdownlist>
+        </label>
+
+        <!-- REQUIRED: usefulLifeMonths -->
+        <label>
+          <span class="required-field-label">
+            Useful Life (Months)
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <kendo-numerictextbox
+            formControlName="usefulLifeMonths"
+            [min]="1"
+            [decimals]="0"
+          >
+          </kendo-numerictextbox>
+        </label>
+
+        <!-- REQUIRED: residualValue -->
+        <label>
+          <span class="required-field-label">
+            Residual Value
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <kendo-numerictextbox
+            formControlName="residualValue"
+            [min]="0"
+            format="n2"
+          >
+          </kendo-numerictextbox>
+        </label>
+
+        <!-- REQUIRED: depreciationStartDate -->
+        <label>
+          <span class="required-field-label">
+            Depreciation Start
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <kendo-datepicker
+            formControlName="depreciationStartDate"
+            format="MM/dd/yyyy"
+          >
+          </kendo-datepicker>
+        </label>
+
+        <!-- ===================================================
+             OLD ACTIVE ASSET ACCOUNT DROPDOWNS
+             COMMENTED ONLY
+             =================================================== -->
+
+        <!--
+        <label>
+          <span class="required-field-label">
+            Asset Cost Account
+
+            <span
+              class="required-mark"
+              aria-hidden="true">
+              *
+            </span>
+          </span>
+
+          <kendo-dropdownlist
+            formControlName="assetCostAccount"
+            [data]="facade.assetCostAccounts()"
+            textField="name"
+            valueField="code"
+            [valuePrimitive]="true"
+            [defaultItem]="{
+              code: '',
+              name: 'Select account'
+            }">
+          </kendo-dropdownlist>
+        </label>
+
+        <label>
+          <span class="required-field-label">
+            Depreciation Expense
+
+            <span
+              class="required-mark"
+              aria-hidden="true">
+              *
+            </span>
+          </span>
+
+          <kendo-dropdownlist
+            formControlName="depreciationExpenseAccount"
+            [data]="facade.depreciationExpenseAccounts()"
+            textField="name"
+            valueField="code"
+            [valuePrimitive]="true"
+            [defaultItem]="{
+              code: '',
+              name: 'Select account'
+            }">
+          </kendo-dropdownlist>
+        </label>
+
+        <label>
+          <span class="required-field-label">
+            Accumulated Depreciation
+
+            <span
+              class="required-mark"
+              aria-hidden="true">
+              *
+            </span>
+          </span>
+
+          <kendo-dropdownlist
+            formControlName="accumulatedDepreciationAccount"
+            [data]="facade.accumulatedDepreciationAccounts()"
+            textField="name"
+            valueField="code"
+            [valuePrimitive]="true"
+            [defaultItem]="{
+              code: '',
+              name: 'Select account'
+            }">
+          </kendo-dropdownlist>
+        </label>
+        -->
+
+        <!-- ===================================================
+             NEW ASSET COST ACCOUNT COMBOBOX
+             =================================================== -->
+
+        <kendo-formfield class="account-formfield">
+          <kendo-label
+            class="required-account-label"
+            [for]="assetCostAccount"
+            text="Asset Cost Account"
+          >
+          </kendo-label>
+
+          <kendo-combobox
+            #assetCostAccount
+            formControlName="assetCostAccount"
+            [data]="facade.assetCostAccounts()"
+            textField="displayText"
+            valueField="accountId"
+            [valuePrimitive]="true"
+            [filterable]="true"
+            [kendoDropDownFilter]="accountFilterSettings"
+            [suggest]="true"
+            [clearButton]="true"
+            [allowCustom]="false"
+            [disabled]="!isEditable()"
+            [loading]="facade.accountsLoading()"
+            [popupSettings]="{
+              width: 520,
+              height: 320,
+            }"
+            placeholder="Select asset cost account"
+          >
+            <ng-template kendoComboBoxItemTemplate let-account>
+              <div class="account-option">
+                <div class="account-option__main">
+                  <span class="account-option__id">
+                    {{ account.accountId }}
+                  </span>
+
+                  <span
+                    class="account-option__name"
+                    [title]="account.accountName"
+                  >
+                    {{ account.accountName }}
+                  </span>
+                </div>
+
+                <div class="account-option__meta">
+                  {{ account.fsSubGroup || account.fsGroup || "Asset Account" }}
+
+                  @if (account.normalBalance) {
+                    <span>
+                      · Normal
+                      {{ account.normalBalance }}
+                    </span>
+                  }
+                </div>
+              </div>
+            </ng-template>
+
+            <ng-template kendoComboBoxValueTemplate let-account>
+              @if (account) {
+                <span
+                  class="account-selected-value"
+                  [title]="account.displayText"
+                >
+                  {{ account.displayText }}
+                </span>
+              }
+            </ng-template>
+          </kendo-combobox>
+
+          @if (
+            lineForm.controls.assetCostAccount.invalid &&
+            lineForm.controls.assetCostAccount.touched
+          ) {
+            <kendo-formerror> Asset Cost Account is required. </kendo-formerror>
+          }
+        </kendo-formfield>
+
+        <!-- ===================================================
+             NEW DEPRECIATION EXPENSE ACCOUNT COMBOBOX
+             =================================================== -->
+
+        <kendo-formfield class="account-formfield">
+          <kendo-label
+            class="required-account-label"
+            [for]="depreciationExpenseAccount"
+            text="Depreciation Expense"
+          >
+          </kendo-label>
+
+          <kendo-combobox
+            #depreciationExpenseAccount
+            formControlName="depreciationExpenseAccount"
+            [data]="facade.depreciationExpenseAccounts()"
+            textField="displayText"
+            valueField="accountId"
+            [valuePrimitive]="true"
+            [filterable]="true"
+            [kendoDropDownFilter]="accountFilterSettings"
+            [suggest]="true"
+            [clearButton]="true"
+            [allowCustom]="false"
+            [disabled]="!isEditable()"
+            [loading]="facade.accountsLoading()"
+            [popupSettings]="{
+              width: 520,
+              height: 320,
+            }"
+            placeholder="Select depreciation expense account"
+          >
+            <ng-template kendoComboBoxItemTemplate let-account>
+              <div class="account-option">
+                <div class="account-option__main">
+                  <span class="account-option__id">
+                    {{ account.accountId }}
+                  </span>
+
+                  <span
+                    class="account-option__name"
+                    [title]="account.accountName"
+                  >
+                    {{ account.accountName }}
+                  </span>
+                </div>
+
+                <div class="account-option__meta">
+                  {{
+                    account.fsSubGroup || account.fsGroup || "Expense Account"
+                  }}
+
+                  @if (account.normalBalance) {
+                    <span>
+                      · Normal
+                      {{ account.normalBalance }}
+                    </span>
+                  }
+                </div>
+              </div>
+            </ng-template>
+
+            <ng-template kendoComboBoxValueTemplate let-account>
+              @if (account) {
+                <span
+                  class="account-selected-value"
+                  [title]="account.displayText"
+                >
+                  {{ account.displayText }}
+                </span>
+              }
+            </ng-template>
+          </kendo-combobox>
+
+          @if (
+            lineForm.controls.depreciationExpenseAccount.invalid &&
+            lineForm.controls.depreciationExpenseAccount.touched
+          ) {
+            <kendo-formerror>
+              Depreciation Expense Account is required.
+            </kendo-formerror>
+          }
+        </kendo-formfield>
+
+        <!-- ===================================================
+             NEW ACCUMULATED DEPRECIATION ACCOUNT COMBOBOX
+             =================================================== -->
+
+        <kendo-formfield class="account-formfield">
+          <kendo-label
+            class="required-account-label"
+            [for]="accumulatedDepreciationAccount"
+            text="Accumulated Depreciation"
+          >
+          </kendo-label>
+
+          <kendo-combobox
+            #accumulatedDepreciationAccount
+            formControlName="accumulatedDepreciationAccount"
+            [data]="facade.accumulatedDepreciationAccounts()"
+            textField="displayText"
+            valueField="accountId"
+            [valuePrimitive]="true"
+            [filterable]="true"
+            [kendoDropDownFilter]="accountFilterSettings"
+            [suggest]="true"
+            [clearButton]="true"
+            [allowCustom]="false"
+            [disabled]="!isEditable()"
+            [loading]="facade.accountsLoading()"
+            [popupSettings]="{
+              width: 580,
+              height: 320,
+            }"
+            placeholder="Select accumulated depreciation account"
+          >
+            <ng-template kendoComboBoxItemTemplate let-account>
+              <div class="account-option">
+                <div class="account-option__main">
+                  <span class="account-option__id">
+                    {{ account.accountId }}
+                  </span>
+
+                  <span
+                    class="account-option__name"
+                    [title]="account.accountName"
+                  >
+                    {{ account.accountName }}
+                  </span>
+                </div>
+
+                <div class="account-option__meta">
+                  {{ account.fsSubGroup || "Contra Asset" }}
+
+                  @if (account.normalBalance) {
+                    <span>
+                      · Normal
+                      {{ account.normalBalance }}
+                    </span>
+                  }
+                </div>
+              </div>
+            </ng-template>
+
+            <ng-template kendoComboBoxValueTemplate let-account>
+              @if (account) {
+                <span
+                  class="account-selected-value"
+                  [title]="account.displayText"
+                >
+                  {{ account.displayText }}
+                </span>
+              }
+            </ng-template>
+          </kendo-combobox>
+
+          @if (
+            lineForm.controls.accumulatedDepreciationAccount.invalid &&
+            lineForm.controls.accumulatedDepreciationAccount.touched
+          ) {
+            <kendo-formerror>
+              Accumulated Depreciation Account is required.
+            </kendo-formerror>
+          }
+        </kendo-formfield>
+
+        <!-- REQUIRED: custodianCode -->
+        <label>
+          <span class="required-field-label">
+            Custodian
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <kendo-dropdownlist
+            formControlName="custodianCode"
+            [data]="facade.custodians()"
+            textField="name"
+            valueField="code"
+            [valuePrimitive]="true"
+            [defaultItem]="{
+              code: '',
+              name: 'Select custodian',
+            }"
+          >
+          </kendo-dropdownlist>
+        </label>
+
+        <!-- REQUIRED: assetLocationCode -->
+        <label>
+          <span class="required-field-label">
+            Asset Location
+
+            <span class="required-mark" aria-hidden="true"> * </span>
+          </span>
+
+          <kendo-dropdownlist
+            formControlName="assetLocationCode"
+            [data]="facade.locations()"
+            textField="name"
+            valueField="code"
+            [valuePrimitive]="true"
+            [defaultItem]="{
+              code: '',
+              name: 'Select location',
+            }"
+          >
+          </kendo-dropdownlist>
+        </label>
+      </div>
+
+      @if (facade.accountsLoading()) {
+        <div class="account-lookup-loading">
+          Loading Chart of Accounts mappings...
+        </div>
+      }
+
+      <!-- @if (facade.accountsError()) {
+        <div class="lookup-error account-lookup-error">
+          {{ facade.accountsError() }}
+        </div>
+      } -->
+
+      @if (validationMessage()) {
+        <div class="validation-alert">
+          {{ validationMessage() }}
+        </div>
+      }
+
+      <div class="editor-actions">
+        <button
+          kendoButton
+          themeColor="primary"
+          [disabled]="facade.commandBusy() || !isEditable()"
+          (click)="saveLine()"
+        >
+          {{ editingLineNo() ? "Update Line" : "Add Line" }}
+        </button>
+
+        <button
+          kendoButton
+          [disabled]="facade.commandBusy()"
+          (click)="clearLineEditor()"
+        >
+          Discard
+        </button>
+      </div>
+    </section>
+  }
+
+  <section class="card detail-card">
+    <div class="section-heading">
+      <h2>Acceptance Details</h2>
+
+      <div class="totals">
+        <span>
+          {{ details().length }}
+          lines
+        </span>
+
+        <span>
+          Qty
+
+          <strong>
+            {{ totalQty() | number }}
+          </strong>
+        </span>
+
+        <span>
+          Total
+
+          <strong>
+            {{ totalCost() | number: "1.2-2" }}
+          </strong>
+        </span>
+      </div>
+    </div>
+
+    <kendo-grid
+      class="acceptance-details-grid"
+      [data]="details()"
+      [height]="details().length > 0 ? 300 : 155"
+      [scrollable]="'scrollable'"
+      [resizable]="true"
+    >
+      <ng-template kendoGridNoRecordsTemplate>
+        <div class="acceptance-details-empty">
+          <strong> No acceptance details yet. </strong>
+
+          <span> Select an open PO line, then click Configure Asset. </span>
+        </div>
+      </ng-template>
+
+      <kendo-grid-column field="lineNo" title="#" [width]="45">
+      </kendo-grid-column>
+
+      <kendo-grid-column field="poSeq" title="PO Seq" [width]="65">
+      </kendo-grid-column>
+
+      <kendo-grid-column field="assetCode" title="Asset Code" [width]="110">
+      </kendo-grid-column>
+
+      <kendo-grid-column field="description" title="Description" [width]="220">
+      </kendo-grid-column>
+
+      <kendo-grid-column field="qty" title="Qty" [width]="60">
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        field="unitCost"
+        title="Unit Cost"
+        format="{0:n2}"
+        [width]="95"
+      >
+      </kendo-grid-column>
+
+      <kendo-grid-column field="trackingMode" title="Tracking" [width]="105">
+      </kendo-grid-column>
+
+      <kendo-grid-column field="conditionStatus" title="Condition" [width]="95">
+      </kendo-grid-column>
+
+      <kendo-grid-column field="serialNo" title="Serial No." [width]="105">
+      </kendo-grid-column>
+
+      <kendo-grid-column field="engineNo" title="Engine No." [width]="105">
+      </kendo-grid-column>
+
+      <kendo-grid-column field="chassisNo" title="Chassis No." [width]="105">
+      </kendo-grid-column>
+
+      <kendo-grid-column field="plateNo" title="Plate No." [width]="90">
+      </kendo-grid-column>
+
+      <kendo-grid-column
+        field="depreciationMethodCode"
+        title="Dep. Method"
+        [width]="100"
+      >
+      </kendo-grid-column>
+
+      <kendo-grid-column title="Actions" [width]="80" [sticky]="true">
+        <ng-template kendoGridCellTemplate let-row>
+          <div class="acceptance-detail-actions">
+            <button
+              kendoButton
+              fillMode="flat"
+              [svgIcon]="editIcon"
+              [disabled]="!isEditable()"
+              (click)="editLine(row)"
+              title="Edit"
+            ></button>
+
+            <button
+              kendoButton
+              fillMode="flat"
+              [svgIcon]="trashIcon"
+              [disabled]="!isEditable()"
+              (click)="removeLine(row)"
+              title="Remove"
+            ></button>
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+    </kendo-grid>
+  </section>
+
+  <div kendoDialogContainer></div>
+</main>

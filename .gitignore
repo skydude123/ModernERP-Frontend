@@ -40,3 +40,11 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+
+# Local backup archives
+*.rar
+*.zip
+*.7z
+*.bak
+*.backup

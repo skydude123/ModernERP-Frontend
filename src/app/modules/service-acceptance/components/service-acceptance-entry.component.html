@@ -1,0 +1,777 @@
+<section class="service-page">
+  <!-- =========================================================
+  TOOLBAR
+  ========================================================= -->
+
+  <app-toolbar
+    title="Service Acceptance Entry"
+    subtitle="Accept services from one supplier using one or more approved Purchase Orders."
+    [config]="toolbar.config()"
+    [formValid]="isEditable() && form.valid && details().length > 0"
+    [editMode]="!!form.controls.serviceAcceptanceNo.value"
+    [acceptMode]="canAccept()"
+    [postingMode]="canPost()"
+    [reverseMode]="canReverse()"
+    (onNew)="newDocument()"
+    (onSave)="save()"
+    (onAccept)="accept()"
+    (onPrint)="print()"
+    (onPost)="post()"
+    (onReverse)="requestReverse()"
+    (onDataList)="list()"
+    (onRefresh)="refresh()"
+    >
+  </app-toolbar>
+
+  <!-- =========================================================
+  STATUS
+  ========================================================= -->
+
+  <div class="status-strip">
+    <div class="status-left">
+      <span class="status" [class]="'status ' + status().toLowerCase()">
+        {{ status() }}
+      </span>
+
+      <span class="workflow-text">
+        Supplier / Service PO → Service Acceptance → VP → CD
+      </span>
+    </div>
+
+    <div class="status-summary">
+      <div class="summary-item">
+        <span> Total Accepted </span>
+
+        <strong>
+          {{ totalAmount() | number: "1.2-2" }}
+        </strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+  HEADER
+  ========================================================= -->
+
+  <form class="card" [formGroup]="form" novalidate>
+    <div class="card-title">
+      <div>
+        <h2>Header</h2>
+
+        <small class="required-note">
+          Fields marked with
+
+          <span class="required-marker"> * </span>
+
+          are required.
+        </small>
+      </div>
+
+      <span>
+        SA No:
+
+        <strong>
+          {{ form.controls.serviceAcceptanceNo.value || "Auto-generated" }}
+        </strong>
+      </span>
+    </div>
+
+    <div class="form-grid">
+      <!-- =====================================================
+      ACCEPTANCE DATE
+      ===================================================== -->
+
+      <label>
+        <span class="field-label">
+          Acceptance Date
+
+          <span class="required-marker"> * </span>
+        </span>
+
+        <div
+          class="control-wrap"
+          [class.field-invalid]="isFieldInvalid('acceptanceDate')"
+          >
+          <kendo-datepicker
+            formControlName="acceptanceDate"
+            [readonly]="!isEditable()"
+            >
+          </kendo-datepicker>
+        </div>
+
+        @if (isFieldInvalid('acceptanceDate')) {
+          <small class="field-error">
+            Acceptance Date is required.
+          </small>
+        }
+      </label>
+
+      <!-- =====================================================
+      SUPPLIER
+      ===================================================== -->
+
+      <label class="span-2">
+        <span class="field-label">
+          Supplier
+
+          <span class="required-marker"> * </span>
+        </span>
+
+        <div
+          class="control-wrap"
+          [class.field-invalid]="isFieldInvalid('suppCode')"
+          >
+          <kendo-multicolumncombobox
+            formControlName="suppCode"
+            [data]="supplierData()"
+            textField="suppName"
+            valueField="suppCode"
+            [valuePrimitive]="true"
+            [filterable]="true"
+            [allowCustom]="false"
+            [clearButton]="true"
+            [loading]="facade.suppliersLoading()"
+            [readonly]="!isEditable()"
+            placeholder="Select supplier"
+            (filterChange)="supplierFilterChanged($event)"
+            (selectionChange)="supplierChanged($event)"
+            >
+            <kendo-combobox-column
+              field="suppCode"
+              title="Supplier Code"
+              [width]="150"
+              >
+            </kendo-combobox-column>
+
+            <kendo-combobox-column
+              field="suppName"
+              title="Supplier Name"
+              [width]="380"
+              >
+            </kendo-combobox-column>
+
+            <ng-template kendoMultiColumnComboBoxNoDataTemplate>
+              No supplier found.
+            </ng-template>
+          </kendo-multicolumncombobox>
+        </div>
+
+        @if (isFieldInvalid('suppCode')) {
+          <small class="field-error">
+            Supplier is required.
+          </small>
+        }
+      </label>
+
+      <!-- =====================================================
+      SUPPLIER CODE
+      ===================================================== -->
+
+      <label>
+        <span class="field-label"> Supplier Code </span>
+
+        <kendo-textbox
+          [value]="form.controls.suppCode.value || ''"
+          [readonly]="true"
+          >
+        </kendo-textbox>
+      </label>
+
+      <!-- =====================================================
+      SERVICE TYPE
+      ===================================================== -->
+
+      <label>
+        <span class="field-label">
+          Service Type
+
+          <span class="required-marker"> * </span>
+        </span>
+
+        <div
+          class="control-wrap"
+          [class.field-invalid]="isFieldInvalid('serviceType')"
+          >
+          <kendo-combobox
+            formControlName="serviceType"
+            [data]="serviceTypes"
+            textField="text"
+            valueField="value"
+            [valuePrimitive]="true"
+            [readonly]="!isEditable()"
+            placeholder="Select service type"
+            >
+          </kendo-combobox>
+        </div>
+      </label>
+
+      <!-- =====================================================
+      BRANCH
+      ===================================================== -->
+
+      <label>
+        <span class="field-label">
+          Branch
+
+          <span class="required-marker"> * </span>
+        </span>
+
+        <div
+          class="control-wrap"
+          [class.field-invalid]="isFieldInvalid('branchName')"
+          >
+          <kendo-combobox
+            formControlName="branchName"
+            [data]="branchData()"
+            textField="branchName"
+            valueField="branchName"
+            [valuePrimitive]="true"
+            [filterable]="true"
+            [loading]="facade.branchesLoading()"
+            [readonly]="!isEditable()"
+            placeholder="Select branch"
+            (valueChange)="branchChanged($event)"
+            >
+          </kendo-combobox>
+        </div>
+
+        @if (isFieldInvalid('branchName')) {
+          <small class="field-error">
+            Branch is required.
+          </small>
+        }
+      </label>
+
+      <!-- =====================================================
+      PERIOD
+      ===================================================== -->
+
+      <label>
+        <span class="field-label">
+          Service Period From
+          <span class="required-marker">*</span>
+        </span>
+
+        <div
+          class="control-wrap"
+          [class.field-invalid]="isFieldInvalid('servicePeriodFrom')"
+          >
+          <kendo-datepicker
+            formControlName="servicePeriodFrom"
+            [readonly]="!isEditable()"
+            >
+          </kendo-datepicker>
+        </div>
+
+        @if (isFieldInvalid('servicePeriodFrom')) {
+          <small class="field-error">
+            Service Period From is required.
+          </small>
+        }
+      </label>
+
+      <label>
+        <span class="field-label">
+          Service Period To
+          <span class="required-marker">*</span>
+        </span>
+
+        <div
+          class="control-wrap"
+          [class.field-invalid]="isFieldInvalid('servicePeriodTo')"
+          >
+          <kendo-datepicker
+            formControlName="servicePeriodTo"
+            [readonly]="!isEditable()"
+            >
+          </kendo-datepicker>
+        </div>
+
+        @if (isFieldInvalid('servicePeriodTo')) {
+          <small class="field-error">
+            Service Period To is required.
+          </small>
+        }
+      </label>
+
+      <!-- =====================================================
+      REMARKS
+      ===================================================== -->
+
+      <label class="span-3">
+        <span class="field-label"> Remarks </span>
+
+        <kendo-textarea
+          formControlName="remarks"
+          [rows]="2"
+          [readonly]="!isEditable()"
+          >
+        </kendo-textarea>
+      </label>
+    </div>
+  </form>
+
+  <!-- =========================================================
+  SERVICE LINES
+  ========================================================= -->
+
+  <section class="card tab-card">
+    <kendo-tabstrip>
+      <kendo-tabstrip-tab title="Service Lines" [selected]="true">
+        <ng-template kendoTabContent>
+          <kendo-grid
+            class="service-detail-grid"
+            [data]="details()"
+            [height]="430"
+            [resizable]="true"
+            [navigable]="true"
+            [selectable]="{
+              mode: 'single',
+            }"
+            (add)="addHandler($event)"
+            (edit)="editHandler($event)"
+            (save)="saveHandler($event)"
+            (cancel)="cancelHandler($event)"
+            (remove)="removeHandler($event)"
+            >
+            <!-- ===============================================
+            ADD / EDIT TOOLBAR
+            =============================================== -->
+
+            <kendo-toolbar class="detail-toolbar" overflow="scroll">
+              <kendo-toolbar-button
+                kendoGridAddTool
+                text="Add Service"
+                themeColor="success"
+                [disabled]="
+                  !isEditable() ||
+                  !form.controls.suppCode.value ||
+                  !form.controls.branchName.value
+                "
+                >
+              </kendo-toolbar-button>
+
+              <kendo-toolbar-button
+                kendoGridEditTool
+                text="Edit"
+                themeColor="warning"
+                [disabled]="!isEditable() || details().length === 0"
+                >
+              </kendo-toolbar-button>
+
+              <kendo-toolbar-spacer> </kendo-toolbar-spacer>
+
+              <kendo-toolbar-button
+                kendoGridRemoveTool
+                text="Remove"
+                themeColor="error"
+                [disabled]="!isEditable() || details().length === 0"
+                >
+              </kendo-toolbar-button>
+
+              <kendo-toolbar-button
+                kendoGridSaveTool
+                text="Save Line"
+                themeColor="primary"
+                >
+              </kendo-toolbar-button>
+
+              <kendo-toolbar-button
+                kendoGridCancelTool
+                text="Cancel"
+                themeColor="error"
+                >
+              </kendo-toolbar-button>
+            </kendo-toolbar>
+
+            <!-- ===============================================
+            #
+            =============================================== -->
+
+            <kendo-grid-column
+              title="#"
+              [width]="55"
+              [headerClass]="'headerCustomClass'"
+              >
+              <ng-template kendoGridCellTemplate let-rowIndex="rowIndex">
+                {{ rowIndex + 1 }}
+              </ng-template>
+            </kendo-grid-column>
+
+            <!-- ===============================================
+            PO NO / SELECTOR
+            =============================================== -->
+
+            <kendo-grid-column
+              field="poNo"
+              title="PO No."
+              [width]="190"
+              [headerClass]="'headerCustomClass'"
+              >
+              <ng-template kendoGridCellTemplate let-row>
+                <strong>
+                  {{ row.poNo }}
+                </strong>
+              </ng-template>
+
+              <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+                <kendo-multicolumncombobox
+                  kendoGridFocusable
+                  class="service-po-line-combo"
+                  [formControl]="formGroup.get('poNo')"
+                  [data]="facade.openPoLines()"
+                  textField="poNo"
+                  valueField="poNo"
+                  [valuePrimitive]="true"
+                  [allowCustom]="false"
+                  [filterable]="true"
+                  [clearButton]="true"
+                  [loading]="facade.openPoLinesLoading()"
+                  [popupSettings]="poLinePopupSettings"
+                  placeholder="Select open Service PO"
+                  (filterChange)="facade.searchOpenPoLines($event)"
+                  (selectionChange)="onGridPoLineSelected(formGroup, $event)"
+                  >
+                  <kendo-combobox-column
+                    field="poNo"
+                    title="PO No."
+                    [width]="120"
+                    >
+                  </kendo-combobox-column>
+
+                  <kendo-combobox-column
+                    field="poDate"
+                    title="PO Date"
+                    [width]="115"
+                    >
+                    <ng-template
+                      kendoMultiColumnComboBoxColumnCellTemplate
+                      let-dataItem
+                      >
+                      {{ dataItem.poDate | date: "MM/dd/yyyy" }}
+                    </ng-template>
+                  </kendo-combobox-column>
+
+                  <kendo-combobox-column
+                    field="poSeq"
+                    title="PO Line"
+                    [width]="85"
+                    >
+                  </kendo-combobox-column>
+
+                  <kendo-combobox-column
+                    field="itemCode"
+                    title="Code"
+                    [width]="130"
+                    >
+                  </kendo-combobox-column>
+
+                  <kendo-combobox-column
+                    field="serviceDescription"
+                    title="Service Description"
+                    [width]="280"
+                    >
+                  </kendo-combobox-column>
+
+                  <kendo-combobox-column
+                    field="remainingQty"
+                    title="Remaining"
+                    [width]="110"
+                    >
+                    <ng-template
+                      kendoMultiColumnComboBoxColumnCellTemplate
+                      let-dataItem
+                      >
+                      {{ dataItem.remainingQty | number: "1.4-4" }}
+                    </ng-template>
+                  </kendo-combobox-column>
+
+                  <kendo-combobox-column
+                    field="unitOfMeasure"
+                    title="UOM"
+                    [width]="85"
+                    >
+                  </kendo-combobox-column>
+
+                  <kendo-combobox-column
+                    field="rate"
+                    title="Amount"
+                    [width]="115"
+                    >
+                    <ng-template
+                      kendoMultiColumnComboBoxColumnCellTemplate
+                      let-dataItem
+                      >
+                      {{ dataItem.rate | number: "1.2-4" }}
+                    </ng-template>
+                  </kendo-combobox-column>
+
+
+
+                  <ng-template kendoMultiColumnComboBoxNoDataTemplate>
+                    <div class="po-line-no-data">
+                      No open Service PO line found for this Supplier and
+                      Branch.
+                    </div>
+                  </ng-template>
+                </kendo-multicolumncombobox>
+              </ng-template>
+            </kendo-grid-column>
+
+            <!-- ===============================================
+            PO LINE
+            =============================================== -->
+
+            <kendo-grid-column
+              field="poSeq"
+              title="PO Line"
+              [width]="85"
+              [headerClass]="'headerCustomClass'"
+              >
+            </kendo-grid-column>
+
+            <!-- ===============================================
+            CODE
+            =============================================== -->
+
+            <kendo-grid-column
+              field="itemCode"
+              title="Code"
+              [width]="120"
+              [headerClass]="'headerCustomClass'"
+              >
+            </kendo-grid-column>
+
+            <!-- ===============================================
+            DESCRIPTION
+            =============================================== -->
+
+            <kendo-grid-column
+              field="serviceDescription"
+              title="Service Description"
+              [width]="260"
+              [headerClass]="'headerCustomClass'"
+              >
+              <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+                <input
+                  kendoTextBox
+                  title="Service Description"
+                  [formControl]="formGroup.get('serviceDescription')"
+                  [readonly]="true"
+                  />
+              </ng-template>
+            </kendo-grid-column>
+
+            <!-- ===============================================
+            UOM
+            =============================================== -->
+
+            <kendo-grid-column
+              field="unitOfMeasure"
+              title="UOM"
+              [width]="85"
+              [headerClass]="'headerCustomClass'"
+              >
+            </kendo-grid-column>
+
+            <!-- ===============================================
+            PO QTY
+            =============================================== -->
+
+            <kendo-grid-column
+              field="poQty"
+              title="PO Qty"
+              [width]="105"
+              [headerClass]="'headerCustomClass'"
+              >
+              <ng-template kendoGridCellTemplate let-row>
+                {{ row.poQty | number: "1.4-4" }}
+              </ng-template>
+            </kendo-grid-column>
+
+            <!-- ===============================================
+            REMAINING
+            =============================================== -->
+
+            <kendo-grid-column
+              field="remainingQty"
+              title="Remaining"
+              [width]="115"
+              [headerClass]="'headerCustomClass'"
+              >
+              <ng-template kendoGridCellTemplate let-row>
+                <strong>
+                  {{ row.remainingQty | number: "1.4-4" }}
+                </strong>
+              </ng-template>
+            </kendo-grid-column>
+
+            <!-- ===============================================
+            RATE
+            =============================================== -->
+
+            <!-- <kendo-grid-column
+            field="rate"
+            title="Rate"
+            [width]="115"
+            [headerClass]="'headerCustomClass'"
+            >
+            <ng-template kendoGridCellTemplate let-row>
+              {{ row.rate | number: "1.2-4" }}
+            </ng-template>
+          </kendo-grid-column> -->
+
+          <!-- ===============================================
+          AMOUNT
+          =============================================== -->
+
+          <kendo-grid-column
+            title="Amount"
+            [width]="145"
+            [headerClass]="'headerCustomClass'"
+            >
+            <!-- =====================================================
+            ROW AMOUNT
+            ===================================================== -->
+
+            <ng-template kendoGridCellTemplate let-row>
+              <strong>
+                {{ amount(row) | number: "1.2-2" }}
+              </strong>
+            </ng-template>
+
+            <!-- =====================================================
+            EDIT ROW AMOUNT
+            ===================================================== -->
+
+            <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+              <strong>
+                {{
+                (formGroup.get("acceptedQty")?.value || 0) *
+                (formGroup.get("rate")?.value || 0) | number: "1.2-2"
+                }}
+              </strong>
+            </ng-template>
+
+            <!-- =====================================================
+            GRID FOOTER TOTAL
+            ===================================================== -->
+
+            <ng-template kendoGridFooterTemplate>
+              <div class="service-total-footer">
+                <span class="service-total-label"> Total: </span>
+
+                <strong class="service-total-value">
+                  {{ totalAmount() | number: "1.2-2" }}
+                </strong>
+              </div>
+            </ng-template>
+          </kendo-grid-column>
+
+          <!-- ===============================================
+          REMARKS
+          =============================================== -->
+
+          <kendo-grid-column
+            field="remarks"
+            title="Remarks"
+            [width]="170"
+            [headerClass]="'headerCustomClass'"
+            >
+            <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+              <input
+                kendoTextBox
+                title="Remarks"
+                [formControl]="formGroup.get('remarks')"
+                />
+            </ng-template>
+          </kendo-grid-column>
+
+          <!-- ===============================================
+          EMPTY
+          =============================================== -->
+
+          <ng-template kendoGridNoRecordsTemplate>
+            <div class="empty-grid">
+              No Service PO lines added.
+
+              @if (isEditable() && form.controls.suppCode.value) {
+                Select
+
+                <strong> Add Service </strong>
+
+                to choose an open PO line.
+              } @else if (isEditable()) {
+                Select a Supplier first.
+              }
+            </div>
+          </ng-template>
+        </kendo-grid>
+      </ng-template>
+    </kendo-tabstrip-tab>
+
+    <!-- =====================================================
+    WORKFLOW
+    ===================================================== -->
+
+    <kendo-tabstrip-tab title="Workflow">
+      <ng-template kendoTabContent>
+        <div class="workflow">
+          <div>
+            <span> Created </span>
+
+            <strong>
+              {{ facade.document()?.header?.createdBy || "-" }}
+            </strong>
+
+            <small>
+              {{ facade.document()?.header?.createdDate | date: "medium" }}
+            </small>
+          </div>
+
+          <!--
+          SUBMITTED is intentionally no longer shown
+          as a required workflow step.
+          -->
+
+          <div>
+            <span> Service Accepted </span>
+
+            <strong>
+              {{ facade.document()?.header?.acceptedBy || "-" }}
+            </strong>
+
+            <small>
+              {{ facade.document()?.header?.acceptedDate | date: "medium" }}
+            </small>
+          </div>
+
+          <div>
+            <span> Posted / VP Enabled </span>
+
+            <strong>
+              {{ facade.document()?.header?.postedBy || "-" }}
+            </strong>
+
+            <small>
+              {{ facade.document()?.header?.postedDate | date: "medium" }}
+            </small>
+          </div>
+
+          <div>
+            <span> Reversed </span>
+
+            <strong>
+              {{ facade.document()?.header?.reversedBy || "-" }}
+            </strong>
+
+            <small>
+              {{ facade.document()?.header?.reversedDate | date: "medium" }}
+            </small>
+          </div>
+        </div>
+      </ng-template>
+    </kendo-tabstrip-tab>
+  </kendo-tabstrip>
+</section>
+</section>

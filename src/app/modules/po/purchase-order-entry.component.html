@@ -1,0 +1,972 @@
+<section class="po-page">
+  <div class="po-toolbar-host">
+    <app-toolbar
+      [config]="toolbarService.config()"
+      [formValid]="poform.valid"
+      [editMode]="!!poform.get('poNo')?.value"
+      [postingMode]="canPost()"
+      [reverseMode]="canReverse()"
+      title="Purchase Order Entry"
+      subtitle="Create, edit, post, and reverse Purchase Orders."
+      (onNew)="newPo()"
+      (onSave)="save()"
+      (onPrint)="printPo()"
+      (onPost)="postPo()"
+      (onReverse)="reversePo()"
+      (onList)="goToList()"
+      (onRefresh)="reloadPo()"
+      >
+    </app-toolbar>
+  </div>
+
+  <form [formGroup]="poform" class="po-card">
+    <div class="po-header">
+      <div class="po-title">
+        <span class="po-eyebrow">Purchasing</span>
+        <h1>Purchase Order Entry</h1>
+        <p>Create, edit, and save Purchase Orders with batch detail upsert.</p>
+      </div>
+
+      <div class="po-header-meta">
+        <span class="status-pill" [ngClass]="statusCode()">
+          {{ statusText() }}
+        </span>
+
+        <div class="po-number-box">
+          <span>PO No.</span>
+          <strong>{{ poform.get("poNo")?.value || "AUTO" }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="erp-section">
+      <div class="section-title">
+        <span>Header Information</span>
+        <small>Required fields are marked with red *</small>
+      </div>
+
+      <div class="form-grid">
+        <kendo-formfield class="required-field">
+          <kendo-label text="PO Date"></kendo-label>
+
+          <kendo-datepicker formControlName="poDate" required>
+          </kendo-datepicker>
+
+          @if (hasRequiredError('poDate')) {
+            <kendo-formerror>
+              PO Date is required.
+            </kendo-formerror>
+          }
+        </kendo-formfield>
+
+        <kendo-formfield>
+          <kendo-label text="Delivery Date"></kendo-label>
+          <kendo-datepicker formControlName="poDelDate"></kendo-datepicker>
+        </kendo-formfield>
+
+        <kendo-formfield class="required-field">
+          <kendo-label text="PO Type"></kendo-label>
+
+          <kendo-dropdownlist
+            formControlName="poType"
+            [data]="facade.poTypes"
+            textField="name"
+            valueField="code"
+            [valuePrimitive]="true"
+            required
+            >
+          </kendo-dropdownlist>
+
+          @if (hasRequiredError('poType')) {
+            <kendo-formerror>
+              PO Type is required.
+            </kendo-formerror>
+          }
+        </kendo-formfield>
+
+        <kendo-formfield>
+          <kendo-label text="Status"></kendo-label>
+          <kendo-textbox
+            formControlName="status"
+            [readonly]="true"
+          ></kendo-textbox>
+        </kendo-formfield>
+
+        <kendo-formfield class="required-field">
+          <kendo-label text="Supplier"></kendo-label>
+
+          <kendo-combobox
+            formControlName="suppCode"
+            [data]="filteredSuppliers()"
+            textField="suppName"
+            valueField="suppCode"
+            [valuePrimitive]="true"
+            [filterable]="true"
+            [allowCustom]="false"
+            placeholder="Search supplier code or name"
+            required
+            [popupSettings]="itemPopupSettings"
+            (filterChange)="onSupplierFilterChange($event)"
+            (valueChange)="onSupplierChange($event)"
+            (selectionChange)="OnSupplierSelectionChange($event)"
+            >
+            <ng-template kendoComboBoxItemTemplate let-dataItem>
+              <div class="supplier-combo-item">
+                <span class="supplier-code">
+                  {{ dataItem.suppCode }}
+                </span>
+
+                <span class="supplier-name">
+                  {{ dataItem.suppName }}
+                </span>
+              </div>
+            </ng-template>
+          </kendo-combobox>
+
+          @if (hasRequiredError('suppCode')) {
+            <kendo-formerror>
+              Supplier is required.
+            </kendo-formerror>
+          }
+        </kendo-formfield>
+
+        <kendo-formfield class="required-field">
+          <kendo-label text="Branch"></kendo-label>
+
+          <kendo-dropdownlist
+            formControlName="branchName"
+            [data]="facade.branches()"
+            textField="branchName"
+            valueField="branchName"
+            [valuePrimitive]="true"
+            required
+            >
+          </kendo-dropdownlist>
+
+          @if (hasRequiredError('branchName')) {
+            <kendo-formerror>
+              Branch is required.
+            </kendo-formerror>
+          }
+        </kendo-formfield>
+
+        <kendo-formfield class="required-field">
+          <kendo-label text="Terms"></kendo-label>
+
+          <kendo-combobox
+            formControlName="termCode"
+            [data]="facade.terms()"
+            textField="termDescription"
+            valueField="termCode"
+            [valuePrimitive]="true"
+            [filterable]="true"
+            [allowCustom]="false"
+            placeholder="Select terms"
+            [kendoDropDownFilter]="filterSettings"
+            required
+            >
+          </kendo-combobox>
+
+          @if (hasRequiredError('termCode')) {
+            <kendo-formerror>
+              Terms is required.
+            </kendo-formerror>
+          }
+        </kendo-formfield>
+
+        <kendo-formfield class="required-field">
+          <kendo-label text="VAT Type"></kendo-label>
+
+          <kendo-dropdownlist
+            formControlName="vatType"
+            [data]="facade.typeOfVat"
+            textField="vname"
+            valueField="vcode"
+            [valuePrimitive]="true"
+            required
+            >
+          </kendo-dropdownlist>
+
+          @if (hasRequiredError('vatType')) {
+            <kendo-formerror>
+              VAT Type is required.
+            </kendo-formerror>
+          }
+        </kendo-formfield>
+
+        <kendo-formfield class="required-field">
+          <kendo-label text="Cheque Type"></kendo-label>
+
+          <kendo-dropdownlist
+            formControlName="chequeType"
+            [data]="facade.chequeTypes"
+            textField="text"
+            valueField="value"
+            [valuePrimitive]="true"
+            required
+            >
+          </kendo-dropdownlist>
+
+          @if (hasRequiredError('chequeType')) {
+            <kendo-formerror>
+              Cheque Type is required.
+            </kendo-formerror>
+          }
+        </kendo-formfield>
+
+        <!-- <kendo-formfield>
+        <kendo-label text="SO No."></kendo-label>
+        <div class="lookup-field">
+          <kendo-textbox #textbox1 formControlName="soNo" placeholder="Enter SO No." showSuccessIcon="initial"
+          showErrorIcon="initial"></kendo-textbox>
+          <button kendoButton type="button" icon="search" (click)="openSoLookup()">Verify</button>
+        </div>
+      </kendo-formfield> -->
+
+      <kendo-formfield>
+        <kendo-label [for]="soNoTextBox" text="SO No."></kendo-label>
+
+        <div class="lookup-field">
+          <kendo-textbox
+            #soNoTextBox
+            formControlName="soNo"
+            placeholder="Enter SO No."
+            showSuccessIcon="initial"
+            showErrorIcon="initial"
+            >
+          </kendo-textbox>
+
+          <button
+            kendoButton
+            type="button"
+            themeColor="primary"
+            [svgIcon]="searchIcon"
+            [disabled]="facade.loadingSo()"
+            (click)="verifySoFromMainField()"
+            >
+            Verify
+          </button>
+        </div>
+      </kendo-formfield>
+
+      <kendo-formfield class="wide">
+        <kendo-label text="Client Name"></kendo-label>
+        <input
+          title="Client Name"
+          kendoTextBox
+          formControlName="clientName"
+          />
+        </kendo-formfield>
+
+        <kendo-formfield class="remarks-field">
+          <!-- Keep label and textarea as siblings so Kendo form-field markup stays valid. -->
+          <kendo-label text="Remarks"></kendo-label>
+          <kendo-textarea
+            formControlName="remarks"
+            placeholder="Remarks"
+            [rows]="2"
+            resizable="vertical"
+            >
+          </kendo-textarea>
+        </kendo-formfield>
+      </div>
+    </div>
+
+    <section class="detail-card">
+      <div class="detail-heading">
+        <div>
+          <span class="detail-eyebrow">Line Items</span>
+          <h2>Purchase Order Details</h2>
+          <p>Add item lines, quantity, unit, conversion, and unit price.</p>
+        </div>
+      </div>
+
+      <!-- Order Details Grid -->
+      <kendo-grid
+        class="detail-grid"
+        [data]="detailsControls()"
+        [height]="270"
+        [resizable]="true"
+        [navigable]="true"
+        (edit)="editHandler($event)"
+        (cancel)="cancelHandler($event)"
+        (save)="saveHandler($event)"
+        (remove)="removeHandler($event)"
+        (add)="addHandler($event)"
+        [selectable]="{ mode: 'single' }"
+        >
+        <kendo-toolbar class="detail-toolbar" overflow="scroll">
+          <kendo-toolbar-button
+            kendoGridAddTool
+            text="Add"
+            themeColor="success"
+            [disabled]="isReadOnly()"
+            >
+          </kendo-toolbar-button>
+
+          <!-- <kendo-toolbar-button text="Supplier Price List" themeColor="primary" [disabled]="isReadOnly()"
+          (click)="openSupplierPriceList()">
+        </kendo-toolbar-button> -->
+
+        <kendo-toolbar-button
+          kendoGridEditTool
+          text="Edit"
+          themeColor="warning"
+          [disabled]="isReadOnly() || detailsControls().length === 0"
+          >
+        </kendo-toolbar-button>
+
+        <kendo-toolbar-spacer></kendo-toolbar-spacer>
+
+        <kendo-toolbar-button
+          kendoGridRemoveTool
+          text="Remove"
+          themeColor="error"
+          [disabled]="isReadOnly() || detailsControls().length === 0"
+          >
+        </kendo-toolbar-button>
+
+        <kendo-toolbar-button
+          kendoGridSaveTool
+          text="Save Line"
+          [disabled]="!canSaveCurrentDetail()"
+          themeColor="primary"
+          >
+        </kendo-toolbar-button>
+
+        <kendo-toolbar-button
+          kendoGridCancelTool
+          text="Cancel"
+          themeColor="error"
+          >
+        </kendo-toolbar-button>
+      </kendo-toolbar>
+
+      <!-- <ng-template kendoGridToolbarTemplate let-isNew="isNew">
+      <button kendoGridAddCommand type="button" themeColor="success">
+        Add Item
+      </button>
+      <button kendoGridEditCommand type="button" themeColor="warning">
+        Edit Item
+      </button>
+      <button kendoGridRemoveCommand type="button" themeColor="error">
+        Remove Item
+      </button>
+      <button kendoGridSaveCommand type="button" themeColor="primary">
+        {{ isNew ? 'Add' : 'Save' }}
+      </button>
+      <button KendoGridCancelCommand type="button" themeColor="error">
+        Cancel
+      </button>
+    </ng-template> -->
+
+    <kendo-grid-column
+      title="#"
+      [width]="44"
+      [headerClass]="'headerCustomClass'"
+      >
+      <ng-template kendoGridCellTemplate let-rowIndex="rowIndex">
+        {{ rowIndex + 1 }}
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column
+      field="itemCode"
+      title="Item Code"
+      [width]="250"
+      [headerClass]="'headerCustomClass'"
+      >
+      <ng-template kendoGridCellTemplate let-dataItem>
+        {{ dataItem.itemCode }}
+      </ng-template>
+
+      <!-- <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+      <kendo-combobox
+        [formControl]="formGroup.get('itemCode')"
+        [data]="itemLookupData()"
+        textField="itemDesc"
+        valueField="itemCode"
+        [valuePrimitive]="true"
+        [filterable]="true"
+        [allowCustom]="true"
+        [popupSettings]="itemPopupSettings"
+        (filterChange)="onItemFilterChange($event)"
+        (valueChange)="onItemChanged(formGroup, $event)">
+      </kendo-combobox>
+    </ng-template> -->
+
+    <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+      <kendo-multicolumncombobox
+        kendoGridFocusable
+        [formControl]="formGroup.get('itemCode')"
+        [data]="itemLookupData()"
+        textField="itemCode"
+        valueField="itemCode"
+        [valuePrimitive]="true"
+        [filterable]="true"
+        [allowCustom]="true"
+        [popupSettings]="itemPopupSettings"
+        required
+        (filterChange)="onItemFilterChange($event)"
+        (selectionChange)="onItemSelected(formGroup, $event)"
+        >
+        <kendo-combobox-column
+          field="itemCode"
+          title="Item Code"
+          [width]="200"
+          class="k-text-left"
+                [headerStyle]="{
+                  'background-color': '#000000',
+                  color: '#ffffff',
+                  'font-weight': '700',
+                  'text-align': 'left',
+                }"
+          >
+        </kendo-combobox-column>
+
+        <kendo-combobox-column
+          field="itemDesc"
+          title="Item Description"
+          [width]="400"
+          class="k-text-left"
+          [style]="{ 'font-weight': '600' }"
+                [headerStyle]="{
+                  'background-color': '#000000',
+                  color: '#ffffff',
+                  'font-weight': '700',
+                  'text-align': 'left',
+                }"
+          >
+        </kendo-combobox-column>
+
+        <kendo-combobox-column
+          field="umCode"
+          title="UM"
+          [width]="90"
+          class="k-text-left"
+          [style]="{ 'font-weight': '600' }"
+                [headerStyle]="{
+                  'background-color': '#000000',
+                  color: '#ffffff',
+                  'font-weight': '700',
+                  'text-align': 'left',
+                }"
+          >
+        </kendo-combobox-column>
+
+        <ng-template kendoMultiColumnComboBoxNoDataTemplate>
+          <div class="item-no-data">No Item found.</div>
+        </ng-template>
+      </kendo-multicolumncombobox>
+
+      @if (
+        formGroup.get("itemCode")?.touched &&
+        formGroup.get("itemCode")?.hasError("required")
+        ) {
+        <div class="field-error">Item Code is required.</div>
+      }
+    </ng-template>
+
+    <ng-template kendoGridCellTemplate let-dataItem>
+      {{ dataItem.itemCode }}
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column
+    field="itemDesc"
+    title="Item Description"
+    [width]="350"
+    [headerClass]="'headerCustomClass'"
+    >
+    <ng-template kendoGridCellTemplate let-dataItem>
+      {{ dataItem.itemDesc }}
+    </ng-template>
+
+    <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+      <input
+        kendoTextBox
+        [formControl]="formGroup.get('itemDesc')"
+        [readonly]="true"
+        title="Item Description"
+        />
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column
+      field="qtyPo"
+      title="Qty"
+      [width]="130"
+      class="numeric"
+      [headerClass]="'headerCustomClass'"
+      >
+      <ng-template kendoGridCellTemplate let-dataItem>
+        {{ dataItem.qtyPo | number: "1.2-2" }}
+      </ng-template>
+
+      <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+        <kendo-numerictextbox
+          [formControl]="formGroup.get('qtyPo')"
+          [min]="0"
+          [decimals]="2"
+          [format]="'n2'"
+          >
+        </kendo-numerictextbox>
+      </ng-template>
+
+      <ng-template kendoGridFooterTemplate>
+        <span class="footer-total">{{
+          footerQtySum() | number: "1.2-2"
+        }}</span>
+      </ng-template>
+    </kendo-grid-column>
+
+    <!-- U/M grid field is poUm; po_um is only a backend/database mapping concern. -->
+    <kendo-grid-column
+      field="poUm"
+      title="U/M"
+      [width]="140"
+      class="uom-cell"
+      [headerClass]="'headerCustomClass'"
+      >
+      <ng-template
+        kendoGridEditTemplate
+        let-dataItem="dataItem"
+        let-formGroup="formGroup"
+        >
+        <!-- Bind lookup umCode as the primitive value saved in the poUm FormControl. -->
+        <kendo-multicolumncombobox
+          kendoGridFocusable
+          [data]="facade.unitMeasures()"
+          textField="umDesc"
+          valueField="umCode"
+          [formControl]="uomControl(formGroup)"
+          [valuePrimitive]="true"
+          [allowCustom]="false"
+          [filterable]="true"
+          [clearButton]="true"
+          [loading]="facade.unitMeasuresLoading()"
+          [popupSettings]="uomPopupSettings"
+          [kendoDropDownFilter]="uomFilterSettings"
+          placeholder="Select U/M"
+          required
+          (selectionChange)="onUomSelectionChange($event, formGroup)"
+          (valueChange)="onUomValueChange($event, formGroup)"
+          (blur)="onUomBlur(formGroup)"
+          >
+          <kendo-combobox-column
+            field="umCode"
+            title="U/M"
+            [width]="120"
+            class="k-text-left"
+                [headerStyle]="{
+                  'background-color': '#000000',
+                  color: '#ffffff',
+                  'font-weight': '700',
+                  'text-align': 'left',
+                }"
+            >
+          </kendo-combobox-column>
+
+          <kendo-combobox-column
+            field="umDesc"
+            title="Description"
+            [width]="300"
+            class="k-text-left"
+            [style]="{ 'font-weight': '600' }"
+                [headerStyle]="{
+                  'background-color': '#000000',
+                  color: '#ffffff',
+                  'font-weight': '700',
+                  'text-align': 'left',
+                }"
+            >
+          </kendo-combobox-column>
+
+          <ng-template kendoMultiColumnComboBoxNoDataTemplate>
+            <div class="uom-no-data">No Unit of Measure found.</div>
+          </ng-template>
+        </kendo-multicolumncombobox>
+
+        @if (
+          uomControl(formGroup).touched &&
+          uomControl(formGroup).hasError("required")
+          ) {
+          <div class="field-error">U/M is required.</div>
+        }
+
+        @if (
+          uomControl(formGroup).touched &&
+          uomControl(formGroup).hasError("invalidUom")
+          ) {
+          <div class="field-error">Invalid U/M.</div>
+        }
+      </ng-template>
+
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <!-- Display CODE - Description while keeping the row value as primitive poUm. -->
+        {{ dataItem.poUm }}
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column
+      field="poConvFactor"
+      title="Conv."
+      [width]="150"
+      [headerClass]="'headerCustomClass'"
+      >
+      <ng-template kendoGridCellTemplate let-dataItem>
+        {{ dataItem.poConvFactor | number: "1.4-4" }}
+      </ng-template>
+      <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+        <kendo-numerictextbox
+          [formControl]="formGroup.get('poConvFactor')"
+          [min]="0.0001"
+          [decimals]="4"
+          format="n4"
+        ></kendo-numerictextbox>
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column
+      title="Base Qty"
+      [width]="130"
+      [headerClass]="'headerCustomClass'"
+      >
+      <ng-template kendoGridCellTemplate let-dataItem>
+        {{ baseQuantity(dataItem) | number: "1.4-4" }}
+      </ng-template>
+      <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+        {{ baseQuantityFromForm(formGroup) | number: "1.4-4" }}
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column
+      field="unitPrice"
+      title="Unit Price"
+      [width]="135"
+      [headerClass]="'headerCustomClass'"
+      >
+      <ng-template kendoGridCellTemplate let-dataItem>
+        {{ dataItem.unitPrice | number: "1.4-4" }}
+      </ng-template>
+      <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+        <kendo-numerictextbox
+          [formControl]="formGroup.get('unitPrice')"
+          [min]="0"
+          [decimals]="4"
+          format="n4"
+        ></kendo-numerictextbox>
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column
+      title="Amount"
+      [width]="115"
+      [headerClass]="'headerCustomClass'"
+      >
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <strong>{{ lineAmount(dataItem) | number: "1.2-2" }}</strong>
+      </ng-template>
+
+      <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+        <strong>{{
+          lineAmountFromForm(formGroup) | number: "1.2-2"
+        }}</strong>
+      </ng-template>
+
+      <ng-template kendoGridFooterTemplate>
+        <span class="footer-total">{{
+          footerAmountSum() | number: "1.2-2"
+        }}</span>
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column
+      title="Pricing"
+      [width]="295"
+      [headerClass]="'headerCustomClass'"
+      >
+      <ng-template
+        kendoGridCellTemplate
+        let-dataItem
+        let-rowIndex="rowIndex"
+        >
+        <div class="pricing-actions">
+          <button
+            kendoButton
+            type="button"
+            size="small"
+            class="supplier-price-btn"
+            (click)="openSupplierPriceListForRow(rowIndex)"
+            >
+            Supplier List
+          </button>
+
+          <button
+            kendoButton
+            type="button"
+            size="small"
+            class="price-inquiry-btn"
+            (click)="openPriceInquiry(dataItem, rowIndex)"
+            >
+            Price Inquiry
+          </button>
+
+          <button
+            kendoButton
+            type="button"
+            size="small"
+            class="price-history-btn"
+            (click)="openPriceHistory(dataItem, rowIndex)"
+            >
+            History
+          </button>
+        </div>
+      </ng-template>
+    </kendo-grid-column>
+
+    <!-- <kendo-grid-command-column mmand-column title="Action" [width]="190" [headerClass]="'headerCustomClass'"
+    [headerStyle]="{ 'background-color': '#666', 'font-weight': 'bolder' }">
+    <ng-template kendoGridCellTemplate let-isNew="isNew">
+      <button kendoGridEditCommand type="button">
+        Edit
+      </button>
+
+      <button kendoGridRemoveCommand type="button" themeColor="error">
+        Remove
+      </button>
+
+      <button kendoGridSaveCommand type="button" themeColor="primary">
+        {{ isNew ? 'Add' : 'Save' }}
+      </button>
+
+      <button kendoGridCancelCommand type="button">
+        Cancel
+      </button>
+    </ng-template>
+  </kendo-grid-command-column> -->
+</kendo-grid>
+<!-- Order Details Grid -->
+
+@if (detailValidationError()) {
+  <div class="lookup-error">
+    {{ detailValidationError() }}
+  </div>
+}
+@if (itemUmsError()) {
+  <div class="lookup-error">
+    {{ itemUmsError() }}
+  </div>
+}
+</section>
+
+<!-- <div class="save-message" *ngIf="facade.saveError()">
+{{ facade.saveError() }}
+</div>
+
+<div class="save-success" *ngIf="facade.lastSaved()">
+  Saved successfully. PO No: {{ facade.lastSaved()?.poNo }}
+</div> -->
+</form>
+</section>
+
+@if (supplierPriceListOpened()) {
+  <kendo-dialog
+    class="supplier-price-list-dialog"
+    title="Supplier Price List"
+    [width]="1160"
+    [minWidth]="900"
+    (close)="closeSupplierPriceList()"
+    >
+    <app-supplier-price-list
+      [supplierCode]="supplierPriceListSupplierCode()"
+      [supplierName]="supplierPriceListSupplierName()"
+      (selected)="onSupplierPriceSelected($event)"
+      (closed)="closeSupplierPriceList()"
+    ></app-supplier-price-list>
+  </kendo-dialog>
+}
+
+@if (priceDialogContext(); as pricingContext) {
+  @if (showPriceInquiry()) {
+    <app-price-inquiry-dialog
+      [context]="pricingContext"
+      (closed)="closePriceDialogs()"
+      (priceSelected)="usePriceForCurrentRow($event)"
+    ></app-price-inquiry-dialog>
+  }
+
+  @if (showPriceHistory()) {
+    <app-price-history-dialog
+      [context]="pricingContext"
+      (closed)="closePriceDialogs()"
+      (priceSelected)="usePriceForCurrentRow($event)"
+    ></app-price-history-dialog>
+  }
+}
+
+<!-- <kendo-dialog *ngIf="showTermsDialog()" title="Select Terms" [width]="700" [height]="500"
+(close)="showTermsDialog.set(false)">
+
+<kendo-grid [data]="facade.terms()" [height]="380">
+  <kendo-grid-column field="termCode" title="Code" [width]="150"></kendo-grid-column>
+  <kendo-grid-column field="termDescription" title="Description"></kendo-grid-column>
+  <kendo-grid-column title="Action" [width]="120">
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <button kendoButton type="button" themeColor="primary" (click)="selectTerm(dataItem)">
+        Select
+      </button>
+    </ng-template>
+  </kendo-grid-column>
+</kendo-grid>
+</kendo-dialog> -->
+
+<!-- <kendo-dialog *ngIf="showVatDialog()" title="Select VAT Type" [width]="700" [height]="500"
+(close)="showVatDialog.set(false)">
+
+<kendo-grid [data]="facade.vat_Types()" [height]="380">
+  <kendo-grid-column field="vatCode" title="VAT Type" [width]="150"></kendo-grid-column>
+  <kendo-grid-column field="vatName" title="Tax Name"></kendo-grid-column>
+  <kendo-grid-column title="Action" [width]="120">
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <button kendoButton type="button" themeColor="primary" (click)="selectVat(dataItem)">
+        Select
+      </button>
+    </ng-template>
+  </kendo-grid-column>
+</kendo-grid>
+</kendo-dialog> -->
+
+<!-- <kendo-dialog *ngIf="showSoDialog()" title="Verify SO Number" [width]="800" [height]="560"
+(close)="showSoDialog.set(false)">
+
+<div class="so-verify-bar">
+  <input kendoTextBox [value]="soLookupText()" placeholder="Enter SO number"
+    (input)="soLookupText.set($any($event.target).value)" />
+
+    <button kendoButton type="button" themeColor="primary" icon="search" (click)="verifySo()">
+      Verify
+    </button>
+  </div>
+
+  <kendo-grid [data]="facade.soResults()" [height]="380">
+    <kendo-grid-column field="soNo" title="SO No." [width]="150"></kendo-grid-column>
+    <kendo-grid-column field="customerId" title="Customer ID" [width]="150"></kendo-grid-column>
+    <kendo-grid-column field="custName" title="Customer"></kendo-grid-column>
+    <kendo-grid-column title="Action" [width]="120">
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <button kendoButton type="button" themeColor="primary" (click)="selectSo(dataItem)">
+          Select
+        </button>
+      </ng-template>
+    </kendo-grid-column>
+  </kendo-grid>
+</kendo-dialog> -->
+
+@if (showSoDialog()) {
+  <kendo-dialog
+    title="SO Verification Result"
+    [width]="800"
+    [height]="560"
+    (close)="closeSoDialog()"
+    >
+    <div class="so-verify-result-bar">
+      <div>
+        <span class="so-verify-label">Verified SO No.</span>
+        <strong>{{ verifiedSoNo() }}</strong>
+      </div>
+    </div>
+    @if (facade.soError()) {
+      <div class="so-error">
+        {{ facade.soError() }}
+      </div>
+    }
+    <kendo-grid
+      [data]="facade.soResults()"
+      [loading]="facade.loadingSo()"
+      [height]="380"
+      >
+      <ng-template kendoGridNoRecordsTemplate>
+        @if (facade.loadingSo()) {
+          <span>
+            Verifying SO number...
+          </span>
+        } @else {
+          No records available.
+        }
+      </ng-template>
+      <kendo-grid-column field="soNo" title="SO No." [width]="150">
+      </kendo-grid-column>
+      <kendo-grid-column field="customerId" title="Customer ID" [width]="150">
+      </kendo-grid-column>
+      <kendo-grid-column field="custName" title="Customer"> </kendo-grid-column>
+      <kendo-grid-column title="Action" [width]="120">
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <button
+            kendoButton
+            type="button"
+            themeColor="primary"
+            [svgIcon]="checkIcon"
+            (click)="selectSo(dataItem)"
+            >
+            Select
+          </button>
+        </ng-template>
+      </kendo-grid-column>
+    </kendo-grid>
+    <kendo-dialog-actions>
+      <button
+        kendoButton
+        type="button"
+        fillMode="outline"
+        (click)="closeSoDialog()"
+        >
+        Close
+      </button>
+    </kendo-dialog-actions>
+  </kendo-dialog>
+}
+
+<div kendoDialogContainer></div>
+
+@if (showPrintDialog()) {
+  <kendo-dialog
+    #printViewer
+    class="po-print-dialog"
+    [title]="'Purchase Order Print Preview - ' + printPoNo()"
+    [width]="1180"
+    [height]="790"
+    [minWidth]="700"
+    (close)="closePrintDialog()"
+    >
+    <tr-viewer
+      [containerStyle]="viewerContainerStyle"
+      [serviceUrl]="reportingServiceUrl"
+      [reportSource]="rs"
+      [viewMode]="'PRINT_PREVIEW'"
+      [scaleMode]="'SPECIFIC'"
+      [scale]="1.0"
+      >
+    </tr-viewer>
+    <!-- <div class="po-print-dialog-body">
+    <iframe
+      *ngIf="printViewerUrl() as viewerUrl"
+      class="po-print-frame"
+      [src]="viewerUrl"
+      title="'Purchase Order ' + printPoNo()">
+    </iframe>
+  </div> -->
+  <kendo-dialog-actions layout="end">
+    <button
+      kendoButton
+      type="button"
+      fillMode="outline"
+      (click)="closePrintDialog()"
+      >
+      Close
+    </button>
+  </kendo-dialog-actions>
+</kendo-dialog>
+}
+
+<div kendoDialogContainer></div>

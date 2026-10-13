@@ -1,0 +1,854 @@
+:host {
+  display: block;
+}
+
+.po-page {
+  min-height: 100%;
+  padding: 8px 10px 12px;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef3f8 100%);
+  color: #0f172a;
+}
+
+.po-toolbar-host,
+.po-card {
+  width: 100%;
+  max-width: 1336px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+.po-toolbar-host {
+  margin-bottom: 7px;
+}
+
+.po-card {
+  position: relative;
+  overflow: hidden;
+  padding: 9px 10px 10px;
+  border: 1px solid #dbe5f0;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 3px;
+    background: linear-gradient(90deg, #2563eb, #0ea5e9, #22c55e);
+  }
+}
+
+.po-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 52px;
+  padding: 5px 0 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #e5edf6;
+}
+
+.po-title {
+  min-width: 0;
+
+  h1 {
+    margin: 1px 0 0;
+    font-size: 18px;
+    line-height: 1.05;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: #0b1220;
+  }
+
+  p {
+    margin: 3px 0 0;
+    font-size: 11.5px;
+    line-height: 1.2;
+    color: #475569;
+  }
+}
+
+.po-eyebrow,
+.detail-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  font-size: 9px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #2563eb;
+}
+
+.po-header-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 9px;
+  flex-shrink: 0;
+}
+
+.po-number-box {
+  min-width: 118px;
+  padding: 7px 10px;
+  border: 1px solid #d6e0ec;
+  border-radius: 9px;
+  background: #f8fafc;
+  text-align: right;
+
+  span {
+    display: block;
+    font-size: 9px;
+    line-height: 1;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  strong {
+    display: block;
+    margin-top: 3px;
+    font-size: 18px;
+    line-height: 1;
+    font-weight: 950;
+    letter-spacing: 0.04em;
+    color: #0f172a;
+  }
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 86px;
+  min-height: 26px;
+  padding: 4px 11px;
+  border: 1px solid #dbe3ef;
+  border-radius: 999px;
+  background: #f8fafc;
+  color: #334155;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+
+  &.N {
+    background: #fff7ed;
+    color: #9a3412;
+    border-color: #fed7aa;
+  }
+
+  &.P {
+    background: #eff6ff;
+    color: #1d4ed8;
+    border-color: #bfdbfe;
+  }
+
+  &.A {
+    background: #ecfdf5;
+    color: #047857;
+    border-color: #86efac;
+  }
+
+  &.C {
+    background: #f8fafc;
+    color: #475569;
+    border-color: #cbd5e1;
+  }
+}
+
+.erp-section {
+  padding: 8px 10px 9px;
+  margin-bottom: 8px;
+  border: 1px solid #dfe8f4;
+  border-radius: 10px;
+  background: #fbfdff;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+
+  span {
+    font-size: 12.5px;
+    line-height: 1.1;
+    font-weight: 900;
+    color: #0f172a;
+  }
+
+  small {
+    font-size: 10px;
+    line-height: 1.1;
+    color: #64748b;
+  }
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(160px, 1fr));
+  gap: 7px 10px;
+  align-items: start;
+}
+
+.wide {
+  grid-column: span 2;
+}
+
+.remarks-field {
+  grid-column: span 2;
+}
+
+.lookup-field {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+
+  kendo-textbox {
+    min-width: 0;
+  }
+}
+
+.detail-card {
+  padding: 8px 10px 9px;
+  border: 1px solid #dfe8f4;
+  border-radius: 10px;
+  background: #ffffff;
+  overflow-x: auto;
+}
+
+.detail-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 39px;
+  margin-bottom: 6px;
+
+  h2 {
+    margin: 2px 0 0;
+    font-size: 15px;
+    line-height: 1.05;
+    font-weight: 900;
+    color: #0f172a;
+  }
+
+  p {
+    margin: 2px 0 0;
+    font-size: 11.5px;
+    line-height: 1.15;
+    color: #475569;
+  }
+}
+
+.detail-grid {
+  min-width: 1270px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.save-message {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #991b1b;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.save-success {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  background: #f0fdf4;
+  color: #166534;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.so-verify-bar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 7px;
+  margin-bottom: 10px;
+}
+
+.so-verify-result-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0 8px;
+}
+
+.so-verify-label {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 10px;
+  color: #64748b;
+}
+
+.so-error {
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #b91c1c;
+  background: #fee2e2;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.text-end {
+  text-align: right;
+}
+
+.uom-cell {
+  font-weight: 700;
+}
+
+.uom-no-data {
+  padding: 8px;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.field-error {
+  margin-top: 3px;
+  color: #dc2626;
+  font-size: 10px;
+  line-height: 1.2;
+  font-weight: 800;
+}
+
+.lookup-error {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #991b1b;
+  background: #fee2e2;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.footer-total {
+  display: block;
+  text-align: right;
+  font-weight: 950;
+  color: #0f172a;
+}
+
+.required-field {
+  kendo-formerror {
+    display: block;
+    margin-top: 3px;
+    color: #dc2626;
+    font-size: 10px;
+    line-height: 1.2;
+    font-weight: 800;
+  }
+}
+
+/* Kendo compact ERP control styling */
+:host ::ng-deep .po-toolbar-host app-toolbar > * {
+  max-width: 1336px;
+}
+
+:host ::ng-deep .po-card kendo-formfield {
+  min-width: 0;
+}
+
+:host ::ng-deep .po-card .k-form-field {
+  margin: 0;
+}
+
+:host ::ng-deep .po-card .k-label {
+  margin-bottom: 2px;
+  color: #334155;
+  font-size: 10.5px;
+  line-height: 1.15;
+  font-weight: 900;
+}
+
+:host ::ng-deep .required-field .k-label::after {
+content: ' *';
+  color: #dc2626 !important;
+  font-size: 13px;
+  font-weight: 950;
+  margin-left: 2px;
+}
+
+/* =========================================================
+   INVALID REQUIRED FIELD
+   Clear red border when required value is missing
+   ========================================================= */
+
+:host ::ng-deep .required-field .ng-invalid.ng-touched.k-input,
+:host ::ng-deep .required-field .ng-invalid.ng-touched.k-picker,
+:host ::ng-deep .required-field .ng-invalid.ng-touched.k-dropdownlist,
+:host ::ng-deep .required-field .ng-invalid.ng-touched.k-combobox,
+:host ::ng-deep .required-field .ng-invalid.ng-touched.k-datepicker {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 1px #dc2626 !important;
+  background-color: #fff7f7 !important;
+}
+
+
+/* Kendo sometimes puts ng-invalid on the wrapper */
+:host ::ng-deep .required-field .k-input.ng-invalid.ng-touched,
+:host ::ng-deep .required-field .k-picker.ng-invalid.ng-touched {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 1px #dc2626 !important;
+  background-color: #fff7f7 !important;
+}
+
+
+/* Required validation message */
+:host ::ng-deep .required-field .k-form-error {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  margin-top: 4px;
+
+  color: #b91c1c !important;
+  font-size: 10.5px;
+  line-height: 1.2;
+  font-weight: 900;
+}
+
+
+/* Put a warning symbol before validation text */
+:host ::ng-deep .required-field .k-form-error::before {
+  content: '⚠';
+  color: #dc2626;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+:host ::ng-deep .po-card .k-input,
+:host ::ng-deep .po-card .k-picker,
+:host ::ng-deep .po-card .k-dropdownlist,
+:host ::ng-deep .po-card .k-combobox,
+:host ::ng-deep .po-card .k-multicolumncombobox,
+:host ::ng-deep .po-card .k-numerictextbox,
+:host ::ng-deep .po-card input[kendoTextBox] {
+  width: 100%;
+  min-height: 30px;
+  border-radius: 7px;
+  font-size: 11.5px;
+}
+
+:host ::ng-deep .po-card .k-input-inner {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  font-size: 11.5px;
+
+  font-weight: 700 !important;
+  color: #111827 !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+:host ::ng-deep .po-card .k-button-md.k-icon-button,
+:host ::ng-deep .po-card .k-input-button {
+  min-width: 30px;
+  width: 30px;
+  min-height: 30px;
+}
+
+:host ::ng-deep .po-card .k-textarea {
+  min-height: 50px;
+  border-radius: 7px;
+  font-size: 11.5px;
+}
+
+:host ::ng-deep .lookup-field .k-button {
+  height: 30px;
+  min-height: 30px;
+  padding-inline: 11px;
+  border-radius: 7px;
+  font-size: 11.5px;
+  font-weight: 900;
+}
+
+:host ::ng-deep .required-field .k-form-error {
+  margin-top: 3px;
+  color: #dc2626;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+/* Kendo Grid compact style */
+:host ::ng-deep .detail-grid .k-toolbar {
+  min-height: 36px;
+  padding: 5px 7px;
+  border-color: #dbe4ef;
+  background: #f8fafc;
+}
+
+:host ::ng-deep .detail-grid .k-toolbar .k-button {
+  min-height: 28px;
+  padding-inline: 9px;
+  border-radius: 7px;
+  font-size: 11.5px;
+  font-weight: 900;
+}
+
+:host ::ng-deep .headerCustomClass,
+:host ::ng-deep .detail-grid .k-grid-header th {
+  color: #ffffff;
+  text-align: center;
+  font-size: 10.5px;
+  font-weight: 950;
+  background: #243244;
+}
+
+:host ::ng-deep .detail-grid .k-grid-header .k-header {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+:host ::ng-deep .detail-grid .k-grid-content td,
+:host ::ng-deep .detail-grid .k-grid-content .k-table-td {
+  padding: 5px 7px;
+  color: #0f172a;
+  font-size: 11.5px;
+  line-height: 1.15;
+  font-weight: 700;
+  vertical-align: middle;
+}
+
+:host ::ng-deep .detail-grid .k-grid-content tr:nth-child(even) td {
+  background: #fbfdff;
+}
+
+:host ::ng-deep .detail-grid .k-grid-content tr:hover td {
+  background: #eff6ff;
+}
+
+:host ::ng-deep .detail-grid .k-grid-footer {
+  font-weight: 900;
+}
+
+:host ::ng-deep .detail-grid .k-grid-footer td {
+  padding: 5px 7px;
+  border-top-color: #cbd5e1;
+  background: #f8fafc;
+  font-size: 11.5px;
+}
+
+:host ::ng-deep .detail-grid .k-grid-footer .k-footer-template {
+  width: 100%;
+}
+
+:host ::ng-deep .detail-grid .k-grid .uom-cell,
+:host ::ng-deep .detail-grid .uom-cell {
+  color: #0f172a;
+}
+
+:host ::ng-deep .detail-grid .k-numerictextbox,
+:host ::ng-deep .detail-grid .k-combobox,
+:host ::ng-deep .detail-grid .k-multicolumncombobox,
+:host ::ng-deep .detail-grid input[kendoTextBox] {
+  min-height: 28px;
+  font-size: 11.5px;
+}
+
+:host ::ng-deep .k-dialog {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+:host ::ng-deep .k-dialog-titlebar {
+  padding: 9px 12px;
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+:host ::ng-deep .k-dialog-content {
+  padding: 12px;
+}
+
+:host ::ng-deep .k-dialog-actions {
+  padding: 8px 12px;
+  border-top: 1px solid #e5edf6;
+  background: #f8fafc;
+}
+
+@media (max-width: 1200px) {
+  .po-page {
+    padding: 7px 8px 10px;
+  }
+
+  .form-grid {
+    grid-template-columns: repeat(4, minmax(145px, 1fr));
+    gap: 6px 8px;
+  }
+
+  .po-card {
+    padding: 8px;
+  }
+
+  .erp-section,
+  .detail-card {
+    padding: 8px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .form-grid {
+    grid-template-columns: repeat(2, minmax(170px, 1fr));
+  }
+
+  .wide,
+  .remarks-field {
+    grid-column: span 2;
+  }
+
+  .detail-grid {
+    min-width: 880px;
+  }
+}
+
+@media (max-width: 700px) {
+  .po-header {
+    align-items: stretch;
+    flex-direction: column;
+    min-height: unset;
+  }
+
+  .po-header-meta {
+    width: 100%;
+    align-items: stretch;
+    justify-content: space-between;
+    flex-direction: row;
+  }
+
+  .po-number-box {
+    min-width: 0;
+    flex: 1;
+    text-align: right;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .wide,
+  .remarks-field {
+    grid-column: span 1;
+  }
+
+  .section-title {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .detail-heading {
+    flex-direction: column;
+    align-items: flex-start;
+    min-height: unset;
+  }
+
+  .lookup-field {
+    grid-template-columns: 1fr;
+  }
+
+  :host ::ng-deep .lookup-field .k-button {
+    width: 100%;
+  }
+}
+
+:host ::ng-deep .erp-confirm-dialog-host .k-dialog {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+:host ::ng-deep .erp-confirm-dialog-host .k-dialog-content {
+  padding: 0;
+}
+
+.po-print-dialog-body {
+  width: 100%;
+  height: 680px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.po-print-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  background: #ffffff;
+}
+
+:host ::ng-deep .po-print-dialog .k-dialog {
+  width: min(1180px, calc(100vw - 32px)) !important;
+  height: min(790px, calc(100vh - 32px)) !important;
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 32px);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+:host ::ng-deep .po-print-dialog .k-dialog-titlebar {
+  flex: 0 0 auto;
+  padding: 12px 16px;
+}
+
+:host ::ng-deep .po-print-dialog .k-dialog-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+:host ::ng-deep .po-print-dialog .k-dialog-actions {
+  flex: 0 0 auto;
+  padding: 10px 16px;
+}
+
+@media (max-width: 900px) {
+  .po-print-dialog-body {
+    height: calc(100vh - 170px);
+    min-height: 480px;
+  }
+
+  :host ::ng-deep .po-print-dialog .k-dialog {
+    width: calc(100vw - 20px) !important;
+    height: calc(100vh - 20px) !important;
+    max-width: calc(100vw - 20px);
+    max-height: calc(100vh - 20px);
+  }
+}
+
+/* Purchase Order Entry detail grid header */
+:host ::ng-deep .k-grid .k-grid-header,
+:host ::ng-deep .k-grid .k-grid-header-wrap,
+:host ::ng-deep .k-grid .k-table-thead,
+:host ::ng-deep .k-grid .k-table-th {
+  background-color: #fa8128 !important;
+}
+
+:host ::ng-deep .k-grid .k-table-th,
+:host ::ng-deep .k-grid .k-column-title,
+:host ::ng-deep .k-grid .k-table-th .k-link {
+  color: #000000 !important;
+  font-weight: 700;
+}
+
+:host ::ng-deep .k-grid .k-sort-icon,
+:host ::ng-deep .k-grid .k-table-th .k-svg-icon {
+  color: #000000 !important;
+  fill: #000000 !important;
+}
+
+
+
+:host ::ng-deep .combo-header-black {
+  background-color: #000 !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+}
+
+:host ::ng-deep .combo-header-black *,
+:host ::ng-deep .combo-header-black .k-link,
+:host ::ng-deep .combo-header-black .k-column-title {
+  color: #fff !important;
+}
+
+:host ::ng-deep .supplier-price-list-dialog .k-dialog {
+  width: min(1160px, calc(100vw - 28px)) !important;
+  max-width: calc(100vw - 28px);
+  max-height: calc(100vh - 28px);
+}
+
+:host ::ng-deep .supplier-price-list-dialog .k-dialog-content {
+  min-height: 0;
+  overflow: auto;
+}
+
+.pricing-actions {
+  display: flex;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+:host ::ng-deep .pricing-actions .k-button {
+  min-height: 25px;
+  padding-inline: 7px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+/* =========================================================
+   PRICING ACTION BUTTONS
+   ========================================================= */
+
+.pricing-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Supplier List - Blue */
+.pricing-actions .supplier-price-btn {
+  background-color: #0d6efd !important;
+  border-color: #0d6efd !important;
+  color: #ffffff !important;
+  font-weight: 700;
+}
+
+.pricing-actions .supplier-price-btn:hover {
+  background-color: #0b5ed7 !important;
+  border-color: #0a58ca !important;
+}
+
+/* Price Inquiry - Green */
+.pricing-actions .price-inquiry-btn {
+  background-color: #198754 !important;
+  border-color: #198754 !important;
+  color: #ffffff !important;
+  font-weight: 700;
+}
+
+.pricing-actions .price-inquiry-btn:hover {
+  background-color: #157347 !important;
+  border-color: #146c43 !important;
+}
+
+/* History - Orange */
+.pricing-actions .price-history-btn {
+  background-color: #fd7e14 !important;
+  border-color: #fd7e14 !important;
+  color: #ffffff !important;
+  font-weight: 700;
+}
+
+.pricing-actions .price-history-btn:hover {
+  background-color: #dc6502 !important;
+  border-color: #c85c00 !important;
+}
+
+/* Disabled state */
+.pricing-actions .k-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}

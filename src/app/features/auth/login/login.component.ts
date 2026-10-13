@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -12,13 +12,12 @@ import { eyeIcon, eyeSlashIcon, lockIcon, usersIcon } from '@progress/kendo-svg-
 @Component({
   selector: 'app-login',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     KENDO_INPUTS,
     KENDO_LABELS,
     KENDO_BUTTONS,
     KENDO_ICONS
-  ],
+],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
   standalone: true,

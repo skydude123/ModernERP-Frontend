@@ -1,0 +1,104 @@
+<app-toolbar [config]="toolbar.config()" title="Depreciation Entry"
+  [subtitle]="(depRunNo() || 'New monthly run') + ' · ' + status()"
+  [formValid]="form.valid && !!preview()" [editMode]="!!depRunNo()"
+  [postingMode]="canPost()" [reverseMode]="canReverse()"
+  (onNew)="newDocument()" (onSave)="requestSave()" (onBack)="back()" (onList)="back()"
+(onPrint)="print()" (onPost)="requestAction('post')" (onReverse)="requestReverse()"></app-toolbar>
+
+<header class="document-head">
+  <div><span>Run No.</span><strong>{{ depRunNo() || 'AUTO-GENERATED' }}</strong></div>
+  <div><span>Status</span><strong class="status">{{ status() }}</strong></div>
+  <div><span>Journal</span><strong>{{ journalNo() || '—' }}</strong></div>
+  <div><span>Reversal</span><strong>{{ reversalJournalNo() || '—' }}</strong></div>
+</header>
+
+<section class="setup" [formGroup]="form">
+  <label>Depreciation Period<input kendoTextBox maxlength="6" formControlName="periodKey" placeholder="YYYYMM"></label>
+  <label>Run Date<kendo-datepicker formControlName="runDate"></kendo-datepicker></label>
+  <label>Branch Filter<kendo-dropdownlist [data]="facade.branches()" textField="name" valueField="code" [valuePrimitive]="true" [defaultItem]="{code:'',name:'All branches'}" formControlName="branchCode"></kendo-dropdownlist></label>
+  <label>Asset Category<kendo-dropdownlist [data]="facade.categories()" textField="name" valueField="code" [valuePrimitive]="true" [defaultItem]="{code:'',name:'All categories'}" formControlName="assetCategoryCode"></kendo-dropdownlist></label>
+  <label>Method<kendo-dropdownlist [data]="facade.methods()" textField="name" valueField="code" [valuePrimitive]="true" [defaultItem]="{code:'',name:'All methods'}" formControlName="methodCode"></kendo-dropdownlist></label>
+  <label>Convention<kendo-dropdownlist [data]="facade.conventions()" textField="name" valueField="code" [valuePrimitive]="true" formControlName="convention"></kendo-dropdownlist></label>
+  <label class="check"><input type="checkbox" formControlName="includeZeroAmount"> Include Zero / Non-Depreciating</label>
+  <label class="remarks">Remarks<textarea kendoTextArea rows="2" formControlName="remarks"></textarea></label>
+  <div class="setup-actions"><button kendoButton (click)="loadEligible()" [disabled]="readOnly() || facade.busy()">Load Eligible Assets</button>
+  <button kendoButton themeColor="primary" (click)="recalculate()" [disabled]="readOnly() || !lines().length || facade.busy()">Preview / Recalculate</button></div>
+</section>
+
+<section class="summary">
+  <article><span>Eligible Assets</span><strong>{{ summary().eligibleAssetCount }}</strong></article>
+  <article><span>Selected Assets</span><strong>{{ selectedCount() }}</strong></article>
+  <article><span>Acquisition Cost</span><strong>{{ summary().totalAcquisitionCost | number:'1.2-2' }}</strong></article>
+  <article><span>Opening Accum.</span><strong>{{ summary().totalOpeningAccumulatedDepreciation | number:'1.2-2' }}</strong></article>
+  <article class="accent"><span>Current Depreciation</span><strong>{{ summary().totalCurrentDepreciation | number:'1.2-2' }}</strong></article>
+  <article><span>Closing Accum.</span><strong>{{ summary().totalClosingAccumulatedDepreciation | number:'1.2-2' }}</strong></article>
+  <article><span>Closing NBV</span><strong>{{ summary().totalClosingNetBookValue | number:'1.2-2' }}</strong></article>
+  <article [class.error]="summary().glDifference !== 0"><span>GL Difference</span><strong>{{ summary().glDifference | number:'1.2-2' }}</strong></article>
+</section>
+
+<kendo-tabstrip>
+  <kendo-tabstrip-tab title="Asset Lines" [selected]="true"><ng-template kendoTabContent>
+    <kendo-grid [data]="lines()" [height]="520">
+      <kendo-grid-column title="Select" [width]="72" [locked]="true"><ng-template kendoGridCellTemplate let-row><input title="Select" type="checkbox" [checked]="row.isSelected" [disabled]="readOnly() || row.eligibilityStatus !== 'ELIGIBLE'" (change)="toggle(row, $any($event.target).checked)"></ng-template></kendo-grid-column>
+      <kendo-grid-column field="lineNo" title="Line" [width]="65"></kendo-grid-column>
+      <kendo-grid-column field="assetCode" title="Asset Code" [width]="130" [locked]="true"></kendo-grid-column>
+      <kendo-grid-column field="assetDescription" title="Description" [width]="220"></kendo-grid-column>
+      <kendo-grid-column field="assetCategoryCode" title="Category" [width]="115"></kendo-grid-column>
+      <kendo-grid-column field="branchCode" title="Branch" [width]="110"></kendo-grid-column>
+      <kendo-grid-column field="locationCode" title="Location" [width]="110"></kendo-grid-column>
+      <kendo-grid-column field="custodianCode" title="Custodian" [width]="115"></kendo-grid-column>
+      <kendo-grid-column field="inServiceDate" title="In Service" [width]="115"></kendo-grid-column>
+      <kendo-grid-column field="depreciationStartDate" title="Dep. Start" [width]="115"></kendo-grid-column>
+      <kendo-grid-column field="methodCode" title="Method" [width]="80"></kendo-grid-column>
+      <kendo-grid-column field="convention" title="Convention" [width]="115"></kendo-grid-column>
+      <kendo-grid-column field="acquisitionCost" title="Cost" [width]="125" format="{0:n2}"></kendo-grid-column>
+      <kendo-grid-column field="residualValue" title="Residual" [width]="115" format="{0:n2}"></kendo-grid-column>
+      <kendo-grid-column field="usefulLifeMonths" title="Life" [width]="75"></kendo-grid-column>
+      <kendo-grid-column field="periodsDepreciatedBefore" title="Periods" [width]="80"></kendo-grid-column>
+      <kendo-grid-column field="openingAccumulatedDepreciation" title="Opening Accum." [width]="140" format="{0:n2}"></kendo-grid-column>
+      <kendo-grid-column field="openingNetBookValue" title="Opening NBV" [width]="125" format="{0:n2}"></kendo-grid-column>
+      <kendo-grid-column field="depreciationRate" title="Rate" [width]="95" format="{0:p4}"></kendo-grid-column>
+      <kendo-grid-column field="currentDepreciation" title="Current Dep." [width]="130" format="{0:n2}"></kendo-grid-column>
+      <kendo-grid-column field="closingAccumulatedDepreciation" title="Closing Accum." [width]="140" format="{0:n2}"></kendo-grid-column>
+      <kendo-grid-column field="closingNetBookValue" title="Closing NBV" [width]="125" format="{0:n2}"></kendo-grid-column>
+      <kendo-grid-column field="depreciationExpenseAccount" title="Expense Account" [width]="155"></kendo-grid-column>
+      <kendo-grid-column field="accumulatedDepreciationAccount" title="Accum. Account" [width]="155"></kendo-grid-column>
+      <kendo-grid-column field="eligibilityStatus" title="Eligibility" [width]="105"></kendo-grid-column>
+      <kendo-grid-column field="eligibilityMessage" title="Message" [width]="260"></kendo-grid-column>
+    </kendo-grid>
+  </ng-template></kendo-tabstrip-tab>
+  <kendo-tabstrip-tab title="GL Preview"><ng-template kendoTabContent>
+    <kendo-grid [data]="summary().glLines" [height]="420">
+      <kendo-grid-column field="lineNo" title="Line" [width]="70"></kendo-grid-column><kendo-grid-column field="branchCode" title="Branch" [width]="130"></kendo-grid-column>
+      <kendo-grid-column field="accountCode" title="Account" [width]="150"></kendo-grid-column><kendo-grid-column field="accountName" title="Account Name" [width]="220"></kendo-grid-column>
+      <kendo-grid-column field="debit" title="Debit" [width]="140" format="{0:n2}"></kendo-grid-column><kendo-grid-column field="credit" title="Credit" [width]="140" format="{0:n2}"></kendo-grid-column>
+      <kendo-grid-column field="reference" title="Reference" [width]="150"></kendo-grid-column><kendo-grid-column field="narration" title="Narration" [width]="240"></kendo-grid-column>
+    </kendo-grid>
+  </ng-template></kendo-tabstrip-tab>
+  <kendo-tabstrip-tab [title]="'Validation (' + summary().validations.length + ')'"><ng-template kendoTabContent>
+    @for (item of summary().validations; track item) {
+      <div class="validation" [class.validation--error]="item.severity === 'ERROR'">
+        <strong>{{ item.assetCode || item.code }}</strong><span>{{ item.message }}</span>
+      </div>
+      }@if (!summary().validations.length) {
+      <p class="empty">No server validation messages.</p>
+    }
+  </ng-template></kendo-tabstrip-tab>
+  <kendo-tabstrip-tab title="Audit / Asset History"><ng-template kendoTabContent>
+    <div class="audit"><p>Prepared by: {{ facade.run()?.header?.preparedBy || auth.displayName() }}</p>
+    <p>Submitted by: {{ facade.run()?.header?.submittedBy || '—' }}</p><p>Approved by: {{ facade.run()?.header?.approvedBy || '—' }}</p>
+    <p>Posted by: {{ facade.run()?.header?.postedBy || '—' }}</p><p>Reversed by: {{ facade.run()?.header?.reversedBy || '—' }}</p></div>
+  </ng-template></kendo-tabstrip-tab>
+</kendo-tabstrip>
+
+<footer class="sticky-actions">
+  <button kendoButton (click)="back()">Back</button>
+  <button kendoButton themeColor="primary" (click)="requestSave()" [disabled]="readOnly() || !preview() || facade.busy()">Save Draft</button>
+  <button kendoButton (click)="requestAction('submit')" [disabled]="!canSubmit() || facade.busy()">Submit</button>
+  <button kendoButton (click)="requestAction('approve')" [disabled]="!canApprove() || facade.busy()">Approve</button>
+  <button kendoButton themeColor="primary" (click)="requestAction('post')" [disabled]="!canPost() || facade.busy()">Post Depreciation</button>
+  <button kendoButton themeColor="error" (click)="requestReverse()" [disabled]="!canReverse() || facade.busy()">Reverse</button>
+  <button kendoButton (click)="requestAction('cancel')" [disabled]="status() !== 'DRAFT' || !depRunNo() || facade.busy()">Cancel Draft</button>
+  <button kendoButton (click)="requestAction('delete')" [disabled]="!canDelete() || facade.busy()">Delete Draft</button>
+  <button kendoButton (click)="print()">Print</button>
+</footer>

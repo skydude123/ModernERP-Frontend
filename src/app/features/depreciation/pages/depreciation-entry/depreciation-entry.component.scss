@@ -1,0 +1,377 @@
+:host {
+  display: block;
+  min-height: 100%;
+  padding: 0.55rem 0.7rem 3.7rem;
+  color: #1f2937;
+  background: #f4f6f8;
+}
+
+/* =========================================================
+   MAIN CARDS
+   ========================================================= */
+
+.document-head,
+.setup,
+.summary {
+  margin: 0.55rem 0;
+  background: #ffffff;
+  border: 1px solid #dfe4ea;
+  border-radius: 7px;
+  box-shadow: 0 2px 8px rgb(15 23 42 / 4%);
+}
+
+/* =========================================================
+   DOCUMENT HEADER
+   ========================================================= */
+
+.document-head {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(140px, 1fr));
+  gap: 0.25rem 0.75rem;
+  padding: 0.55rem 0.75rem;
+}
+
+.document-head div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.document-head span,
+.summary span {
+  color: #6b7280;
+  font-size: 0.64rem;
+  font-weight: 700;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.document-head strong {
+  overflow: hidden;
+  font-size: 0.78rem;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.status {
+  color: #075985;
+}
+
+/* =========================================================
+   SETUP / FILTER FORM
+   ========================================================= */
+
+.setup {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(145px, 1fr));
+  gap: 0.5rem 0.65rem;
+  padding: 0.65rem 0.75rem;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+  min-width: 0;
+  color: #374151;
+  font-size: 0.7rem;
+  font-weight: 650;
+  line-height: 1.2;
+}
+
+.check {
+  flex-direction: row;
+  align-items: center;
+  align-self: end;
+  gap: 0.4rem;
+  min-height: 30px;
+  margin-top: 0;
+}
+
+.remarks {
+  grid-column: span 2;
+}
+
+.setup-actions {
+  display: flex;
+  align-items: end;
+  justify-content: flex-end;
+  gap: 0.35rem;
+}
+
+/* =========================================================
+   COMPACT KENDO CONTROLS
+   ========================================================= */
+
+:host ::ng-deep .setup .k-input,
+:host ::ng-deep .setup .k-picker,
+:host ::ng-deep .setup .k-textbox,
+:host ::ng-deep .setup .k-numerictextbox,
+:host ::ng-deep .setup .k-dropdownlist,
+:host ::ng-deep .setup .k-combobox {
+  min-height: 30px;
+  font-size: 0.72rem;
+}
+
+:host ::ng-deep .setup .k-input-inner {
+  min-height: 28px;
+  padding: 0.22rem 0.45rem;
+  font-size: 0.72rem;
+}
+
+:host ::ng-deep .setup .k-input-button,
+:host ::ng-deep .setup .k-button-icon {
+  width: 29px;
+  min-width: 29px;
+}
+
+:host ::ng-deep .setup .k-textarea {
+  min-height: 44px;
+}
+
+:host ::ng-deep .setup textarea.k-input-inner {
+  min-height: 42px;
+  padding: 0.35rem 0.45rem;
+  line-height: 1.2;
+}
+
+:host ::ng-deep .setup-actions .k-button {
+  min-height: 30px;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.7rem;
+}
+
+/* =========================================================
+   SUMMARY CARDS
+   ========================================================= */
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(130px, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  background: #dfe4ea;
+}
+
+.summary article {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  min-height: 56px;
+  padding: 0.55rem 0.7rem;
+  background: #ffffff;
+}
+
+.summary strong {
+  font-size: 0.9rem;
+  line-height: 1.15;
+}
+
+.summary .accent {
+  background: #eff6ff;
+}
+
+.summary .error {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+/* =========================================================
+   VALIDATION MESSAGES
+   ========================================================= */
+
+.validation {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.72rem;
+  line-height: 1.25;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.validation--error {
+  border-left: 3px solid #dc2626;
+}
+
+.validation strong {
+  min-width: 125px;
+  font-size: 0.72rem;
+}
+
+/* =========================================================
+   EMPTY / AUDIT AREAS
+   ========================================================= */
+
+.empty,
+.audit {
+  padding: 0.65rem 0.75rem;
+  font-size: 0.72rem;
+  line-height: 1.3;
+  background: #ffffff;
+}
+
+/* =========================================================
+   GRID COMPACTNESS
+   ========================================================= */
+
+:host ::ng-deep .k-grid {
+  font-size: 0.7rem;
+}
+
+:host ::ng-deep .k-grid-header th {
+  padding: 0.38rem 0.45rem;
+  font-size: 0.68rem;
+  line-height: 1.15;
+}
+
+:host ::ng-deep .k-grid td {
+  padding: 0.35rem 0.45rem;
+  line-height: 1.2;
+  vertical-align: middle;
+}
+
+:host ::ng-deep .k-grid .k-input,
+:host ::ng-deep .k-grid .k-picker,
+:host ::ng-deep .k-grid .k-numerictextbox,
+:host ::ng-deep .k-grid .k-combobox {
+  min-height: 27px;
+  font-size: 0.68rem;
+}
+
+:host ::ng-deep .k-grid .k-input-inner {
+  min-height: 25px;
+  padding: 0.18rem 0.35rem;
+  font-size: 0.68rem;
+}
+
+/* =========================================================
+   STICKY ACTION BAR
+   ========================================================= */
+
+.sticky-actions {
+  position: fixed;
+  z-index: 20;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.35rem;
+
+  min-height: 48px;
+  padding: 0.45rem 0.8rem;
+
+  background: #ffffff;
+  border-top: 1px solid #d1d5db;
+  box-shadow: 0 -3px 10px rgb(0 0 0 / 6%);
+}
+
+:host ::ng-deep .sticky-actions .k-button {
+  min-height: 30px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.7rem;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+  .setup,
+  .summary {
+    grid-template-columns: repeat(2, minmax(150px, 1fr));
+  }
+
+  .document-head {
+    grid-template-columns: repeat(2, minmax(150px, 1fr));
+  }
+
+  .remarks {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 700px) {
+  :host {
+    padding: 0.45rem 0.45rem 4.5rem;
+  }
+
+  .setup,
+  .summary,
+  .document-head {
+    grid-template-columns: 1fr;
+  }
+
+  .remarks {
+    grid-column: auto;
+  }
+
+  .setup-actions {
+    justify-content: stretch;
+  }
+
+  :host ::ng-deep .setup-actions .k-button {
+    flex: 1 1 auto;
+  }
+
+  .validation {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .validation strong {
+    min-width: 0;
+  }
+
+  .sticky-actions {
+    flex-wrap: wrap;
+  }
+}
+
+/* =========================================================
+   PRINT
+   ========================================================= */
+
+@media print {
+  app-toolbar,
+  .setup-actions,
+  .sticky-actions {
+    display: none !important;
+  }
+
+  :host {
+    padding: 0;
+    background: #ffffff;
+  }
+
+  .document-head,
+  .setup,
+  .summary {
+    box-shadow: none;
+  }
+}
+/* Asset Lines and GL Preview grid headers */
+:host ::ng-deep .k-tabstrip .k-grid .k-grid-header,
+:host ::ng-deep .k-tabstrip .k-grid .k-grid-header-wrap,
+:host ::ng-deep .k-tabstrip .k-grid .k-table-thead,
+:host ::ng-deep .k-tabstrip .k-grid .k-table-th {
+  background-color: #fa8128 !important;
+}
+
+:host ::ng-deep .k-tabstrip .k-grid .k-table-th,
+:host ::ng-deep .k-tabstrip .k-grid .k-column-title,
+:host ::ng-deep .k-tabstrip .k-grid .k-table-th .k-link {
+  color: #000000 !important;
+  font-weight: 700;
+}
+
+:host ::ng-deep .k-tabstrip .k-grid .k-sort-icon,
+:host ::ng-deep .k-tabstrip .k-grid .k-table-th .k-svg-icon {
+  color: #000000 !important;
+  fill: #000000 !important;
+}

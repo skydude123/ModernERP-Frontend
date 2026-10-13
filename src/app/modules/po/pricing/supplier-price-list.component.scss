@@ -1,0 +1,151 @@
+:host {
+  display: block;
+}
+
+.supplier-price-list-shell {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  color: #0f172a;
+}
+
+.price-list-header,
+.price-list-tools,
+.price-list-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.price-list-header {
+  padding: 9px 12px;
+  border: 1px solid #dbe5f0;
+  border-radius: 9px;
+  background: #f8fafc;
+}
+
+.price-list-header span,
+.price-list-header small,
+.price-list-count span {
+  display: block;
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.price-list-header strong {
+  display: inline-block;
+  margin: 2px 8px 0 0;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.price-list-header small {
+  display: inline-block;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.price-list-count {
+  text-align: right;
+}
+
+.price-list-count strong {
+  margin: 0;
+  color: #2563eb;
+  font-size: 22px;
+}
+
+.price-list-tools input[kendoTextBox] {
+  width: min(480px, 100%);
+}
+
+.price-list-message {
+  padding: 9px 11px;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.price-list-message.error {
+  border-color: #fecaca;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.supplier-price-grid {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.item-code-button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #1d4ed8;
+  font: inherit;
+  font-weight: 900;
+  cursor: default;
+}
+
+.price-list-actions {
+  min-height: 34px;
+}
+
+.price-list-actions > div {
+  display: flex;
+  gap: 7px;
+  flex-shrink: 0;
+}
+
+.selection-summary {
+  min-width: 0;
+  overflow: hidden;
+  color: #475569;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:host ::ng-deep .supplier-price-grid .k-grid-header th {
+  padding: 7px 8px;
+  background: #243244;
+  color: #ffffff;
+  font-size: 10.5px;
+  font-weight: 900;
+}
+
+:host ::ng-deep .supplier-price-grid .k-grid-content td {
+  padding: 6px 8px;
+  font-size: 11.5px;
+  font-weight: 650;
+}
+
+:host ::ng-deep .supplier-price-grid .numeric-cell {
+  text-align: right;
+}
+
+@media (max-width: 900px) {
+  .price-list-header,
+  .price-list-tools,
+  .price-list-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .price-list-count {
+    text-align: left;
+  }
+
+  .price-list-tools input[kendoTextBox],
+  .price-list-actions > div {
+    width: 100%;
+  }
+}

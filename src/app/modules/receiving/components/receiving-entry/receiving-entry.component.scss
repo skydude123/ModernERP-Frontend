@@ -1,0 +1,972 @@
+:host {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+.receiving-page {
+  width: 100%;
+  max-width: 1366px;
+  margin: 0 auto;
+  padding: 8px 10px 12px;
+  box-sizing: border-box;
+}
+
+.entry-shell {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+.erp-section {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid #d9e1ea;
+  border-radius: 7px;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   ENTRY HEADER
+   ========================================================= */
+
+.entry-header,
+.section-heading,
+.po-line-picker,
+.header-status {
+  display: flex;
+  align-items: center;
+}
+
+.entry-header,
+.section-heading {
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.entry-header {
+  min-height: 34px;
+}
+
+.entry-header h1 {
+  margin: 0;
+  font-size: 1.08rem;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.eyebrow {
+  display: block;
+  margin-bottom: 2px;
+  color: #536376;
+  font-size: 0.64rem;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.header-status {
+  gap: 6px;
+  min-height: 30px;
+}
+
+/* =========================================================
+   SECTION HEADING
+   ========================================================= */
+
+.section-heading {
+  min-height: 24px;
+}
+
+.section-heading span {
+  color: #111827;
+  font-size: 0.82rem;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.section-heading small {
+  color: #64748b;
+  font-size: 0.7rem;
+  line-height: 1.2;
+  text-align: right;
+}
+
+/* =========================================================
+   HEADER FORM
+   ========================================================= */
+
+.header-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(145px, 1fr));
+  gap: 7px 9px;
+  width: 100%;
+  min-width: 0;
+}
+
+.header-grid>* {
+  min-width: 0;
+}
+
+.wide {
+  grid-column: span 2;
+}
+
+/* =========================================================
+   REQUIRED FIELD VALIDATION
+   ========================================================= */
+
+/*
+ * Add a red asterisk automatically to every
+ * label marked with class="required-label".
+ */
+:host ::ng-deep .required-label .k-label::after,
+:host ::ng-deep kendo-label.required-label::after {
+  content: " *";
+  color: #dc2626;
+  font-weight: 800;
+}
+
+/*
+ * Required field error message.
+ */
+:host ::ng-deep .header-grid .k-form-error {
+  margin-top: 3px;
+  color: #dc2626 !important;
+  font-size: 0.68rem;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+/*
+ * Make invalid + touched controls very obvious.
+ */
+:host ::ng-deep .header-grid .ng-invalid.ng-touched:not(kendo-formfield) {
+  border-color: #dc2626 !important;
+}
+
+/*
+ * Kendo textbox
+ */
+:host ::ng-deep .header-grid kendo-textbox.ng-invalid.ng-touched {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 1px #dc2626 !important;
+}
+
+/*
+ * Kendo DatePicker
+ */
+:host ::ng-deep .header-grid kendo-datepicker.ng-invalid.ng-touched {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 1px #dc2626 !important;
+}
+
+/*
+ * Kendo DropDownList
+ */
+:host ::ng-deep .header-grid kendo-dropdownlist.ng-invalid.ng-touched {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 1px #dc2626 !important;
+}
+
+/*
+ * Kendo ComboBox
+ */
+:host ::ng-deep .header-grid kendo-combobox.ng-invalid.ng-touched {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 1px #dc2626 !important;
+}
+
+/*
+ * Give invalid fields a very light red background
+ * without making them difficult to read.
+ */
+:host ::ng-deep .header-grid .ng-invalid.ng-touched .k-input-inner {
+  background-color: #fef2f2 !important;
+}
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.status-pill,
+.type-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 23px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  line-height: 1;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.status-N {
+  color: #075985;
+  background: #e0f2fe;
+}
+
+.status-U {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.status-R {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.status-C {
+  color: #52525b;
+  background: #e4e4e7;
+}
+
+.type-pill {
+  color: #3730a3;
+  background: #e0e7ff;
+}
+
+/* =========================================================
+   DETAILS SECTION
+   ========================================================= */
+
+.detail-section {
+  gap: 7px;
+  overflow: hidden;
+}
+
+/* Receiving with PO */
+
+.po-line-picker {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 7px;
+  width: 100%;
+  min-width: 0;
+}
+
+.po-line-picker kendo-multicolumncombobox {
+  width: 100%;
+  min-width: 0;
+}
+
+.po-line-picker>button {
+  min-width: 104px;
+  white-space: nowrap;
+}
+
+/* Receiving without PO */
+
+.manual-line {
+  display: grid;
+  grid-template-columns:
+    110px minmax(240px, 1fr) 108px 78px 88px 105px 110px 70px;
+  gap: 6px;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+}
+
+.manual-line>* {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.manual-line>button {
+  width: 70px;
+  min-width: 70px;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   DETAIL GRID
+   ========================================================= */
+
+.detail-grid {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.numeric {
+  text-align: right;
+}
+
+.validation-box {
+  padding: 7px 9px;
+  border: 1px solid #facc15;
+  border-radius: 6px;
+  color: #713f12;
+  background: #fef9c3;
+  font-size: 0.73rem;
+  line-height: 1.35;
+}
+
+/* =========================================================
+   KENDO COMPACT STYLES
+   ========================================================= */
+
+:host ::ng-deep .receiving-page {
+
+  /*
+   * Form labels
+   */
+  .k-label,
+  .k-form-field>label {
+    margin-bottom: 3px;
+    font-size: 0.7rem;
+    line-height: 1.15;
+  }
+
+  /*
+   * Common input font size
+   */
+  .k-input,
+  .k-picker,
+  .k-textbox,
+  .k-numerictextbox,
+  .k-dropdownlist,
+  .k-combobox {
+    font-size: 0.74rem;
+  }
+
+  /*
+   * Standard control height
+   */
+  .k-input,
+  .k-picker,
+  .k-textbox,
+  .k-numerictextbox {
+    min-height: 32px;
+  }
+
+  .k-input-inner {
+    min-height: 30px;
+    padding-block: 4px;
+    padding-inline: 8px;
+    line-height: 1.2;
+  }
+
+  .k-input-inner,
+  input.k-input-inner,
+  textarea.k-input-inner,
+  .k-picker .k-input-inner,
+  .k-dropdownlist .k-input-inner,
+  .k-combobox .k-input-inner,
+  .k-numerictextbox .k-input-inner {
+    font-weight: 700 !important;
+    color: #111827;
+  }
+
+  /*
+   * Only actual action buttons receive 30px height.
+   * Do not apply this to every .k-button because the
+   * NumericTextBox spinner arrows are also Kendo buttons.
+   */
+  .manual-line>.k-button,
+  .po-line-picker>.k-button {
+    min-height: 32px;
+    height: 32px;
+    padding: 4px 9px;
+    font-size: 0.73rem;
+  }
+
+  /*
+   * NumericTextBox
+   */
+  .manual-line .k-numerictextbox {
+    width: 100%;
+    height: 32px;
+    min-height: 32px;
+  }
+
+  .manual-line .k-numerictextbox .k-input-inner {
+    height: 30px;
+    min-height: 30px;
+    padding: 4px 6px;
+    text-align: right;
+  }
+
+  /*
+   * Fix the large up/down spinner buttons.
+   */
+  .k-numerictextbox .k-input-spinner {
+    flex: 0 0 24px;
+    width: 24px;
+    min-width: 24px;
+    height: 30px;
+  }
+
+  .k-numerictextbox .k-input-spinner .k-button,
+  .k-numerictextbox .k-spinner-increase,
+  .k-numerictextbox .k-spinner-decrease {
+    min-width: 24px !important;
+    width: 24px !important;
+    min-height: 0 !important;
+    height: 50% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    line-height: 1 !important;
+  }
+
+  .k-numerictextbox .k-input-spinner .k-button .k-icon,
+  .k-numerictextbox .k-input-spinner .k-button .k-svg-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  /*
+   * Manual detail inputs
+   */
+  .manual-line>input.k-input,
+  .manual-line>input.k-textbox {
+    height: 32px;
+    min-height: 32px;
+  }
+
+  /*
+   * Grid
+   */
+  .detail-grid.k-grid {
+    width: 100%;
+    border-color: #d9e1ea;
+    font-size: 0.72rem;
+  }
+
+  .detail-grid .k-grid-header {
+    background: #f8fafc;
+  }
+
+  .detail-grid .k-grid-header th {
+    height: 30px;
+    padding: 5px 7px;
+    color: #334155;
+    background: #f8fafc;
+    font-size: 0.69rem;
+    line-height: 1.15;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .detail-grid .k-grid-content td {
+    height: 34px;
+    padding: 4px 6px;
+    line-height: 1.2;
+    vertical-align: middle;
+  }
+
+  /*
+   * Inputs located inside grid cells
+   */
+  .detail-grid td input.k-input,
+  .detail-grid td input.k-textbox,
+  .detail-grid td .k-numerictextbox {
+    width: 100%;
+    min-width: 0;
+    height: 28px;
+    min-height: 28px;
+    font-size: 0.7rem;
+  }
+
+  .detail-grid td .k-input-inner {
+    height: 26px;
+    min-height: 26px;
+    padding: 3px 6px;
+  }
+
+  .detail-grid td .k-numerictextbox .k-input-spinner {
+    height: 26px;
+  }
+
+  .detail-grid td .k-numerictextbox .k-input-spinner .k-button,
+  .detail-grid td .k-numerictextbox .k-spinner-increase,
+  .detail-grid td .k-numerictextbox .k-spinner-decrease {
+    min-height: 0 !important;
+    height: 50% !important;
+    padding: 0 !important;
+  }
+
+  /*
+   * Remove button inside grid
+   */
+  .detail-grid td button.k-button {
+    min-width: 26px;
+    width: 26px;
+    min-height: 26px;
+    height: 26px;
+    padding: 3px;
+  }
+
+  /*
+   * Empty grid message
+   */
+  .detail-grid .k-grid-norecords td {
+    height: 54px;
+    padding: 10px;
+    color: #64748b;
+    font-size: 0.75rem;
+    text-align: center;
+  }
+
+  /*
+   * Grid scrollbars
+   */
+  .receiving-event-grid.k-grid {
+    height: 360px !important;
+  }
+
+  .receiving-event-grid .k-grid-content {
+    height: 220px !important;
+    max-height: 220px !important;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    scrollbar-gutter: stable;
+  }
+
+  .receiving-event-grid .k-grid-content::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  .receiving-event-grid .k-grid-content::-webkit-scrollbar-track {
+    background: #e5e7eb;
+  }
+
+  .receiving-event-grid .k-grid-content::-webkit-scrollbar-thumb {
+     background: #4b5563 !important; // dark gray
+  border-radius: 6px;
+    border-radius: 6px;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1180px) {
+  .header-grid {
+    grid-template-columns: repeat(2, minmax(145px, 1fr));
+  }
+
+  .manual-line {
+    grid-template-columns: repeat(4, minmax(120px, 1fr));
+  }
+
+  .manual-line>button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 850px) {
+  .manual-line {
+    grid-template-columns: repeat(2, minmax(130px, 1fr));
+  }
+
+  .po-line-picker {
+    grid-template-columns: 1fr;
+  }
+
+  .po-line-picker>button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 720px) {
+  .receiving-page {
+    padding: 7px;
+  }
+
+  .entry-header,
+  .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .section-heading small {
+    text-align: left;
+  }
+
+  .header-grid,
+  .manual-line {
+    grid-template-columns: 1fr;
+  }
+
+  .wide {
+    grid-column: auto;
+  }
+
+  .manual-line>button {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/* =========================================================
+   PO-STYLE EVENT-DRIVEN RECEIVING GRID
+   ========================================================= */
+
+:host ::ng-deep .receiving-event-grid .k-grid-toolbar {
+  min-height: 44px;
+  padding: 6px 8px;
+  border-bottom: 1px solid #d9e1ea;
+  background: #f8fafc;
+}
+
+:host ::ng-deep .receiving-event-grid .k-grid-header,
+:host ::ng-deep .receiving-event-grid .headerCustomClass {
+  color: #ffffff;
+  background: #223247;
+}
+
+:host ::ng-deep .receiving-event-grid .k-grid-header th {
+  height: 30px;
+  padding: 5px 7px;
+  color: #ffffff;
+  background: #223247;
+  font-size: 0.69rem;
+  line-height: 1.15;
+  font-weight: 700;
+}
+
+:host ::ng-deep .receiving-event-grid .k-grid-edit-row td {
+  height: 38px;
+  padding: 4px 6px;
+  vertical-align: middle;
+  background: #f8fafc;
+}
+
+/*
+ * Keep all editor boxes compact and equal.
+ */
+:host ::ng-deep .receiving-event-grid .k-grid-edit-row .k-input,
+:host ::ng-deep .receiving-event-grid .k-grid-edit-row .k-picker,
+:host ::ng-deep .receiving-event-grid .k-grid-edit-row .k-textbox,
+:host ::ng-deep .receiving-event-grid .k-grid-edit-row .k-numerictextbox,
+:host ::ng-deep .receiving-event-grid .k-grid-edit-row .k-multicolumncombobox,
+:host ::ng-deep .receiving-event-grid .grid-po-line-combo {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: 32px;
+  min-height: 32px;
+  max-height: 32px;
+  border-radius: 5px;
+  font-size: 0.72rem;
+}
+
+:host ::ng-deep .receiving-event-grid .k-grid-edit-row .k-input-inner {
+  box-sizing: border-box;
+  height: 30px;
+  min-height: 30px;
+  padding: 3px 7px;
+  overflow: hidden;
+  line-height: 24px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:host ::ng-deep .receiving-event-grid .k-grid-edit-row .k-input-button {
+  width: 34px;
+  min-width: 34px;
+  height: 30px;
+  min-height: 30px;
+}
+
+:host ::ng-deep .receiving-event-grid .k-grid-edit-row .k-numerictextbox .k-input-spinner {
+  width: 22px;
+  min-width: 22px;
+  height: 30px;
+}
+
+:host ::ng-deep .receiving-event-grid .k-grid-edit-row .k-numerictextbox .k-input-spinner .k-button {
+  width: 22px !important;
+  min-width: 22px !important;
+  height: 50% !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+}
+
+:host ::ng-deep .receiving-event-grid .k-disabled,
+:host ::ng-deep .receiving-event-grid [disabled] {
+  opacity: 1;
+}
+
+:host ::ng-deep .receiving-event-grid .k-grid-edit-row input[readonly],
+:host ::ng-deep .receiving-event-grid .k-grid-edit-row .k-disabled .k-input-inner {
+  color: #64748b;
+  background: #f1f5f9;
+}
+
+:host ::ng-deep .detail-toolbar .k-button {
+  min-width: 76px;
+  min-height: 30px;
+  height: 30px;
+  padding: 3px 8px;
+  font-size: 0.72rem;
+}
+
+.po-line-no-data,
+.grid-empty-state {
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  padding: 14px;
+  color: #64748b;
+  font-size: 0.73rem;
+  text-align: center;
+}
+
+.rnp-label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 8px;
+  border: 1px solid #d9e1ea;
+  border-radius: 5px;
+  color: #475569;
+  background: #f8fafc;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+/* =========================================================
+   FIX PO LINE COMBOBOX HEIGHT / CLEAR / DROPDOWN AREA
+   ========================================================= */
+
+:host ::ng-deep .receiving-event-grid .grid-po-line-combo {
+  display: flex;
+  align-items: stretch;
+  height: 32px;
+  min-height: 32px;
+  max-height: 32px;
+  overflow: hidden;
+}
+
+/* Main text/input section */
+:host ::ng-deep .receiving-event-grid .grid-po-line-combo .k-input-inner {
+  height: 30px;
+  min-height: 30px;
+  max-height: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 30px;
+}
+
+/* Container holding clear X and dropdown arrow */
+:host ::ng-deep .receiving-event-grid .grid-po-line-combo .k-input-actions {
+  display: flex;
+  align-self: stretch;
+  align-items: stretch;
+  height: 30px;
+  min-height: 30px;
+  max-height: 30px;
+}
+
+/* Clear X button and dropdown button */
+:host ::ng-deep .receiving-event-grid .grid-po-line-combo .k-clear-value,
+:host ::ng-deep .receiving-event-grid .grid-po-line-combo .k-input-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  box-sizing: border-box;
+  height: 30px !important;
+  min-height: 30px !important;
+  max-height: 30px !important;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* Give both action areas consistent width */
+:host ::ng-deep .receiving-event-grid .grid-po-line-combo .k-clear-value {
+  width: 34px;
+  min-width: 34px;
+}
+
+:host ::ng-deep .receiving-event-grid .grid-po-line-combo .k-input-button {
+  width: 38px;
+  min-width: 38px;
+}
+
+/* Gray background should occupy the complete action area */
+:host ::ng-deep .receiving-event-grid .grid-po-line-combo .k-input-button {
+  background: #dfe4ea;
+}
+
+/* Remove extra inner spacing around SVG icons */
+:host ::ng-deep .receiving-event-grid .grid-po-line-combo .k-clear-value .k-svg-icon,
+:host ::ng-deep .receiving-event-grid .grid-po-line-combo .k-input-button .k-svg-icon {
+  margin: 0;
+}
+
+/* Ensure row and cell do not create visible space below */
+:host ::ng-deep .receiving-event-grid .k-grid-edit-row td:has(.grid-po-line-combo) {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  line-height: 1;
+}
+
+/* Receiving Entry detail grid header */
+:host ::ng-deep .receiving-event-grid .k-grid-header,
+:host ::ng-deep .receiving-event-grid .k-grid-header-wrap,
+:host ::ng-deep .receiving-event-grid .k-table-thead,
+:host ::ng-deep .receiving-event-grid .k-table-th {
+  background-color: #fa8128 !important;
+}
+
+/* Header text */
+:host ::ng-deep .receiving-event-grid .k-table-th,
+:host ::ng-deep .receiving-event-grid .k-column-title,
+:host ::ng-deep .receiving-event-grid .k-table-th .k-link {
+  color: #000000 !important;
+  font-weight: 700;
+}
+
+/* Sort/filter icons, if present */
+:host ::ng-deep .receiving-event-grid .k-sort-icon,
+:host ::ng-deep .receiving-event-grid .k-table-th .k-svg-icon {
+  color: #000000 !important;
+  fill: #000000 !important;
+}
+
+/* =========================================================
+   RWP / NON-PO ADD LINE BUTTON
+   Orange background + black text
+   ========================================================= */
+
+:host ::ng-deep .non-po-line-button .k-button,
+:host ::ng-deep .non-po-line-button.k-button {
+  background: #fa8128 !important;
+  border-color: #fa8128 !important;
+  color: #111111 !important;
+  font-weight: 700 !important;
+}
+
+:host ::ng-deep .non-po-line-button .k-button:hover,
+:host ::ng-deep .non-po-line-button.k-button:hover {
+  background: #e96f13 !important;
+  border-color: #e96f13 !important;
+  color: #000000 !important;
+}
+
+:host ::ng-deep .non-po-line-button .k-button:focus,
+:host ::ng-deep .non-po-line-button.k-button:focus {
+  background: #fa8128 !important;
+  border-color: #d85f00 !important;
+  color: #000000 !important;
+}
+
+:host ::ng-deep .k-animation-container .k-table-thead .k-table-th {
+  background-color: #fa8128 !important;
+  color: #111111 !important;
+  font-weight: 700 !important;
+  border-color: #df6d19 !important;
+}
+
+:host ::ng-deep .k-animation-container .k-table-thead .k-table-th .k-link,
+:host ::ng-deep .k-animation-container .k-table-thead .k-table-th .k-cell-inner {
+  color: #111111 !important;
+  font-weight: 700 !important;
+}
+
+/* =========================================================
+   Receiving header values - bold and clear
+   ========================================================= */
+
+:host ::ng-deep .receiving-page .k-input-inner,
+:host ::ng-deep .receiving-page input.k-input-inner,
+:host ::ng-deep .receiving-page textarea.k-input-inner {
+  font-weight: 700 !important;
+  color: #111827 !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+/* Dropdown / ComboBox selected values */
+:host ::ng-deep .receiving-page .k-dropdownlist .k-input-value-text,
+:host ::ng-deep .receiving-page .k-combobox .k-input-value-text,
+:host ::ng-deep .receiving-page .k-picker .k-input-value-text {
+  font-weight: 700 !important;
+  color: #111827 !important;
+  opacity: 1 !important;
+}
+
+/* Disabled Kendo controls */
+:host ::ng-deep .receiving-page .k-disabled,
+:host ::ng-deep .receiving-page .k-disabled .k-input-inner,
+:host ::ng-deep .receiving-page .k-input[disabled],
+:host ::ng-deep .receiving-page .k-picker.k-disabled,
+:host ::ng-deep .receiving-page .k-dropdownlist.k-disabled,
+:host ::ng-deep .receiving-page .k-combobox.k-disabled {
+  opacity: 1 !important;
+}
+
+/* Specifically make disabled/read-only values dark */
+:host ::ng-deep .receiving-page .k-disabled .k-input-inner,
+:host ::ng-deep .receiving-page .k-disabled .k-input-value-text,
+:host ::ng-deep .receiving-page input:disabled,
+:host ::ng-deep .receiving-page textarea:disabled,
+:host ::ng-deep .receiving-page input[readonly],
+:host ::ng-deep .receiving-page textarea[readonly] {
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
+}
+
+.lookup-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+
+  kendo-textbox {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  button {
+    flex: 0 0 auto;
+    min-width: 90px;
+    font-weight: 700;
+  }
+}
+
+.so-verify-result-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 10px 12px;
+  margin-bottom: 12px;
+
+  border: 1px solid #d3d3d3;
+  border-radius: 4px;
+  background: #f5f5f5;
+
+  strong {
+    display: block;
+    margin-top: 3px;
+    font-size: 18px;
+    font-weight: 800;
+  }
+}
+
+.so-verify-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #555;
+}

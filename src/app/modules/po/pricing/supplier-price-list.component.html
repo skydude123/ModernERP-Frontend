@@ -1,0 +1,300 @@
+<section class="supplier-price-list-shell">
+
+  <!-- ======================================================
+       HEADER
+       ====================================================== -->
+  <header class="price-list-header">
+
+    <div>
+      <span>
+        Supplier
+      </span>
+
+      <strong>
+        {{ supplierCode }}
+      </strong>
+
+      <small>
+        {{ supplierName || supplierCode }}
+      </small>
+    </div>
+
+
+    <div class="price-list-count">
+
+      <span>
+        Items
+      </span>
+
+      <strong>
+        {{ filteredPrices().length }}
+      </strong>
+
+    </div>
+
+  </header>
+
+
+  <!-- ======================================================
+       SEARCH / REFRESH
+       ====================================================== -->
+  <div class="price-list-tools">
+
+    <input
+      kendoTextBox
+      type="search"
+      aria-label="Search item prices"
+      placeholder="Search item code, description, or U/M..."
+      [value]="searchText()"
+      (input)="onSearchInput($event)"
+    />
+
+
+    <button
+      kendoButton
+      type="button"
+      fillMode="outline"
+      [disabled]="loading()"
+      (click)="refresh()"
+    >
+      Refresh
+    </button>
+
+  </div>
+
+
+  <!-- ======================================================
+       ERROR MESSAGE
+       ====================================================== -->
+  @if (error(); as message) {
+
+    <div
+      class="price-list-message error"
+      role="alert"
+    >
+      {{ message }}
+    </div>
+
+  }
+
+
+  <!-- ======================================================
+       LOADING
+       ====================================================== -->
+  @if (loading()) {
+
+    <div
+      class="price-list-message"
+      role="status"
+    >
+      Loading item prices...
+    </div>
+
+  }
+
+
+  <!-- ======================================================
+       PRICE LIST GRID
+       ====================================================== -->
+  <kendo-grid
+    class="supplier-price-grid"
+    [kendoGridBinding]="filteredPrices()"
+    [height]="430"
+    [pageable]="true"
+    [pageSize]="50"
+    [sortable]="true"
+    [resizable]="true"
+    [selectable]="{ mode: 'single' }"
+    (selectionChange)="onSelectionChange($event)"
+  >
+
+
+    <!-- ====================================================
+         ITEM CODE
+         ==================================================== -->
+    <kendo-grid-column
+      field="itemCode"
+      title="Item Code"
+      [width]="145"
+    >
+
+      <ng-template
+        kendoGridCellTemplate
+        let-dataItem
+      >
+
+        <button
+          class="item-code-button"
+          type="button"
+          title="Double-click to use this price"
+          (dblclick)="useItem(dataItem)"
+        >
+          {{ dataItem.itemCode }}
+        </button>
+
+      </ng-template>
+
+    </kendo-grid-column>
+
+
+    <!-- ====================================================
+         ITEM DESCRIPTION
+         ==================================================== -->
+    <kendo-grid-column
+      field="itemDescription"
+      title="Item Description"
+      [width]="330"
+    >
+    </kendo-grid-column>
+
+
+    <!-- ====================================================
+         PO U/M
+         ==================================================== -->
+    <kendo-grid-column
+      field="poUm"
+      title="PO U/M"
+      [width]="100"
+    >
+    </kendo-grid-column>
+
+
+    <!-- ====================================================
+         BASE U/M
+         ==================================================== -->
+    <kendo-grid-column
+      field="baseUm"
+      title="Base U/M"
+      [width]="100"
+    >
+    </kendo-grid-column>
+
+
+    <!-- ====================================================
+         CONVERSION
+         ==================================================== -->
+    <kendo-grid-column
+      field="poConvFactor"
+      title="Conversion"
+      [width]="120"
+      class="numeric-cell"
+    >
+
+      <ng-template
+        kendoGridCellTemplate
+        let-dataItem
+      >
+
+        {{
+          dataItem.poConvFactor
+            | number: "1.4-4"
+        }}
+
+      </ng-template>
+
+    </kendo-grid-column>
+
+
+    <!-- ====================================================
+         UNIT PRICE
+         ==================================================== -->
+    <kendo-grid-column
+      field="unitPrice"
+      title="Unit Price"
+      [width]="140"
+      class="numeric-cell"
+    >
+
+      <ng-template
+        kendoGridCellTemplate
+        let-dataItem
+      >
+
+        {{
+          dataItem.unitPrice
+            | number: "1.4-4"
+        }}
+
+      </ng-template>
+
+    </kendo-grid-column>
+
+
+    <!-- ====================================================
+         NO RECORDS
+         ==================================================== -->
+    <ng-template
+      kendoGridNoRecordsTemplate
+    >
+
+      @if (
+        !loading() &&
+        !error()
+      ) {
+
+        No item price records found.
+
+      }
+
+    </ng-template>
+
+  </kendo-grid>
+
+
+  <!-- ======================================================
+       FOOTER
+       ====================================================== -->
+  <footer class="price-list-actions">
+
+    <span class="selection-summary">
+
+      @if (
+        selectedItem();
+        as item
+      ) {
+
+        {{ item.itemCode }}
+        /
+        {{ item.poUm }}
+        at
+        {{
+          item.unitPrice
+            | number: "1.4-4"
+        }}
+
+      } @else {
+
+        Select a row to use its price.
+
+      }
+
+    </span>
+
+
+    <div>
+
+      <button
+        kendoButton
+        type="button"
+        themeColor="primary"
+        [disabled]="!selectedItem()"
+        (click)="useSelected()"
+      >
+        Use Price
+      </button>
+
+
+      <button
+        kendoButton
+        type="button"
+        fillMode="outline"
+        (click)="closed.emit()"
+      >
+        Close
+      </button>
+
+    </div>
+
+  </footer>
+
+</section>

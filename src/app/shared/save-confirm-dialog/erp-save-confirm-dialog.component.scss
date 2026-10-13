@@ -1,0 +1,120 @@
+:host {
+
+    .erp-badge--success {
+        background: #ecfdf5;
+        color: #047857;
+    }
+
+    .erp-badge--default {
+        background: #f3f4f6;
+        color: #374151;
+    }
+
+    .erp-warning-box {
+        display: grid;
+        grid-template-columns: 56px 1fr;
+        gap: 12px;
+        align-items: start;
+        background: linear-gradient(180deg, #fff7ed, #fffaf5);
+        border: 1px solid #fdba74;
+        border-left: 6px solid #ea580c;
+        border-radius: 16px;
+        padding: 14px 16px;
+        margin-bottom: 14px;
+    }
+
+    .erp-warning-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #ffedd5;
+        color: #c2410c;
+        font-size: 24px;
+        font-weight: 800;
+    }
+
+    .erp-warning-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: #9a3412;
+        margin-bottom: 6px;
+    }
+
+    .erp-warning-text {
+        font-size: 14px;
+        line-height: 1.6;
+        color: #7c2d12;
+    }
+
+    .erp-note {
+        margin-bottom: 16px;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        color: #334155;
+        font-size: 13px;
+    }
+
+    .erp-question {
+        margin: 6px 0 18px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: 700;
+        color: #111827;
+    }
+
+    .erp-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        padding-top: 6px;
+    }
+
+    @media (max-width: 640px) {
+        .erp-save-header {
+            flex-direction: column;
+        }
+
+        .erp-row {
+            grid-template-columns: 1fr;
+        }
+
+        .erp-warning-box {
+            grid-template-columns: 1fr;
+        }
+
+        .erp-actions {
+            flex-direction: column-reverse;
+        }
+    }
+
+    .erp-grid-wrap {
+  margin: 18px 0;
+}
+
+.erp-form-wrap {
+  display: grid;
+  gap: 16px;
+  margin: 18px 0;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field label {
+  font-weight: 600;
+}
+
+.field input,
+.field textarea {
+  width: 100%;
+}
+
+}

@@ -1,0 +1,340 @@
+<section class="app-toolbar-shell">
+  @if (hasHeader) {
+    <div class="toolbar-header">
+      <div class="toolbar-title-wrap">
+        @if (title) {
+          <h1 class="toolbar-title">
+            {{ title }}
+          </h1>
+        }
+        @if (subtitle) {
+          <p class="toolbar-subtitle">
+            {{ subtitle }}
+          </p>
+        }
+      </div>
+    </div>
+  }
+
+  <kendo-toolbar
+    class="global-toolbar erp-toolbar"
+    overflow="scroll"
+    >
+    <!-- BACK -->
+
+    @if (config?.showBack) {
+      <kendo-toolbar-button
+        text="Back"
+        [svgIcon]="arrowLeftIcon"
+        title="Go back"
+        (click)="onBack.emit()"
+        >
+      </kendo-toolbar-button>
+    }
+
+    <!-- NEW -->
+
+    @if (config?.showNew) {
+      <kendo-toolbar-button
+        text="New Entry"
+        [svgIcon]="fileAddIcon"
+        themeColor="primary"
+        title="Create a new entry"
+        (click)="onNew.emit()"
+        >
+      </kendo-toolbar-button>
+    }
+
+    <!-- SAVE / UPDATE -->
+
+    @if (config?.showSave) {
+      <kendo-toolbar-button
+        [text]="saveText"
+        [svgIcon]="saveIcon"
+        themeColor="primary"
+        title="Save changes"
+        [disabled]="!formValid"
+        (click)="onSave.emit()"
+        >
+      </kendo-toolbar-button>
+    }
+
+    <!-- SUBMIT -->
+
+    @if (config?.showSubmit) {
+      <kendo-toolbar-button
+        text="Submit"
+        [svgIcon]="checkIcon"
+        themeColor="primary"
+        title="Submit document"
+        [disabled]="!canSubmit"
+        (click)="submitClick()"
+        >
+      </kendo-toolbar-button>
+    }
+
+    <!-- ACCEPT SERVICE -->
+
+    @if (config?.showAccept) {
+      <kendo-toolbar-button
+        text="Accept Service"
+        [svgIcon]="checkCircleIcon"
+        themeColor="primary"
+        title="Accept service"
+        [disabled]="!canAccept"
+        (click)="acceptClick()"
+        >
+      </kendo-toolbar-button>
+    }
+
+    <!-- PRINT -->
+
+    @if (config?.showPrint) {
+      <kendo-toolbar-button
+        text="Print"
+        [svgIcon]="printIcon"
+        title="Print"
+        (click)="onPrint.emit()"
+        >
+      </kendo-toolbar-button>
+    }
+
+    <!-- CANCEL -->
+
+    @if (config?.showCancel) {
+      <kendo-toolbar-button
+        text="Cancel"
+        [svgIcon]="cancelIcon"
+        title="Cancel"
+        (click)="onCancel.emit()"
+        >
+      </kendo-toolbar-button>
+    }
+
+    <!-- PRIMARY / WORKFLOW SEPARATOR -->
+
+    @if (showPrimaryGroup && showWorkflowGroup) {
+      <kendo-toolbar-separator
+        >
+      </kendo-toolbar-separator>
+    }
+
+    <!-- POST -->
+
+    @if (config?.showPost) {
+      <kendo-toolbar-button
+        text="Post Transaction"
+        [svgIcon]="checkIcon"
+        title="Post transaction"
+        [disabled]="!canPost"
+        (click)="postClick()"
+        >
+      </kendo-toolbar-button>
+    }
+
+    <!-- REVERSE -->
+
+    @if (config?.showReverse) {
+      <kendo-toolbar-button
+        text="Reverse / Unpost"
+        [svgIcon]="undoIcon"
+        title="Reverse or unpost transaction"
+        [disabled]="!canReverse"
+        (click)="reverseClick()"
+        >
+      </kendo-toolbar-button>
+    }
+
+    <!-- ACTIVATE -->
+
+    @if (config?.showActivate) {
+      <kendo-toolbar-button
+        text="Activate"
+        [svgIcon]="checkCircleIcon"
+        title="Activate record"
+        [disabled]="!activateMode"
+        (click)="activateClick()"
+        >
+      </kendo-toolbar-button>
+    }
+
+    <!-- DEACTIVATE -->
+
+    @if (config?.showDeactivate) {
+      <kendo-toolbar-button
+        text="Deactivate"
+        [svgIcon]="xCircleIcon"
+        title="Deactivate record"
+        [disabled]="!deactivateMode"
+        (click)="deactivateClick()"
+        >
+      </kendo-toolbar-button>
+    }
+
+    <!-- NAVIGATION SEPARATOR -->
+
+    @if (
+      (showPrimaryGroup || showWorkflowGroup) &&
+      showNavigationGroup
+      ) {
+      <kendo-toolbar-separator
+        >
+      </kendo-toolbar-separator>
+    }
+
+    <!-- LIST -->
+
+    @if (config?.showList) {
+      <kendo-toolbar-button
+        text="List"
+        [svgIcon]="listUnorderedIcon"
+        title="Go to list"
+        (click)="onList.emit()"
+        >
+      </kendo-toolbar-button>
+    }
+
+    <!-- REFRESH -->
+
+    @if (config?.showRefresh) {
+      <kendo-toolbar-button
+        text="Refresh"
+        [svgIcon]="repeatIcon"
+        title="Refresh data"
+        (click)="onRefresh.emit()"
+        >
+      </kendo-toolbar-button>
+    }
+
+    <!-- DATA LIST -->
+
+    @if (config?.showDataList) {
+      <kendo-toolbar-button
+        text="Data List"
+        [svgIcon]="gridIcon"
+        title="Open data list"
+        (click)="onDataList.emit()"
+        >
+      </kendo-toolbar-button>
+    }
+
+    <kendo-toolbar-spacer>
+    </kendo-toolbar-spacer>
+
+    <!-- DATE SEPARATOR -->
+
+    @if (showDateGroup) {
+      <kendo-toolbar-separator
+        >
+      </kendo-toolbar-separator>
+    }
+
+    <!-- TODAY -->
+
+    @if (config?.showToday) {
+      <kendo-toolbar-button
+        text="Today"
+        [svgIcon]="calendarDateIcon"
+        title="Filter to today"
+        (click)="onToday.emit()"
+        >
+      </kendo-toolbar-button>
+    }
+
+    <!-- YESTERDAY -->
+
+    @if (config?.showYesterday) {
+      <kendo-toolbar-button
+        text="Yesterday"
+        [svgIcon]="calendarIcon"
+        title="Filter to yesterday"
+        (click)="onYesterday.emit()"
+        >
+      </kendo-toolbar-button>
+    }
+
+    <!-- THIS MONTH -->
+
+    @if (config?.showThisMonth) {
+      <kendo-toolbar-button
+        text="This Month"
+        [svgIcon]="calendarIcon"
+        title="Filter to this month"
+        (click)="onThisMonth.emit()"
+        >
+      </kendo-toolbar-button>
+    }
+
+    <!-- LAST MONTH -->
+
+    @if (config?.showLastMonth) {
+      <kendo-toolbar-button
+        text="Last Month"
+        [svgIcon]="calendarIcon"
+        title="Filter to last month"
+        (click)="onLastMonth.emit()"
+        >
+      </kendo-toolbar-button>
+    }
+
+    <!-- THIS YEAR -->
+
+    @if (config?.showThisYear) {
+      <kendo-toolbar-button
+        text="This Year"
+        [svgIcon]="calendarIcon"
+        title="Filter to this year"
+        (click)="onThisYear.emit()"
+        >
+      </kendo-toolbar-button>
+    }
+
+    <!-- LAST YEAR -->
+
+    @if (config?.showLastYear) {
+      <kendo-toolbar-button
+        text="Last Year"
+        [svgIcon]="calendarIcon"
+        title="Filter to last year"
+        (click)="onLastYear.emit()"
+        >
+      </kendo-toolbar-button>
+    }
+
+    <!-- THIS WEEK -->
+
+    @if (config?.showThisWeek) {
+      <kendo-toolbar-button
+        text="This Week"
+        [svgIcon]="calendarIcon"
+        title="Filter to this week"
+        (click)="onThisWeek.emit()"
+        >
+      </kendo-toolbar-button>
+    }
+
+    <!-- LAST WEEK -->
+
+    @if (config?.showLastWeek) {
+      <kendo-toolbar-button
+        text="Last Week"
+        [svgIcon]="calendarIcon"
+        title="Filter to last week"
+        (click)="onLastWeek.emit()"
+        >
+      </kendo-toolbar-button>
+    }
+
+    <!-- CURRENT YEAR -->
+
+    @if (config?.showCurrentYear) {
+      <kendo-toolbar-button
+        text="Current Year"
+        [svgIcon]="calendarIcon"
+        title="Filter to current year"
+        (click)="onCurrentYear.emit()"
+        >
+      </kendo-toolbar-button>
+    }
+  </kendo-toolbar>
+</section>

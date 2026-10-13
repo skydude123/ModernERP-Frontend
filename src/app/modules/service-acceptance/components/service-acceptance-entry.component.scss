@@ -1,0 +1,649 @@
+:host {
+  display: block;
+}
+
+/* =========================================================
+   PAGE LAYOUT
+   ========================================================= */
+
+.service-page {
+  display: grid;
+  gap: 9px;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 9px 12px 14px;
+  color: #172033;
+}
+
+.card {
+  padding: 11px 14px;
+  background: #ffffff;
+  border: 1px solid #dce3ed;
+  border-radius: 8px;
+  box-shadow: 0 3px 12px rgb(15 23 42 / 4%);
+}
+
+.card-title,
+.tab-heading,
+.action-card,
+.workflow-actions,
+.status-strip {
+  display: flex;
+  align-items: center;
+}
+
+.card-title,
+.tab-heading,
+.action-card {
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.card-title {
+  margin-bottom: 9px;
+}
+
+.card-title > div:first-child {
+  display: grid;
+  gap: 1px;
+}
+
+.card-title > span {
+  font-size: 12px;
+}
+
+h2 {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+/* =========================================================
+   REQUIRED FIELDS / VALIDATION
+   ========================================================= */
+
+.required-note {
+  color: #b42318;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.required-marker {
+  color: #dc2626;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.field-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 14px;
+  color: #344054;
+  font-weight: 600;
+}
+
+.field-error {
+  display: block;
+  margin-top: 3px;
+  color: #dc2626;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.control-wrap {
+  display: block;
+  min-width: 0;
+}
+
+.control-wrap > kendo-datepicker,
+.control-wrap > kendo-combobox,
+.control-wrap > kendo-textbox {
+  width: 100%;
+}
+
+.control-wrap.field-invalid {
+  border-radius: 4px;
+}
+
+:host ::ng-deep .control-wrap.field-invalid .k-input,
+:host ::ng-deep .control-wrap.field-invalid .k-input-solid,
+:host ::ng-deep .control-wrap.field-invalid .k-picker,
+:host ::ng-deep .control-wrap.field-invalid .k-picker-solid,
+:host ::ng-deep .control-wrap.field-invalid .k-dropdownlist,
+:host ::ng-deep .control-wrap.field-invalid .k-combobox {
+  border-color: #dc2626 !important;
+  background-color: #fff7f7;
+  box-shadow: 0 0 0 1px rgb(220 38 38 / 18%) !important;
+}
+
+:host ::ng-deep .control-wrap.field-invalid .k-input-solid:focus-within,
+:host ::ng-deep .control-wrap.field-invalid .k-picker-solid:focus-within {
+  border-color: #dc2626 !important;
+  box-shadow: 0 0 0 2px rgb(220 38 38 / 15%) !important;
+}
+
+/* =========================================================
+   HEADER FORM
+   ========================================================= */
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(160px, 1fr));
+  column-gap: 12px;
+  row-gap: 8px;
+}
+
+label {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  color: #334155;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.span-3 {
+  grid-column: span 3;
+}
+
+/* =========================================================
+   KENDO CONTROLS
+   ========================================================= */
+
+:host ::ng-deep .k-input,
+:host ::ng-deep .k-picker,
+:host ::ng-deep .k-textbox,
+:host ::ng-deep .k-numerictextbox {
+  min-height: 30px;
+  font-size: 12px;
+}
+
+:host ::ng-deep .k-input-inner {
+  min-height: 28px;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+:host ::ng-deep .k-input-button,
+:host ::ng-deep .k-button-icon {
+  min-width: 30px;
+  width: 30px;
+}
+
+:host ::ng-deep .k-textarea {
+  min-height: 48px;
+}
+
+:host ::ng-deep textarea.k-input-inner {
+  min-height: 46px;
+  padding: 6px 8px;
+  line-height: 1.25;
+}
+
+/* =========================================================
+   DARK + BOLD CONTROL VALUES
+   ========================================================= */
+
+:host ::ng-deep .service-page .k-input-inner,
+:host ::ng-deep .service-page .k-input-value-text,
+:host ::ng-deep .service-page input[kendoTextBox],
+:host ::ng-deep .service-page textarea[kendoTextArea],
+:host ::ng-deep .service-page .k-combobox .k-input-value-text,
+:host ::ng-deep .service-page .k-dropdownlist .k-input-value-text,
+:host ::ng-deep .service-page .k-picker .k-input-value-text,
+:host ::ng-deep .service-page .k-numerictextbox .k-input-inner {
+  color: #111827 !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+/* =========================================================
+   READONLY / DISABLED VALUES
+   ========================================================= */
+
+:host ::ng-deep .service-page .k-disabled,
+:host ::ng-deep .service-page .k-readonly,
+:host ::ng-deep .service-page input:disabled,
+:host ::ng-deep .service-page textarea:disabled,
+:host ::ng-deep .service-page input[readonly],
+:host ::ng-deep .service-page textarea[readonly] {
+  opacity: 1 !important;
+}
+
+:host ::ng-deep .service-page .k-disabled .k-input-inner,
+:host ::ng-deep .service-page .k-disabled .k-input-value-text,
+:host ::ng-deep .service-page .k-readonly .k-input-inner,
+:host ::ng-deep .service-page .k-readonly .k-input-value-text,
+:host ::ng-deep .service-page input:disabled,
+:host ::ng-deep .service-page textarea:disabled,
+:host ::ng-deep .service-page input[readonly],
+:host ::ng-deep .service-page textarea[readonly] {
+  color: #111827 !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+/* =========================================================
+   STATUS STRIP
+   ========================================================= */
+
+.status-strip {
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 34px;
+  padding: 8px 12px;
+  color: #64748b;
+  font-size: 11px;
+  background: #f8fafc;
+  border: 1px solid #dce3ed;
+  border-radius: 7px;
+}
+
+.status-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.workflow-text {
+  color: #667085;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.status-summary {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-left: auto;
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.summary-item span {
+  color: #667085;
+  font-size: 12px;
+}
+
+.summary-item strong {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.status {
+  flex: 0 0 auto;
+  padding: 3px 9px;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 750;
+  line-height: 1.2;
+  background: #64748b;
+  border-radius: 999px;
+}
+
+.status.submitted {
+  background: #2563eb;
+}
+
+.status.accepted {
+  background: #0891b2;
+}
+
+.status.posted {
+  background: #15803d;
+}
+
+.status.reversed {
+  background: #b91c1c;
+}
+
+/* =========================================================
+   TABS
+   ========================================================= */
+
+.tab-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+:host ::ng-deep .k-tabstrip-items-wrapper {
+  min-height: 34px;
+}
+
+:host ::ng-deep .k-tabstrip-items .k-link {
+  padding: 7px 12px;
+  font-size: 12px;
+}
+
+:host ::ng-deep .k-tabstrip-content {
+  padding: 8px 12px 10px;
+}
+
+.tab-heading {
+  min-height: 32px;
+  padding: 4px 2px 7px;
+  color: #475569;
+  font-size: 12px;
+}
+
+.tab-heading strong {
+  color: #075985;
+  font-size: 15px;
+}
+
+/* =========================================================
+   SERVICE LINES GRID
+   ========================================================= */
+
+.grid-validation-note {
+  margin: 0 2px 8px;
+  padding: 8px 10px;
+  color: #b42318;
+  font-size: 12px;
+  font-weight: 700;
+  background: #fff1f0;
+  border: 1px solid #fda29b;
+  border-radius: 4px;
+}
+
+:host ::ng-deep .k-grid {
+  font-size: 11px;
+}
+
+:host ::ng-deep .k-grid-header th {
+  padding: 6px 7px;
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+:host ::ng-deep .k-grid td {
+  padding: 5px 7px;
+  line-height: 1.2;
+  vertical-align: middle;
+}
+
+:host ::ng-deep .k-grid .k-numerictextbox,
+:host ::ng-deep .k-grid .k-combobox,
+:host ::ng-deep .k-grid .k-textbox {
+  min-height: 28px;
+}
+
+:host ::ng-deep .k-grid .k-input-inner {
+  min-height: 26px;
+  padding: 3px 6px;
+  font-size: 11px;
+}
+
+:host ::ng-deep .service-page .k-grid .k-grid-content td,
+:host ::ng-deep .service-page .k-grid .k-grid-content .k-table-td {
+  color: #111827 !important;
+  font-weight: 700 !important;
+}
+
+:host ::ng-deep .service-page .k-grid .k-input-inner,
+:host ::ng-deep .service-page .k-grid .k-input-value-text {
+  color: #111827 !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+/* =========================================================
+   SERVICE PO COMBOBOX DROPDOWN
+   ========================================================= */
+
+.po-option {
+  display: grid;
+  gap: 4px;
+  padding: 6px 4px;
+  line-height: 1.2;
+}
+
+/* PO Number */
+.po-option strong {
+  color: #111827;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0.2px;
+}
+
+/* Supplier Code + Supplier Name */
+.po-option small {
+  color: #334155;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.25;
+  opacity: 1;
+}
+
+/*
+ * Improve spacing for dropdown items.
+ */
+:host ::ng-deep .k-list-item {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+/*
+ * Selected / highlighted Service PO.
+ * Make both lines readable against Kendo blue background.
+ */
+:host ::ng-deep .k-list-item.k-selected .po-option strong,
+:host ::ng-deep .k-list-item.k-selected .po-option small,
+:host ::ng-deep .k-list-item.k-focus .po-option strong,
+:host ::ng-deep .k-list-item.k-focus .po-option small {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* =========================================================
+   WORKFLOW TAB
+   ========================================================= */
+
+.workflow {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(130px, 1fr));
+  gap: 8px;
+  padding: 8px 2px;
+}
+
+.workflow div {
+  display: grid;
+  gap: 3px;
+  min-height: 76px;
+  padding: 9px 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+}
+
+.workflow span,
+.workflow small {
+  color: #64748b;
+}
+
+.workflow span {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.workflow strong {
+  color: #111827;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.workflow small {
+  min-height: 26px;
+  font-size: 10px;
+  line-height: 1.2;
+}
+
+/* =========================================================
+   OPTIONAL ACTION AREA
+   ========================================================= */
+
+.action-card {
+  min-height: 60px;
+  padding: 9px 14px;
+}
+
+.action-card > div:first-child {
+  display: grid;
+  gap: 2px;
+  font-size: 12px;
+}
+
+.action-card > div:first-child span {
+  font-size: 11px;
+}
+
+.workflow-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+:host ::ng-deep .workflow-actions .k-button {
+  min-height: 31px;
+  padding: 5px 11px;
+  font-size: 11px;
+}
+
+/* =========================================================
+   LOOKUP DISPLAY
+   ========================================================= */
+
+.lookup-search {
+  margin-bottom: 7px;
+}
+
+.selected-filter-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 7px;
+  padding: 7px 9px;
+  color: #475569;
+  font-size: 11px;
+  background: #f8fafc;
+  border: 1px solid #dce3ed;
+  border-radius: 6px;
+}
+
+.selected-filter-summary strong {
+  color: #0f172a;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1180px) {
+  .form-grid {
+    grid-template-columns: repeat(3, minmax(160px, 1fr));
+  }
+
+  .span-3 {
+    grid-column: span 3;
+  }
+
+  .workflow {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .form-grid {
+    grid-template-columns: repeat(2, minmax(150px, 1fr));
+  }
+
+  .span-3 {
+    grid-column: span 2;
+  }
+
+  .workflow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .status-strip {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .status-summary {
+    margin-left: 0;
+  }
+
+  .workflow-text {
+    white-space: normal;
+  }
+}
+
+@media (max-width: 650px) {
+  .service-page {
+    padding: 7px;
+  }
+
+  .card {
+    padding: 10px;
+  }
+
+  .form-grid,
+  .workflow {
+    grid-template-columns: 1fr;
+  }
+
+  .span-3 {
+    grid-column: auto;
+  }
+
+  .status-strip,
+  .action-card {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .workflow-actions {
+    justify-content: stretch;
+  }
+
+  :host ::ng-deep .workflow-actions .k-button {
+    flex: 1 1 auto;
+  }
+}
+
+/* =========================================================
+   PRINT
+   ========================================================= */
+
+@media print {
+  app-toolbar,
+  .workflow-actions,
+  .lookup-field button {
+    display: none !important;
+  }
+
+  .service-page {
+    padding: 0;
+  }
+
+  .card {
+    box-shadow: none;
+  }
+}

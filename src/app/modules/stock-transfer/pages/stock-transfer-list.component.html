@@ -1,0 +1,336 @@
+<section class="stock-transfer-page compact-erp-page">
+  <div class="page-shell compact-erp-shell">
+    <!-- =========================================================
+         MAIN TOOLBAR
+         ========================================================= -->
+    <app-toolbar
+      class="stock-transfer-list-toolbar"
+      [config]="toolbar.config()"
+      [formValid]="true"
+      title="Stock Transfer Listing"
+      subtitle="Server-side Stock Transfer register with external document editing."
+      (onNew)="newEntry()"
+      (onRefresh)="refresh()"
+    >
+    </app-toolbar>
+
+    <!-- =========================================================
+         FILTERS
+         Existing Stock Transfer filter logic retained
+         ========================================================= -->
+    <form
+      [formGroup]="filterForm"
+      class="filter-band compact-filter-band"
+    >
+      <!-- FROM -->
+      <kendo-formfield>
+        <kendo-label text="From"></kendo-label>
+
+        <kendo-datepicker
+          formControlName="dateFrom"
+          format="MM/dd/yyyy"
+        >
+        </kendo-datepicker>
+      </kendo-formfield>
+
+      <!-- TO -->
+      <kendo-formfield>
+        <kendo-label text="To"></kendo-label>
+
+        <kendo-datepicker
+          formControlName="dateTo"
+          format="MM/dd/yyyy"
+        >
+        </kendo-datepicker>
+      </kendo-formfield>
+
+      <!-- STATUS -->
+      <kendo-formfield>
+        <kendo-label text="Status"></kendo-label>
+
+        <kendo-dropdownlist
+          formControlName="status"
+          [data]="statuses"
+          textField="text"
+          valueField="value"
+          [valuePrimitive]="true"
+        >
+        </kendo-dropdownlist>
+      </kendo-formfield>
+
+      <!-- SOURCE -->
+      <kendo-formfield>
+        <kendo-label text="Source Storage"></kendo-label>
+
+        <kendo-dropdownlist
+          formControlName="sourceWhseCode"
+          [data]="facade.warehouses()"
+          textField="whseDesc"
+          valueField="whseCode"
+          [valuePrimitive]="true"
+          [defaultItem]="{
+            whseCode: null,
+            whseDesc: 'All source storage'
+          }"
+        >
+        </kendo-dropdownlist>
+      </kendo-formfield>
+
+      <!-- DESTINATION -->
+      <kendo-formfield>
+        <kendo-label text="Destination Storage"></kendo-label>
+
+        <kendo-dropdownlist
+          formControlName="destinationWhseCode"
+          [data]="facade.warehouses()"
+          textField="whseDesc"
+          valueField="whseCode"
+          [valuePrimitive]="true"
+          [defaultItem]="{
+            whseCode: null,
+            whseDesc: 'All destination storage'
+          }"
+        >
+        </kendo-dropdownlist>
+      </kendo-formfield>
+
+      <!-- BUTTONS -->
+      <div class="filter-actions">
+        <button
+          kendoButton
+          type="button"
+          themeColor="primary"
+          (click)="applyFilters()"
+        >
+          Search
+        </button>
+
+        <button
+          kendoButton
+          type="button"
+          fillMode="outline"
+          (click)="clearFilters()"
+        >
+          Clear
+        </button>
+      </div>
+    </form>
+
+    <!-- =========================================================
+         LIST GRID
+         ========================================================= -->
+    <div class="grid-card compact-grid-card">
+      <div class="grid-meta compact-grid-meta">
+        <span class="record-count">
+          Total Records:
+          <strong>
+            {{ facade.total() | number }}
+          </strong>
+        </span>
+
+        @if (facade.listLoading()) {
+          <span class="loading-text">
+            Loading...
+          </span>
+        }
+      </div>
+
+      <kendo-grid
+        class="stock-transfer-list-grid"
+        [data]="gridData()"
+        [height]="620"
+        [pageable]="{
+          buttonCount: 5,
+          info: true,
+          type: 'numeric',
+          pageSizes: [
+            25,
+            50,
+            100,
+            250
+          ],
+          previousNext: true,
+          responsive: true
+        }"
+        [resizable]="true"
+        [selectable]="{
+          mode: 'single'
+        }"
+        [skip]="gridState().skip || 0"
+        [pageSize]="gridState().take || 50"
+        [loading]="facade.listLoading()"
+        (dataStateChange)="
+          dataStateChange($event)
+        "
+        (selectionChange)="
+          onSelectionChange($event)
+        "
+      >
+        <!-- =====================================================
+             SMART SEARCH
+             ===================================================== -->
+        <kendo-toolbar
+          class="grid-search-toolbar"
+          overflow="scroll"
+        >
+          <kendo-toolbar-spacer>
+          </kendo-toolbar-spacer>
+
+          <kendo-grid-smartbox-tool
+            [searchMode]="searchSettings"
+            (search)="onGridSearch($event)"
+          >
+          </kendo-grid-smartbox-tool>
+
+          <kendo-toolbar-spacer>
+          </kendo-toolbar-spacer>
+        </kendo-toolbar>
+
+        <!-- =====================================================
+             ST NUMBER
+             External Edit
+             ===================================================== -->
+        <kendo-grid-column
+          field="stNo"
+          title="ST No."
+          [width]="100"
+        >
+          <ng-template
+            kendoGridCellTemplate
+            let-dataItem
+          >
+            <button
+              class="stock-transfer-link-button"
+              kendoButton
+              type="button"
+              fillMode="link"
+              (click)="
+                selected.set(dataItem);
+                editSelected()
+              "
+            >
+              {{ dataItem.stNo }}
+            </button>
+          </ng-template>
+        </kendo-grid-column>
+
+        <!-- DATE -->
+        <kendo-grid-column
+          field="stDate"
+          title="ST Date"
+          [width]="95"
+        >
+          <ng-template
+            kendoGridCellTemplate
+            let-dataItem
+          >
+            {{
+              dataItem.stDate
+                | date: 'MM/dd/yyyy'
+            }}
+          </ng-template>
+        </kendo-grid-column>
+
+        <!-- STATUS -->
+        <kendo-grid-column
+          field="status"
+          title="Status"
+          [width]="95"
+        >
+          <ng-template
+            kendoGridCellTemplate
+            let-dataItem
+          >
+            <span
+              class="status-pill"
+              [class.posted]="
+                dataItem.status === 'U'
+              "
+            >
+              {{
+                statusName(
+                  dataItem.status
+                )
+              }}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <!-- SOURCE -->
+        <kendo-grid-column
+          field="sourceWhseDesc"
+          title="Source Storage"
+          [width]="190"
+        >
+        </kendo-grid-column>
+
+        <!-- DESTINATION -->
+        <kendo-grid-column
+          field="destinationWhseDesc"
+          title="Destination Storage"
+          [width]="190"
+        >
+        </kendo-grid-column>
+
+        <!-- REFERENCE -->
+        <kendo-grid-column
+          field="reference"
+          title="Reference"
+          [width]="160"
+        >
+        </kendo-grid-column>
+
+        <!-- LINES -->
+        <kendo-grid-column
+          field="lineCount"
+          title="Lines"
+          [width]="75"
+          class="numeric"
+        >
+        </kendo-grid-column>
+
+        <!-- BASE QTY -->
+        <kendo-grid-column
+          field="totalBaseQty"
+          title="Base Qty"
+          [width]="125"
+          class="numeric"
+        >
+          <ng-template
+            kendoGridCellTemplate
+            let-dataItem
+          >
+            {{
+              dataItem.totalBaseQty
+                | number: '1.4-4'
+            }}
+          </ng-template>
+        </kendo-grid-column>
+
+        <!-- COST -->
+        <kendo-grid-column
+          field="totalTransferCost"
+          title="Transfer Cost"
+          [width]="140"
+          class="numeric"
+        >
+          <ng-template
+            kendoGridCellTemplate
+            let-dataItem
+          >
+            <strong>
+              {{
+                dataItem.totalTransferCost
+                  | number: '1.2-4'
+              }}
+            </strong>
+          </ng-template>
+        </kendo-grid-column>
+
+        <ng-template kendoGridNoRecordsTemplate>
+          No stock transfers matched the filters.
+        </ng-template>
+      </kendo-grid>
+    </div>
+  </div>
+</section>

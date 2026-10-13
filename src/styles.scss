@@ -99,3 +99,106 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+.custom-css-class {
+  .k-dialog-titlebar {
+    font-weight: 700;
+  }
+
+  .k-dialog-content {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .k-dialog-actions {
+    gap: 8px;
+  }
+}
+
+
+.notification-colors {
+  background: #e8fff1 !important;
+  color: #046c37 !important;
+  border: 1px solid #7ee2a8 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 12px 30px rgba(22, 101, 52, 0.18) !important;
+}
+
+.notification-font {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.01em;
+}
+
+.notification-colors-error {
+  background: #fff1f2 !important;
+  color: #b42318 !important;
+  border: 1px solid #fda29b !important;
+  border-radius: 12px !important;
+  box-shadow: 0 12px 30px rgba(180, 35, 24, 0.18) !important;
+}
+
+.notification-font-error {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.01em;
+}
+
+/* =========================================================
+   RWP / NON-PO ITEM LOOKUP POPUP HEADER
+   ========================================================= */
+
+.rwp-item-popup .k-table-thead .k-table-th,
+.rwp-item-popup .k-table-header .k-table-th,
+.rwp-item-popup thead th {
+  background-color: #fa8128 !important;
+  color: #111111 !important;
+  font-weight: 700 !important;
+  border-color: #d96a13 !important;
+}
+
+.rwp-item-popup .k-table-thead .k-table-th *,
+.rwp-item-popup .k-table-header .k-table-th *,
+.rwp-item-popup thead th * {
+  color: #111111 !important;
+  font-weight: 700 !important;
+}
+/* =========================================================
+   RECEIVING MULTICOLUMN COMBOBOX HEADERS
+   RPO + RWP
+   Orange background + black text
+   ========================================================= */
+
+/* RPO */
+.rpo-line-popup .k-table-thead .k-table-th,
+.rpo-line-popup .k-table-header .k-table-th,
+.rpo-line-popup thead th {
+  background-color: #fa8128 !important;
+  color: #111111 !important;
+  font-weight: 700 !important;
+  border-color: #d96a13 !important;
+}
+
+.rpo-line-popup .k-table-thead .k-table-th *,
+.rpo-line-popup .k-table-header .k-table-th *,
+.rpo-line-popup thead th * {
+  color: #111111 !important;
+  font-weight: 700 !important;
+}
+
+/* RWP */
+.rwp-item-popup .k-table-thead .k-table-th,
+.rwp-item-popup .k-table-header .k-table-th,
+.rwp-item-popup thead th {
+  background-color: #fa8128 !important;
+  color: #111111 !important;
+  font-weight: 700 !important;
+  border-color: #d96a13 !important;
+}
+
+.rwp-item-popup .k-table-thead .k-table-th *,
+.rwp-item-popup .k-table-header .k-table-th *,
+.rwp-item-popup thead th * {
+  color: #111111 !important;
+  font-weight: 700 !important;
+}

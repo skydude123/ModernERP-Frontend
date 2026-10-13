@@ -10,22 +10,11 @@
 </aside>
 -->
 
-<kendo-drawer-container
-  class="drawer-wrap"
-  [class.drawer-collapsed]="!auth.drawerExpanded()">
+<kendo-drawer-container class="drawer-wrap drawer-wrap--light" [class.drawer-collapsed]="!auth.drawerExpanded()">
 
-  <kendo-drawer
-    #drawer
-    [items]="items()"
-    [expanded]="auth.drawerExpanded()"
-    [mode]="mode()"
-    [mini]="mini()"
-    position="start"
-    class="app-drawer"
-    [autoCollapse]="false"
-    [animation]="true"
-    [isItemExpanded]="isItemExpanded"
-    (select)="onSelect($event)">
+  <kendo-drawer #drawer [items]="items()" [expanded]="auth.drawerExpanded()" [mode]="mode()" [mini]="mini()"
+    position="start" class="app-drawer app-drawer--light" [autoCollapse]="false" [animation]="true"
+    [isItemExpanded]="isItemExpanded" (select)="onSelect($event)">
   </kendo-drawer>
 
   <kendo-drawer-content class="drawer-content-wrap">

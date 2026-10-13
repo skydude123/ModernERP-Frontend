@@ -1,0 +1,580 @@
+:host {
+  display: block;
+}
+
+/* =========================================================
+   DIALOG
+   ========================================================= */
+
+:host ::ng-deep .price-inquiry-dialog .k-dialog {
+  width: min(1200px, calc(100vw - 32px)) !important;
+  max-width: calc(100vw - 32px);
+
+  max-height: calc(100vh - 32px);
+
+  border-radius: 12px;
+  overflow: hidden;
+
+  box-shadow:
+    0 24px 65px rgba(15, 23, 42, 0.28),
+    0 6px 18px rgba(15, 23, 42, 0.12);
+}
+
+:host ::ng-deep .price-inquiry-dialog .k-dialog-titlebar {
+  min-height: 48px;
+
+  padding: 11px 15px;
+
+  background: linear-gradient(
+    135deg,
+    #f97316 0%,
+    #fb923c 100%
+  );
+
+  border-bottom: 1px solid #ea580c;
+
+  color: #111827;
+
+  font-size: 15px;
+  font-weight: 900;
+}
+
+:host ::ng-deep .price-inquiry-dialog .k-dialog-title {
+  color: #111827;
+
+  font-size: 16px;
+  font-weight: 900;
+}
+
+:host ::ng-deep .price-inquiry-dialog .k-dialog-content {
+  padding: 0;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  background: #f5f7fa;
+}
+
+:host ::ng-deep .price-inquiry-dialog .k-dialog-actions {
+  min-height: 48px;
+
+  padding: 8px 14px;
+
+  background: #ffffff;
+
+  border-top: 1px solid #dbe3ec;
+}
+
+
+/* =========================================================
+   MAIN SHELL
+   ========================================================= */
+
+.pricing-shell {
+  display: grid;
+
+  gap: 10px;
+
+  padding: 12px;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   COMMON CARDS
+   ========================================================= */
+
+.lookup-card,
+.context-card,
+.metric-section,
+.grid-section,
+.maintenance-card {
+  background: #ffffff;
+
+  border: 1px solid #dbe4ee;
+  border-radius: 9px;
+
+  box-shadow:
+    0 4px 12px rgba(15, 23, 42, 0.045);
+}
+
+
+/* =========================================================
+   LOOKUP
+   ========================================================= */
+
+.lookup-card {
+  overflow: visible;
+}
+
+.lookup-card-heading,
+.section-heading {
+  display: flex;
+
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 9px 11px;
+
+  border-bottom: 1px solid #e5eaf0;
+}
+
+.lookup-card-heading {
+  border-left: 4px solid #f97316;
+}
+
+.lookup-card-heading h3,
+.section-heading h3 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 13.5px;
+  font-weight: 900;
+}
+
+.lookup-card-heading p,
+.section-heading p {
+  margin: 2px 0 0;
+
+  color: #64748b;
+
+  font-size: 10.5px;
+  line-height: 1.35;
+}
+
+.lookup-badge {
+  display: inline-flex;
+
+  align-items: center;
+
+  padding: 4px 8px;
+
+  background: #fff7ed;
+
+  border: 1px solid #fdba74;
+  border-radius: 999px;
+
+  color: #c2410c;
+
+  font-size: 9.5px;
+  font-weight: 900;
+
+  white-space: nowrap;
+}
+
+.lookup-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(240px, 1fr)
+    minmax(360px, 1.5fr)
+    minmax(150px, 0.55fr)
+    auto;
+
+  gap: 12px;
+
+  align-items: end;
+
+  padding: 12px;
+}
+
+.lookup-field {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 5px;
+
+  min-width: 0;
+}
+
+.lookup-field label {
+  color: #334155;
+
+  font-size: 10.5px;
+  font-weight: 850;
+}
+
+.lookup-field kendo-multicolumncombobox,
+.lookup-field kendo-dropdownlist {
+  width: 100%;
+}
+
+.um-field {
+  min-width: 150px;
+}
+
+.required {
+  color: #dc2626;
+
+  font-weight: 900;
+}
+
+.lookup-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+}
+
+
+/* =========================================================
+   KENDO INPUTS
+   ========================================================= */
+
+:host ::ng-deep .lookup-grid .k-input,
+:host ::ng-deep .lookup-grid .k-picker {
+  min-height: 34px;
+
+  font-size: 11px;
+  font-weight: 700;
+}
+
+:host ::ng-deep .lookup-grid .k-input-inner {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   COMBO POPUP
+   ========================================================= */
+
+:host ::ng-deep .k-animation-container .k-table-th {
+  padding: 6px 8px;
+
+  background: #f97316;
+
+  color: #111827;
+
+  font-size: 10px;
+  font-weight: 900;
+}
+
+:host ::ng-deep .k-animation-container .k-table-td {
+  padding: 5px 8px;
+
+  font-size: 10.5px;
+  font-weight: 650;
+}
+
+
+/* =========================================================
+   CONTEXT
+   ========================================================= */
+
+.context-card {
+  display: grid;
+
+  grid-template-columns:
+    1fr
+    1.6fr
+    0.7fr;
+
+  overflow: hidden;
+}
+
+.context-card > div {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 2px;
+
+  min-width: 0;
+
+  padding: 10px 12px;
+
+  border-right: 1px solid #e5e7eb;
+}
+
+.context-card > div:last-child {
+  border-right: 0;
+}
+
+.context-card span {
+  color: #9a3412;
+
+  font-size: 9px;
+  font-weight: 900;
+
+  letter-spacing: 0.04em;
+
+  text-transform: uppercase;
+}
+
+.context-card strong {
+  overflow: hidden;
+
+  color: #111827;
+
+  font-size: 12px;
+  font-weight: 900;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.context-card small {
+  overflow: hidden;
+
+  color: #64748b;
+
+  font-size: 10px;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   PRICE SUMMARY
+   ========================================================= */
+
+.metric-section {
+  overflow: hidden;
+}
+
+.metric-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 8px;
+
+  padding: 10px;
+}
+
+.metric-card {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 3px;
+
+  min-height: 72px;
+
+  padding: 10px 11px;
+
+  background: #f8fafc;
+
+  border: 1px solid #dbe3eb;
+  border-radius: 7px;
+}
+
+.metric-card > span {
+  color: #64748b;
+
+  font-size: 9.5px;
+  font-weight: 850;
+
+  text-transform: uppercase;
+}
+
+.metric-card > strong {
+  color: #111827;
+
+  font-size: 18px;
+  font-weight: 950;
+
+  font-variant-numeric: tabular-nums;
+}
+
+.metric-card > small {
+  color: #64748b;
+
+  font-size: 10px;
+}
+
+.metric-card.suggested {
+  background: #fff7ed;
+
+  border-color: #fdba74;
+  border-top: 3px solid #f97316;
+}
+
+.metric-card.suggested > strong {
+  color: #c2410c;
+}
+
+
+/* =========================================================
+   GRID
+   ========================================================= */
+
+.grid-section {
+  overflow: hidden;
+}
+
+:host ::ng-deep .pricing-grid .k-grid-header th,
+:host ::ng-deep .pricing-grid .k-table-th {
+  background: #f97316 !important;
+
+  color: #111827;
+
+  font-size: 10px;
+  font-weight: 900;
+}
+
+:host ::ng-deep .pricing-grid td,
+:host ::ng-deep .pricing-grid .k-table-td {
+  color: #1f2937;
+
+  font-size: 10.5px;
+  font-weight: 650;
+}
+
+:host ::ng-deep .pricing-grid .k-grid-content tr:hover td {
+  background: #fff7ed;
+}
+
+
+/* =========================================================
+   MAINTENANCE
+   ========================================================= */
+
+.maintenance-card {
+  overflow: hidden;
+}
+
+.maintenance-grid {
+  display: grid;
+
+  grid-template-columns:
+    150px
+    170px
+    100px
+    minmax(230px, 1fr)
+    auto;
+
+  gap: 10px;
+
+  align-items: end;
+
+  padding: 12px;
+}
+
+.active-check {
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  min-height: 34px;
+
+  color: #334155;
+
+  font-size: 10.5px;
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.error-banner {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 2px;
+
+  padding: 9px 11px;
+
+  background: #fef2f2;
+
+  border: 1px solid #fecaca;
+  border-left: 4px solid #dc2626;
+
+  border-radius: 7px;
+
+  color: #991b1b;
+}
+
+.error-banner strong {
+  font-size: 11px;
+}
+
+.error-banner span {
+  font-size: 10.5px;
+}
+
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
+
+.empty-state {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 4px;
+
+  min-height: 130px;
+
+  padding: 18px;
+
+  background: #ffffff;
+
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+
+  color: #64748b;
+
+  text-align: center;
+}
+
+.empty-state strong {
+  color: #334155;
+
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.empty-state span {
+  font-size: 10.5px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1000px) {
+  .lookup-grid {
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+  .metric-grid {
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+  .maintenance-grid {
+    grid-template-columns:
+      1fr 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .lookup-grid,
+  .metric-grid,
+  .maintenance-grid,
+  .context-card {
+    grid-template-columns:
+      1fr;
+  }
+}

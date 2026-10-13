@@ -1,0 +1,449 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+/* =========================================================
+   MAIN PAGE
+   Compact layout for 1366 / 1336 legacy screens
+   ========================================================= */
+.inquiry-page {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.45rem 0.55rem;
+  min-width: 0;
+}
+
+:host ::ng-deep .grid--clickable {
+  cursor: pointer;
+}
+
+/* =========================================================
+   SELECTED ITEM CONTEXT
+   ========================================================= */
+.context-bar {
+  display: grid;
+  grid-template-columns:
+    minmax(135px, 0.7fr)
+    minmax(220px, 2fr)
+    minmax(115px, 0.6fr);
+
+  gap: 1px;
+
+  overflow: hidden;
+
+  border: 1px solid var(--kendo-color-border, #d5d9df);
+  border-radius: 4px;
+
+  background: var(--kendo-color-border, #d5d9df);
+}
+
+.context-bar div {
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.05rem;
+
+  min-width: 0;
+
+  padding: 0.35rem 0.55rem;
+
+  background: var(--kendo-color-surface-alt, #f7f8fa);
+}
+
+/* Labels */
+.context-bar span {
+  color: #616b77;
+
+  font-size: 0.66rem;
+  font-weight: 600;
+
+  line-height: 1.15;
+
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+
+/* Actual selected values */
+.context-bar strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  color: #111827;
+
+  font-size: 0.82rem;
+
+  /* visible but not overly bold */
+  font-weight: 600;
+
+  line-height: 1.25;
+}
+
+
+/* =========================================================
+   SEARCH / FILTER CRITERIA
+   ========================================================= */
+.criteria-bar {
+  display: flex;
+
+  align-items: flex-end;
+
+  gap: 0.4rem;
+  flex-wrap: wrap;
+
+  margin-bottom: 0.45rem;
+
+  padding: 0.4rem 0.5rem;
+
+  border: 1px solid #dde2e7;
+  border-radius: 4px;
+
+  background: #fafbfc;
+}
+
+.criteria-bar kendo-formfield {
+  width: min(280px, 100%);
+  margin: 0;
+}
+
+.criteria-bar kendo-datepicker {
+  width: 145px;
+}
+
+.compact-toggle {
+  align-items: center;
+}
+
+
+/* =========================================================
+   FORM LABELS
+   ========================================================= */
+:host ::ng-deep .criteria-bar .k-label {
+  margin-bottom: 2px;
+
+  color: #252b33;
+
+  font-size: 0.76rem;
+  font-weight: 600;
+
+  line-height: 1.15;
+}
+
+
+/* =========================================================
+   INPUTS
+   ========================================================= */
+:host ::ng-deep .criteria-bar .k-input,
+:host ::ng-deep .criteria-bar .k-textbox,
+:host ::ng-deep .criteria-bar .k-picker {
+  min-height: 31px;
+
+  font-size: 0.78rem;
+}
+
+/* User-entered / displayed values */
+:host ::ng-deep .criteria-bar .k-input-inner {
+  padding-top: 0.28rem;
+  padding-bottom: 0.28rem;
+
+  color: #20252b;
+
+  font-size: 0.78rem;
+
+  /*
+   * Semi-bold only.
+   * Klaro ang value pero dili grabe kabaga.
+   */
+  font-weight: 600;
+}
+
+/* Placeholder should stay lighter */
+:host ::ng-deep .criteria-bar input::placeholder {
+  color: #747d87;
+
+  font-weight: 400;
+
+  opacity: 1;
+}
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+:host ::ng-deep .criteria-bar .k-button {
+  min-height: 31px;
+
+  padding: 0.28rem 0.7rem;
+
+  font-size: 0.76rem;
+  font-weight: 600;
+
+  line-height: 1.15;
+}
+
+
+/* =========================================================
+   ERRORS
+   ========================================================= */
+.error-state {
+  margin-bottom: 0.4rem;
+
+  padding: 0.45rem 0.65rem;
+
+  border-left: 3px solid #c62828;
+
+  background: #fff1f1;
+  color: #8b1a1a;
+
+  font-size: 0.77rem;
+  font-weight: 500;
+}
+
+
+/* =========================================================
+   TABSTRIP
+   ========================================================= */
+:host ::ng-deep .k-tabstrip-items-wrapper {
+  min-height: 32px;
+}
+
+:host ::ng-deep .k-tabstrip-items .k-link {
+  padding: 0.45rem 0.7rem;
+
+  font-size: 0.76rem;
+  font-weight: 600;
+
+  line-height: 1.1;
+}
+
+:host ::ng-deep .k-tabstrip-content {
+  overflow-x: auto;
+
+  padding: 0.5rem;
+
+  /*
+   * Important for legacy/smaller screens.
+   * Prevents the whole page from becoming wider.
+   */
+  min-width: 0;
+}
+
+
+/* =========================================================
+   KENDO GRID
+   ========================================================= */
+:host ::ng-deep .k-grid {
+  /*
+   * Keeps horizontal scroll available instead of destroying
+   * column readability on old screens.
+   */
+  min-width: 720px;
+
+  font-size: 0.76rem;
+
+  border-radius: 3px;
+}
+
+
+/* ---------------------------------------------------------
+   GRID HEADER
+   --------------------------------------------------------- */
+:host ::ng-deep .k-grid .k-table-th,
+:host ::ng-deep .k-grid .k-header {
+  padding: 0.36rem 0.45rem;
+
+  /* Orange header */
+  background: #f58220 !important;
+  color: #111827 !important;
+
+  font-size: 0.74rem;
+  font-weight: 600;
+
+  line-height: 1.15;
+
+  border-color: #d96f12 !important;
+}
+
+
+/* ---------------------------------------------------------
+   GRID VALUES
+   --------------------------------------------------------- */
+:host ::ng-deep .k-grid .k-table-td,
+:host ::ng-deep .k-grid td {
+  padding: 0.32rem 0.45rem;
+
+  color: #20252b;
+
+  font-size: 0.76rem;
+
+  /*
+   * This is the important part:
+   * values become clearly visible without looking "heavy".
+   */
+  font-weight: 600;
+
+  line-height: 1.22;
+
+  vertical-align: middle;
+}
+
+
+/* Numeric columns */
+:host ::ng-deep .k-grid .numeric-cell {
+  text-align: right;
+
+  font-variant-numeric: tabular-nums;
+
+  font-weight: 600;
+}
+
+
+/* Quantity colors */
+:host ::ng-deep .k-grid .qty-in {
+  color: #167245;
+
+  font-weight: 600;
+}
+
+:host ::ng-deep .k-grid .qty-out {
+  color: #b3261e;
+
+  font-weight: 600;
+}
+
+
+/* ---------------------------------------------------------
+   OPEN BUTTON INSIDE GRID
+   --------------------------------------------------------- */
+:host ::ng-deep .k-grid .k-button {
+  min-height: 26px;
+
+  padding: 0.18rem 0.48rem;
+
+  font-size: 0.7rem;
+  font-weight: 600;
+
+  line-height: 1.1;
+}
+
+
+/* ---------------------------------------------------------
+   GRID ROW HEIGHT
+   --------------------------------------------------------- */
+:host ::ng-deep .k-grid .k-table-row {
+  height: 30px;
+}
+
+
+/* ---------------------------------------------------------
+   PAGER
+   --------------------------------------------------------- */
+:host ::ng-deep .k-grid-pager {
+  min-height: 34px;
+
+  padding: 0.25rem 0.4rem;
+
+  font-size: 0.72rem;
+}
+
+:host ::ng-deep .k-pager .k-button {
+  min-width: 27px;
+  min-height: 27px;
+
+  padding: 0.15rem 0.3rem;
+}
+
+
+/* =========================================================
+   LEGACY SCREEN OPTIMIZATION
+   1366px / 1336px monitors
+   ========================================================= */
+@media (max-width: 1400px) {
+  .inquiry-page {
+    gap: 0.35rem;
+
+    padding: 0.35rem 0.45rem;
+  }
+
+  .context-bar div {
+    padding: 0.3rem 0.45rem;
+  }
+
+  .criteria-bar {
+    gap: 0.35rem;
+
+    margin-bottom: 0.35rem;
+
+    padding: 0.35rem 0.4rem;
+  }
+
+  .criteria-bar kendo-formfield {
+    width: min(245px, 100%);
+  }
+
+  :host ::ng-deep .k-tabstrip-content {
+    padding: 0.4rem;
+  }
+
+  :host ::ng-deep .k-grid {
+    font-size: 0.73rem;
+  }
+
+  :host ::ng-deep .k-grid .k-table-th,
+  :host ::ng-deep .k-grid .k-header {
+    padding: 0.3rem 0.38rem;
+
+    font-size: 0.71rem;
+  }
+
+  :host ::ng-deep .k-grid .k-table-td,
+  :host ::ng-deep .k-grid td {
+    padding: 0.27rem 0.38rem;
+
+    font-size: 0.73rem;
+  }
+
+  :host ::ng-deep .k-grid .k-table-row {
+    height: 28px;
+  }
+}
+
+
+/* =========================================================
+   SMALLER / TABLET WIDTH
+   ========================================================= */
+@media (max-width: 900px) {
+  .context-bar {
+    grid-template-columns: 1fr;
+  }
+
+  .criteria-bar {
+    align-items: stretch;
+  }
+
+  .criteria-bar kendo-formfield {
+    width: min(100%, 320px);
+  }
+}
+
+
+/* =========================================================
+   PRINT
+   ========================================================= */
+@media print {
+  app-toolbar,
+  .criteria-bar {
+    display: none !important;
+  }
+
+  .inquiry-page {
+    padding: 0;
+  }
+
+  :host ::ng-deep .k-grid {
+    min-width: 0;
+
+    font-size: 8pt;
+  }
+}

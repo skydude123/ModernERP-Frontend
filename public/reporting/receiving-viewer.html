@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1"
+>
+  <title>Receiving Report Viewer</title>
+
+  <!-- Required Kendo theme for Telerik HTML5 Report Viewer -->
+  <link
+    rel="stylesheet"
+    href="https://kendo.cdn.telerik.com/themes/12.3.0/default/default-ocean-blue.css"
+  >
+
+  <style>
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: #ffffff;
+    }
+
+    #reportViewer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .viewer-message {
+      padding: 24px;
+      color: #334155;
+      font-family: Arial, sans-serif;
+    }
+
+    .viewer-message h1 {
+      margin: 0 0 8px;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .viewer-message p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+  </style>
+
+  <!-- jQuery must load first -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+  <!-- Kendo subset supplied by your Telerik Reporting API -->
+  <script src="http://localhost:51033/api/reports/resources/js/telerikReportViewer-kendo"></script>
+
+  <!-- Telerik HTML5 Report Viewer supplied by your API -->
+  <script src="http://localhost:51033/api/reports/resources/js/telerikReportViewer"></script>
+</head>
+
+<body>
+  <div id="reportViewer">
+    <div class="viewer-message">
+      <h1>Loading Receiving Report...</h1>
+      <p>Please wait while the report is being prepared.</p>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const reportingServiceUrl =
+        'http://localhost:51033/api/reports/';
+
+      const params =
+        new URLSearchParams(window.location.search);
+
+      const rrNo =
+        String(params.get('rr_no') || '').trim();
+
+      function showError(title, message) {
+        const viewer =
+          document.getElementById('reportViewer');
+
+        viewer.innerHTML =
+          '<div class="viewer-message">' +
+            '<h1>' + title + '</h1>' +
+            '<p>' + message + '</p>' +
+          '</div>';
+      }
+
+      if (!rrNo) {
+        showError(
+          'Receiving number is missing.',
+          'No rr_no value was provided in the report URL.'
+        );
+
+        return;
+      }
+
+      if (!window.jQuery) {
+        showError(
+          'jQuery failed to load.',
+          'The Telerik Report Viewer requires jQuery 3.7.1.'
+        );
+
+        return;
+      }
+
+      if (
+        !jQuery.fn ||
+        typeof jQuery.fn.telerik_ReportViewer !== 'function'
+      ) {
+        showError(
+          'Telerik Report Viewer failed to load.',
+          'Verify that the Telerik viewer resources are accessible from http://localhost:51033/api/reports.'
+        );
+
+        return;
+      }
+
+      jQuery(function () {
+        jQuery('#reportViewer').empty();
+
+        jQuery('#reportViewer').telerik_ReportViewer({
+          serviceUrl: reportingServiceUrl,
+
+          reportSource: {
+            report: 'PurchaseOrder.trdp',
+
+            parameters: {
+              rr_no: rrNo
+            }
+          },
+
+          viewMode:
+            telerikReportViewer.ViewModes.INTERACTIVE,
+
+          scaleMode:
+            telerikReportViewer.ScaleModes.SPECIFIC,
+
+          scale: 1.0,
+
+          enableAccessibility: true,
+
+          sendEmail: {
+            enabled: false
+          }
+        });
+      });
+    }());
+  </script>
+</body>
+</html>

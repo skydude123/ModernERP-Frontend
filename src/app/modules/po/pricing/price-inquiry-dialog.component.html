@@ -1,0 +1,467 @@
+@if (dialogOpen()) {
+  <kendo-dialog
+    class="purchase-price-dialog price-inquiry-dialog"
+    title="Supplier Price Inquiry"
+    [width]="1200"
+    [minWidth]="780"
+    (close)="close()"
+  >
+    <div class="pricing-shell">
+      @if (standaloneMode()) {
+        <section class="lookup-card">
+          <div class="lookup-card-heading">
+            <div>
+              <h3>Price Lookup</h3>
+
+              <p>
+                Select Supplier, Item and Purchase U/M to compare current and
+                historical pricing.
+              </p>
+            </div>
+
+            <span class="lookup-badge"> Purchasing Reference </span>
+          </div>
+
+          <form
+            class="lookup-grid"
+            [formGroup]="searchForm"
+            (ngSubmit)="search()"
+          >
+            <div class="lookup-field">
+              <label>
+                Supplier
+                <span class="required">*</span>
+              </label>
+
+              <kendo-multicolumncombobox
+                formControlName="supplierCode"
+                [data]="filteredSuppliers()"
+                textField="suppName"
+                valueField="suppCode"
+                [valuePrimitive]="true"
+                [filterable]="true"
+                [allowCustom]="false"
+                [popupSettings]="supplierPopupSettings"
+                placeholder="Select supplier..."
+                (filterChange)="onSupplierFilterChange($event)"
+                (valueChange)="onSupplierValueChange($event)"
+              >
+                <kendo-combobox-column
+                  field="suppCode"
+                  title="Supplier Code"
+                  [width]="150"
+                >
+                </kendo-combobox-column>
+
+                <kendo-combobox-column
+                  field="suppName"
+                  title="Supplier Name"
+                  [width]="420"
+                >
+                </kendo-combobox-column>
+              </kendo-multicolumncombobox>
+            </div>
+
+            <div class="lookup-field">
+              <label>
+                Item
+                <span class="required">*</span>
+              </label>
+
+              <kendo-multicolumncombobox
+                formControlName="itemCode"
+                [data]="poFacade.itemLookupData()"
+                textField="itemDesc"
+                valueField="itemCode"
+                [valuePrimitive]="true"
+                [filterable]="true"
+                [allowCustom]="false"
+                [popupSettings]="itemPopupSettings"
+                placeholder="Select item..."
+                (filterChange)="onItemFilterChange($event)"
+                (valueChange)="onItemValueChange($event)"
+              >
+                <kendo-combobox-column
+                  field="itemCode"
+                  title="Item Code"
+                  [width]="220"
+                >
+                </kendo-combobox-column>
+
+                <kendo-combobox-column
+                  field="itemDesc"
+                  title="Item Description"
+                  [width]="540"
+                >
+                </kendo-combobox-column>
+              </kendo-multicolumncombobox>
+            </div>
+
+            <div class="lookup-field um-field">
+              <label>
+                PO U/M
+                <span class="required">*</span>
+              </label>
+
+              <kendo-multicolumncombobox
+                formControlName="poUm"
+                [data]="itemUms()"
+                textField="poUm"
+                valueField="poUm"
+                [valuePrimitive]="true"
+                [filterable]="true"
+                [allowCustom]="false"
+                [popupSettings]="umPopupSettings"
+                placeholder="Select PO U/M..."
+                (valueChange)="onUmChange($event)"
+              >
+                <kendo-combobox-column
+                  field="poUm"
+                  title="PO U/M"
+                  [width]="100"
+                >
+                </kendo-combobox-column>
+
+                <kendo-combobox-column
+                  field="umDescription"
+                  title="Description"
+                  [width]="220"
+                >
+                </kendo-combobox-column>
+
+                <kendo-combobox-column
+                  field="conversionFactor"
+                  title="Conv. Factor"
+                  [width]="120"
+                >
+                </kendo-combobox-column>
+
+                <kendo-combobox-column
+                  field="baseUm"
+                  title="Base U/M"
+                  [width]="100"
+                >
+                </kendo-combobox-column>
+              </kendo-multicolumncombobox>
+            </div>
+
+            <div class="lookup-actions">
+              <button
+                kendoButton
+                type="submit"
+                themeColor="primary"
+                [disabled]="loading()"
+              >
+                {{ loading() ? "Loading..." : "View Pricing" }}
+              </button>
+
+              <button
+                kendoButton
+                type="button"
+                fillMode="outline"
+                (click)="clearSearch()"
+              >
+                Clear
+              </button>
+            </div>
+          </form>
+        </section>
+      }
+
+      @if (activeContext(); as ctx) {
+        <header class="context-card">
+          <div>
+            <span>Selected Supplier</span>
+
+            <strong>
+              {{ ctx.supplierCode }}
+            </strong>
+
+            <small>
+              {{ ctx.supplierName }}
+            </small>
+          </div>
+
+          <div>
+            <span>Item</span>
+
+            <strong>
+              {{ ctx.itemCode }}
+            </strong>
+
+            <small>
+              {{ ctx.itemDescription }}
+            </small>
+          </div>
+
+          <div>
+            <span>PO U/M</span>
+
+            <strong>
+              {{ ctx.poUm }}
+            </strong>
+
+            <small>
+              Conversion:
+              {{ ctx.poConvFactor | number: "1.4-4" }}
+            </small>
+          </div>
+        </header>
+      }
+
+      @if (error()) {
+        <div class="error-banner">
+          <strong> Unable to continue </strong>
+
+          <span>
+            {{ error() }}
+          </span>
+        </div>
+      }
+
+      @if (inquiry(); as result) {
+        <section class="metric-section">
+          <div class="section-heading">
+            <div>
+              <h3>Price Summary</h3>
+
+              <p>Supplier master and historical purchase-price reference.</p>
+            </div>
+          </div>
+
+          <div class="metric-grid">
+            @if (context) {
+              <article class="metric-card">
+                <span> Actual PO Line Price </span>
+
+                <strong>
+                  {{ context.actualUnitPrice | number: "1.4-4" }}
+                </strong>
+              </article>
+            } @else {
+              <article class="metric-card">
+                <span> Actual PO Line Price </span>
+
+                <strong>N/A</strong>
+
+                <small>Open Price Inquiry from a PO line.</small>
+              </article>
+            }
+
+            <article class="metric-card suggested">
+              <span> Suggested Price </span>
+
+              <strong>
+                {{ result.resolution.suggestedPrice | number: "1.4-4" }}
+              </strong>
+
+              <small>
+                {{ sourceLabel(result.resolution.suggestedSource) }}
+              </small>
+            </article>
+
+            <article class="metric-card">
+              <span> Supplier Master </span>
+
+              <strong>
+                {{
+                  result.resolution.currentSupplierMasterPrice | number: "1.4-4"
+                }}
+              </strong>
+            </article>
+
+            <article class="metric-card">
+              <span> Last Actual PO </span>
+
+              <strong>
+                {{ result.resolution.lastActualPoPrice | number: "1.4-4" }}
+              </strong>
+
+              <small>
+                {{ result.resolution.lastActualPoNo || "No prior PO" }}
+              </small>
+            </article>
+
+            <article class="metric-card">
+              <span> Legacy Price </span>
+
+              <strong>
+                {{ result.resolution.legacyPrice | number: "1.4-4" }}
+              </strong>
+            </article>
+
+            <article class="metric-card">
+              <span> Price Variance </span>
+
+              @if (context) {
+                <strong>
+                  {{ varianceAmount() | number: "1.4-4" }}
+                </strong>
+
+                <small> {{ variancePercent() | number: "1.2-2" }}% </small>
+              } @else {
+                <strong>N/A</strong>
+
+                <small> Open Price Inquiry from a PO line. </small>
+              }
+            </article>
+          </div>
+        </section>
+
+        <section class="grid-section">
+          <div class="section-heading">
+            <div>
+              <h3>Supplier Comparison</h3>
+
+              <p>Current configured supplier prices.</p>
+            </div>
+
+            <strong>
+              {{ result.total | number }}
+              record(s)
+            </strong>
+          </div>
+
+          <kendo-grid
+            class="pricing-grid"
+            [data]="comparisonData()"
+            [height]="260"
+            [pageable]="true"
+            [skip]="skip()"
+            [pageSize]="pageSize"
+            [loading]="loading()"
+            [resizable]="true"
+            (pageChange)="pageChange($event)"
+          >
+            <kendo-grid-column
+              field="supplierCode"
+              title="Supplier"
+              [width]="120"
+            >
+            </kendo-grid-column>
+
+            <kendo-grid-column
+              field="supplierName"
+              title="Supplier Name"
+              [width]="280"
+            >
+            </kendo-grid-column>
+
+            <kendo-grid-column field="poUm" title="U/M" [width]="80">
+            </kendo-grid-column>
+
+            <kendo-grid-column
+              field="unitPrice"
+              title="Current Price"
+              format="{0:n4}"
+              [width]="130"
+            >
+            </kendo-grid-column>
+
+            <kendo-grid-column
+              field="effectiveDate"
+              title="Effective"
+              [width]="120"
+            >
+              <ng-template kendoGridCellTemplate let-dataItem>
+                {{ dataItem.effectiveDate | date: "MM/dd/yyyy" }}
+              </ng-template>
+            </kendo-grid-column>
+          </kendo-grid>
+        </section>
+
+        @if (mayMaintain()) {
+          <section class="maintenance-card" [formGroup]="priceForm">
+            <div class="section-heading">
+              <div>
+                <h3>Supplier Price Maintenance</h3>
+
+                <p>Saving updates the supplier master and appends history.</p>
+              </div>
+            </div>
+
+            <div class="maintenance-grid">
+              <kendo-formfield>
+                <kendo-label text="Unit Price"> </kendo-label>
+
+                <kendo-numerictextbox
+                  formControlName="unitPrice"
+                  [min]="0"
+                  [decimals]="4"
+                  format="n4"
+                >
+                </kendo-numerictextbox>
+              </kendo-formfield>
+
+              <kendo-formfield>
+                <kendo-label text="Effective Date"> </kendo-label>
+
+                <kendo-datepicker formControlName="effectiveDate">
+                </kendo-datepicker>
+              </kendo-formfield>
+
+              <label class="active-check">
+                <input
+                  kendoCheckBox
+                  type="checkbox"
+                  formControlName="isActive"
+                />
+
+                Active
+              </label>
+
+              <kendo-formfield>
+                <kendo-label text="Remarks"> </kendo-label>
+
+                <input
+                  kendoTextBox
+                  title="Remarks"
+                  formControlName="remarks"
+                  maxlength="500"
+                />
+              </kendo-formfield>
+
+              <button
+                kendoButton
+                type="button"
+                themeColor="primary"
+                [disabled]="saving()"
+                (click)="saveMaster()"
+              >
+                {{ saving() ? "Saving..." : "Save Master Price" }}
+              </button>
+            </div>
+          </section>
+        }
+      } @else if (!loading()) {
+        <div class="empty-state">
+          <strong> Select pricing criteria </strong>
+
+          <span>
+            Select Supplier, Item and PO U/M, then click View Pricing.
+          </span>
+        </div>
+      }
+    </div>
+
+    <kendo-dialog-actions layout="end">
+      @if (context) {
+        <button
+          kendoButton
+          type="button"
+          themeColor="primary"
+          [disabled]="
+            !context.editable || inquiry()?.resolution?.suggestedPrice == null
+          "
+          (click)="useSuggested()"
+        >
+          Use Suggested Price
+        </button>
+      }
+
+      <button kendoButton type="button" fillMode="outline" (click)="close()">
+        Close
+      </button>
+    </kendo-dialog-actions>
+  </kendo-dialog>
+}

@@ -1,0 +1,274 @@
+:host {
+  display: block;
+}
+
+.supplier-page {
+  width: min(100%, 1400px);
+  margin: 0 auto;
+  padding: 0 18px 28px;
+  box-sizing: border-box;
+}
+
+.supplier-form {
+  display: grid;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.form-card {
+  overflow: hidden;
+  border: 1px solid #dce4ec;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgb(31 50 72 / 5%);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 18px;
+  border-bottom: 1px solid #e8edf2;
+  background: #f7f9fb;
+
+  h2 {
+    margin: 0;
+    color: #1e344c;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 3px 0 0;
+    color: #66788a;
+    font-size: 0.78rem;
+  }
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 18px;
+  padding: 17px 18px 20px;
+}
+
+.form-grid--identity {
+  grid-template-columns: minmax(160px, 0.7fr) minmax(280px, 1.6fr) minmax(220px, 1fr);
+}
+
+.form-grid--audit {
+  grid-template-columns: repeat(2, minmax(220px, 360px));
+}
+
+.field {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 5px;
+
+  > label {
+    color: #34495e;
+    font-size: 0.79rem;
+    font-weight: 650;
+  }
+
+  > label span {
+    color: #c62828;
+  }
+
+  > .k-input,
+  > .k-dropdownlist,
+  > textarea {
+    width: 100%;
+  }
+}
+
+/* =========================================================
+   MAKE ENTERED / SELECTED VALUES DARKER AND BOLDER
+   ========================================================= */
+
+/* Normal Kendo textbox values */
+:host ::ng-deep .supplier-form .k-input-inner {
+  color: #17212b !important;
+  font-weight: 700 !important;
+}
+
+/* Kendo DropdownList selected value */
+:host ::ng-deep .supplier-form .k-dropdownlist .k-input-value-text,
+:host ::ng-deep .supplier-form .k-picker .k-input-value-text {
+  color: #17212b !important;
+  font-weight: 700 !important;
+}
+
+/* TextArea value */
+:host ::ng-deep .supplier-form textarea.k-input-inner,
+:host ::ng-deep .supplier-form textarea {
+  color: #17212b !important;
+  font-weight: 700 !important;
+}
+
+/* Disabled / readonly fields
+   Example: Supplier Code when editing */
+:host ::ng-deep .supplier-form .k-disabled .k-input-inner,
+:host ::ng-deep .supplier-form .k-input[disabled] .k-input-inner {
+  color: #344054 !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
+}
+
+.required-mark {
+  margin-left: 3px;
+  color: #c62828;
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.required-text {
+  margin-left: 4px;
+  color: #b42318;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.field--invalid > label {
+  color: #b42318;
+}
+
+.field--invalid > .k-input,
+.field--invalid > textarea {
+  border-color: #dc2626 !important;
+  background: #fff7f7 !important;
+  box-shadow: 0 0 0 1px rgb(220 38 38 / 15%);
+}
+
+.field--invalid > .k-dropdownlist,
+.field--invalid > kendo-dropdownlist {
+  border-color: #dc2626 !important;
+}
+
+.field--invalid kendo-dropdownlist .k-input-inner {
+  background: #fff7f7;
+}
+
+.field-error {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 1px;
+  color: #b42318;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.field-error::before {
+  content: '⚠';
+  font-size: 0.76rem;
+}
+
+.field--full {
+  grid-column: 1 / -1;
+}
+
+.field-error {
+  color: #b42318;
+  font-size: 0.73rem;
+}
+
+.field-hint {
+  color: #738294;
+  font-size: 0.71rem;
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  min-width: 70px;
+  justify-content: center;
+  padding: 4px 10px;
+  border: 1px solid #a7d7b5;
+  border-radius: 999px;
+  background: #e9f7ee;
+  color: #176c36;
+  font-size: 0.75rem;
+  font-weight: 750;
+  letter-spacing: 0.02em;
+}
+
+.status-chip--inactive {
+  border-color: #e3b0b0;
+  background: #fff0f0;
+  color: #a22121;
+}
+
+.page-state,
+.command-state {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: 7px;
+  font-size: 0.82rem;
+}
+
+.page-state--loading,
+.command-state {
+  border: 1px solid #b8d6ee;
+  background: #eef7ff;
+  color: #245a82;
+}
+
+.page-state--error {
+  border: 1px solid #efb6b3;
+  background: #fff2f1;
+  color: #9f241d;
+}
+
+@media (max-width: 980px) {
+  .form-grid,
+  .form-grid--identity {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .form-grid--identity .field--wide {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 680px) {
+  .supplier-page {
+    padding-inline: 10px;
+  }
+
+  .form-grid,
+  .form-grid--identity,
+  .form-grid--audit {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   ACTUAL FORM VALUES - BOLD / DARK
+   ========================================================= */
+
+/* TextBox + TextArea actual entered values */
+:host ::ng-deep .supplier-form input.k-input-inner,
+:host ::ng-deep .supplier-form textarea.k-input-inner {
+  font-weight: 700 !important;
+  color: #111827 !important;
+}
+
+/* Kendo DropdownList selected value */
+:host ::ng-deep .supplier-form .k-dropdownlist .k-input-value-text,
+:host ::ng-deep .supplier-form .k-picker .k-input-value-text {
+  font-weight: 700 !important;
+  color: #111827 !important;
+}
+
+/* Disabled textbox value, e.g. Supplier Code during Edit */
+:host ::ng-deep .supplier-form input.k-input-inner:disabled {
+  font-weight: 700 !important;
+  color: #374151 !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #374151 !important;
+}

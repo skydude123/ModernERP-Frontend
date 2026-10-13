@@ -1,0 +1,485 @@
+@if (dialogOpen()) {
+  <kendo-dialog
+    class="purchase-price-dialog price-history-dialog"
+    title="Purchase Price History"
+    [width]="1240"
+    [minWidth]="800"
+    (close)="close()"
+  >
+    <div class="history-shell">
+      @if (standaloneMode()) {
+        <section class="history-lookup-card">
+          <div class="card-heading">
+            <div>
+              <h3>History Criteria</h3>
+
+              <p>Select an Item and Purchase U/M. Supplier is optional.</p>
+            </div>
+
+            <span class="history-badge"> Audit & PO History </span>
+          </div>
+
+          <form
+            class="history-lookup-grid"
+            [formGroup]="searchForm"
+            (ngSubmit)="search()"
+          >
+            <!-- SUPPLIER -->
+            <div class="lookup-field">
+              <label>
+                Supplier
+                <small>(Optional)</small>
+              </label>
+
+              <kendo-multicolumncombobox
+                formControlName="supplierCode"
+                [data]="filteredSuppliers()"
+                textField="suppName"
+                valueField="suppCode"
+                [valuePrimitive]="true"
+                [filterable]="true"
+                [allowCustom]="false"
+                [popupSettings]="supplierPopupSettings"
+                placeholder="All Suppliers"
+                (filterChange)="onSupplierFilterChange($event)"
+                (valueChange)="onSupplierValueChange($event)"
+              >
+                <kendo-combobox-column
+                  field="suppCode"
+                  title="Supplier Code"
+                  [width]="150"
+                >
+                </kendo-combobox-column>
+
+                <kendo-combobox-column
+                  field="suppName"
+                  title="Supplier Name"
+                  [width]="420"
+                >
+                </kendo-combobox-column>
+              </kendo-multicolumncombobox>
+            </div>
+
+            <!-- ITEM -->
+            <div class="lookup-field">
+              <label>
+                Item
+                <span class="required">*</span>
+              </label>
+
+              <kendo-multicolumncombobox
+                formControlName="itemCode"
+                [data]="poFacade.itemLookupData()"
+                textField="itemDesc"
+                valueField="itemCode"
+                [valuePrimitive]="true"
+                [filterable]="true"
+                [allowCustom]="false"
+                [popupSettings]="itemPopupSettings"
+                placeholder="Select item..."
+                (filterChange)="onItemFilterChange($event)"
+                (valueChange)="onItemValueChange($event)"
+              >
+                <kendo-combobox-column
+                  field="itemCode"
+                  title="Item Code"
+                  [width]="220"
+                >
+                </kendo-combobox-column>
+
+                <kendo-combobox-column
+                  field="itemDesc"
+                  title="Item Description"
+                  [width]="540"
+                >
+                </kendo-combobox-column>
+              </kendo-multicolumncombobox>
+            </div>
+
+            <!-- U/M -->
+            <div class="lookup-field um-field">
+              <label>
+                PO U/M
+                <span class="required">*</span>
+              </label>
+
+              <kendo-multicolumncombobox
+                formControlName="poUm"
+                [data]="itemUms()"
+                textField="poUm"
+                valueField="poUm"
+                [valuePrimitive]="true"
+                [filterable]="true"
+                [allowCustom]="false"
+                [popupSettings]="umPopupSettings"
+                placeholder="Select PO U/M..."
+                (valueChange)="onUmChange($event)"
+              >
+                <kendo-combobox-column
+                  field="poUm"
+                  title="PO U/M"
+                  [width]="100"
+                >
+                </kendo-combobox-column>
+
+                <kendo-combobox-column
+                  field="umDescription"
+                  title="Description"
+                  [width]="220"
+                >
+                </kendo-combobox-column>
+
+                <kendo-combobox-column
+                  field="conversionFactor"
+                  title="Conv. Factor"
+                  [width]="120"
+                >
+                </kendo-combobox-column>
+
+                <kendo-combobox-column
+                  field="baseUm"
+                  title="Base U/M"
+                  [width]="100"
+                >
+                </kendo-combobox-column>
+              </kendo-multicolumncombobox>
+            </div>
+
+            <div class="lookup-buttons">
+              <button
+                kendoButton
+                type="submit"
+                themeColor="primary"
+                [disabled]="isLoading()"
+              >
+                View History
+              </button>
+
+              <button
+                kendoButton
+                type="button"
+                fillMode="outline"
+                (click)="clearSearch()"
+              >
+                Clear
+              </button>
+            </div>
+          </form>
+        </section>
+      }
+
+      @if (activeContext(); as ctx) {
+        <header class="history-context">
+          <div class="context-main">
+            <div>
+              <span> ITEM </span>
+
+              <strong>
+                {{ ctx.itemCode }}
+              </strong>
+
+              <small>
+                {{ ctx.itemDescription }}
+              </small>
+            </div>
+
+            <div>
+              <span> SUPPLIER SCOPE </span>
+
+              @if (ctx.supplierCode) {
+                <strong>
+                  {{ ctx.supplierCode }}
+                </strong>
+
+                <small>
+                  {{ ctx.supplierName }}
+                </small>
+              } @else {
+                <strong> ALL SUPPLIERS </strong>
+
+                <small> Company-wide history </small>
+              }
+            </div>
+
+            <div>
+              <span> PO U/M </span>
+
+              <strong>
+                {{ ctx.poUm }}
+              </strong>
+
+              <small>
+                Conversion:
+                {{ ctx.poConvFactor | number: "1.4-4" }}
+              </small>
+            </div>
+          </div>
+
+          <div class="history-summary">
+            <span> Total Matching Records </span>
+
+            <strong>
+              {{ totalRecords() | number }}
+            </strong>
+          </div>
+        </header>
+
+        <form class="date-filter-card" [formGroup]="filterForm">
+          <div class="date-filter-title">
+            <strong> Date Range </strong>
+
+            <span> Refine both master and actual PO history. </span>
+          </div>
+
+          <kendo-formfield>
+            <kendo-label text="From Date"> </kendo-label>
+
+            <kendo-datepicker formControlName="fromDate"> </kendo-datepicker>
+          </kendo-formfield>
+
+          <kendo-formfield>
+            <kendo-label text="To Date"> </kendo-label>
+
+            <kendo-datepicker formControlName="toDate"> </kendo-datepicker>
+          </kendo-formfield>
+
+          <button
+            kendoButton
+            type="button"
+            themeColor="primary"
+            [disabled]="isLoading()"
+            (click)="reload()"
+          >
+            Apply Date Filter
+          </button>
+        </form>
+
+        @if (error()) {
+          <div class="history-error">
+            <strong> Unable to load history </strong>
+
+            <span>
+              {{ error() }}
+            </span>
+          </div>
+        }
+
+        <section class="history-section">
+          <div class="history-section-heading">
+            <div>
+              <div class="title-row">
+                <span class="history-type master"> MASTER </span>
+
+                <h3>Supplier Price-Master Change History</h3>
+              </div>
+
+              <p>Append-only audit records of supplier price changes.</p>
+            </div>
+
+            <strong>
+              {{ masterTotal() | number }}
+              record(s)
+            </strong>
+          </div>
+
+          <kendo-grid
+            class="history-grid master-grid"
+            [data]="masterData()"
+            [height]="250"
+            [pageable]="true"
+            [skip]="masterSkip()"
+            [pageSize]="pageSize"
+            [loading]="masterLoading()"
+            [resizable]="true"
+            (pageChange)="masterPageChange($event)"
+          >
+            <kendo-grid-column field="changedAt" title="Changed" [width]="150">
+              <ng-template kendoGridCellTemplate let-dataItem>
+                {{ dataItem.changedAt | date: "MM/dd/yyyy h:mm a" }}
+              </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column
+              field="supplierCode"
+              title="Supplier"
+              [width]="105"
+            >
+            </kendo-grid-column>
+
+            <kendo-grid-column
+              field="supplierName"
+              title="Supplier Name"
+              [width]="230"
+            >
+            </kendo-grid-column>
+
+            <kendo-grid-column
+              field="oldPrice"
+              title="Old Price"
+              format="{0:n4}"
+              [width]="110"
+            >
+            </kendo-grid-column>
+
+            <kendo-grid-column field="newPrice" title="New Price" [width]="110">
+              <ng-template kendoGridCellTemplate let-dataItem>
+                <strong class="new-price">
+                  {{ dataItem.newPrice | number: "1.4-4" }}
+                </strong>
+              </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column
+              field="effectiveDate"
+              title="Effective"
+              [width]="110"
+            >
+              <ng-template kendoGridCellTemplate let-dataItem>
+                {{ dataItem.effectiveDate | date: "MM/dd/yyyy" }}
+              </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column field="sourceType" title="Source" [width]="125">
+            </kendo-grid-column>
+
+            <kendo-grid-column field="changedBy" title="User" [width]="95">
+            </kendo-grid-column>
+
+            @if (context) {
+              <kendo-grid-column title="Action" [width]="85">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                  <button
+                    kendoButton
+                    type="button"
+                    size="small"
+                    themeColor="primary"
+                    [disabled]="!canUse(dataItem.supplierCode)"
+                    (click)="use(dataItem.newPrice, dataItem.supplierCode)"
+                  >
+                    Use
+                  </button>
+                </ng-template>
+              </kendo-grid-column>
+            }
+          </kendo-grid>
+        </section>
+
+        <section class="history-section">
+          <div class="history-section-heading">
+            <div>
+              <div class="title-row">
+                <span class="history-type po"> PO </span>
+
+                <h3>Actual Historical PO Prices</h3>
+              </div>
+
+              <p>
+                Saved non-cancelled Purchase Order lines for this Item and U/M.
+              </p>
+            </div>
+
+            <strong>
+              {{ actualTotal() | number }}
+              record(s)
+            </strong>
+          </div>
+
+          <kendo-grid
+            class="history-grid po-grid"
+            [data]="actualData()"
+            [height]="250"
+            [pageable]="true"
+            [skip]="actualSkip()"
+            [pageSize]="pageSize"
+            [loading]="actualLoading()"
+            [resizable]="true"
+            (pageChange)="actualPageChange($event)"
+          >
+            <kendo-grid-column field="poDate" title="PO Date" [width]="110">
+              <ng-template kendoGridCellTemplate let-dataItem>
+                {{ dataItem.poDate | date: "MM/dd/yyyy" }}
+              </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column field="poNo" title="PO No." [width]="115">
+            </kendo-grid-column>
+
+            <kendo-grid-column
+              field="supplierCode"
+              title="Supplier"
+              [width]="105"
+            >
+            </kendo-grid-column>
+
+            <kendo-grid-column
+              field="supplierName"
+              title="Supplier Name"
+              [width]="240"
+            >
+            </kendo-grid-column>
+
+            <kendo-grid-column
+              field="qtyPo"
+              title="Qty"
+              format="{0:n2}"
+              [width]="90"
+            >
+            </kendo-grid-column>
+
+            <kendo-grid-column
+              field="unitPrice"
+              title="Unit Price"
+              [width]="115"
+            >
+              <ng-template kendoGridCellTemplate let-dataItem>
+                <strong class="historical-price">
+                  {{ dataItem.unitPrice | number: "1.4-4" }}
+                </strong>
+              </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column
+              field="poConvFactor"
+              title="Conv."
+              format="{0:n4}"
+              [width]="90"
+            >
+            </kendo-grid-column>
+
+            <kendo-grid-column field="status" title="Status" [width]="90">
+            </kendo-grid-column>
+
+            @if (context) {
+              <kendo-grid-column title="Action" [width]="85">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                  <button
+                    kendoButton
+                    type="button"
+                    size="small"
+                    themeColor="primary"
+                    [disabled]="!canUse(dataItem.supplierCode)"
+                    (click)="use(dataItem.unitPrice, dataItem.supplierCode)"
+                  >
+                    Use
+                  </button>
+                </ng-template>
+              </kendo-grid-column>
+            }
+          </kendo-grid>
+        </section>
+      } @else {
+        <div class="history-empty-state">
+          <strong> Choose history criteria </strong>
+
+          <span> Select Item and Purchase U/M. Supplier is optional. </span>
+        </div>
+      }
+    </div>
+
+    <kendo-dialog-actions layout="end">
+      <button kendoButton type="button" fillMode="outline" (click)="close()">
+        Close
+      </button>
+    </kendo-dialog-actions>
+  </kendo-dialog>
+}

@@ -13,11 +13,20 @@ export class AuthApiService {
   private readonly baseUrl: string;
 
   constructor(@Inject(API_BASE_URL) apiBaseUrl: string) {
-    this.baseUrl = `${apiBaseUrl}/api/Auth/latest/login`;
+    const cleanBaseUrl = apiBaseUrl.trim().replace(/\/+$/, '');
+    this.baseUrl = cleanBaseUrl.toLowerCase().endsWith('/api')
+      ? `${cleanBaseUrl}/Auth`
+      : `${cleanBaseUrl}/api/Auth`;
   }
 
   login(payload: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.baseUrl}`, payload, {
+    return this.http.post<LoginResponse>(`${this.baseUrl}/latest/login`, payload, {
+      withCredentials: true,
+    });
+  }
+
+  logout(): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/logout`, null, {
       withCredentials: true,
     });
   }

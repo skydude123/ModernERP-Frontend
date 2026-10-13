@@ -1,0 +1,125 @@
+<div class="erp-save-shell">
+  <div class="erp-save-header">
+    <div class="erp-save-icon" aria-hidden="true">
+      <span>💾</span>
+    </div>
+
+    <div class="erp-save-header-text">
+      <h2 class="erp-save-title">{{ data.title }}</h2>
+      @if (data.message) {
+        <p class="erp-save-message">{{ data.message }}</p>
+      }
+    </div>
+  </div>
+
+  @if (data.effectText) {
+    <div class="erp-warning-box">
+      <div class="erp-warning-icon">!</div>
+      <div class="erp-warning-content">
+        <div class="erp-warning-title">Notice</div>
+        <div class="erp-warning-text">{{ data.effectText }}</div>
+      </div>
+    </div>
+  }
+
+  @if (data.note) {
+    <div class="erp-note">
+      <strong>Reminder:</strong> {{ data.note }}
+    </div>
+  }
+
+  @if (data.showGrid) {
+    <div class="erp-grid-wrap">
+      <kendo-grid
+        [kendoGridBinding]="data.gridData ?? []"
+        [height]="data.gridHeight || 350"
+        >
+        @for (col of data.gridColumns ?? []; track col) {
+          <kendo-grid-column
+            [field]="col.field"
+            [title]="col.title"
+            [width]="col.width ?? 180"
+            >
+          </kendo-grid-column>
+        }
+        <ng-template kendoGridNoRecordsTemplate> No records found. </ng-template>
+      </kendo-grid>
+    </div>
+  }
+
+  <!-- DISPATCH FORM FIELDS -->
+
+  @if (data.showForm) {
+    <div class="erp-form-wrap">
+      @for (field of data.formFields ?? []; track trackByFieldName($index, field)) {
+        <div
+          class="field"
+          >
+          @switch (field.type) {
+            <!-- TEXT -->
+            @case ('text') {
+              <kendo-label
+                [for]="field.name"
+                [text]="field.label">
+              </kendo-label>
+              <kendo-textbox
+                showErrorIcon="initial"
+                required
+                [placeholder]="field.placeholder || field.label || 'Enter value'"
+                [title]="field.label || 'Input field'"
+                [ngModel]="formValue[field.name] ?? ''"
+                (ngModelChange)="updateField(field.name, $event)"
+                [ngModelOptions]="{ standalone: true }"
+          [inputAttributes]="{
+            id: field.name,
+            name: field.name,
+            'aria-label': field.label || 'Input field'
+          }">
+              </kendo-textbox>
+            }
+            <!-- TEXTAREA -->
+            @case ('textarea') {
+              <kendo-label
+                [for]="field.name"
+                [text]="field.label">
+              </kendo-label>
+              <kendo-textarea
+                showErrorIcon="formValue[field.name]?.length === 0"
+                required
+                [rows]="field.rows ?? 4"
+                [placeholder]="field.placeholder || field.label || 'Enter value'"
+                [title]="field.label || 'Text area'"
+                [ngModel]="formValue[field.name] ?? ''"
+                (ngModelChange)="updateField(field.name, $event)"
+                [ngModelOptions]="{ standalone: true }"
+          [inputAttributes]="{
+            id: field.name,
+            name: field.name,
+            'aria-label': field.label || 'Text area'
+          }">
+              </kendo-textarea>
+            }
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <!-- END OF DISPATCH FORM FIELDS -->
+
+  @if (data.questionText) {
+    <div class="erp-question">
+      {{ data.questionText }}
+    </div>
+  }
+
+  <div class="erp-actions">
+    <button kendoButton themeColor="base" fillMode="outline" (click)="close()">
+      {{ data.cancelText || "Cancel" }}
+    </button>
+
+    <button kendoButton themeColor="primary" (click)="confirm()">
+      {{ data.confirmText || "Confirm" }}
+    </button>
+  </div>
+</div>

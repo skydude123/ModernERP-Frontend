@@ -1,0 +1,1287 @@
+<section class="inventory-page">
+
+  <!-- ERROR MESSAGE -->
+  @if (facade.error()) {
+    <div
+      class="alert error-alert"
+      role="alert"
+    >
+      <span class="alert-indicator"></span>
+
+      <div>
+        <strong>
+          Unable to complete the request
+        </strong>
+
+        <p>
+          {{ facade.error() }}
+        </p>
+      </div>
+    </div>
+  }
+
+
+  <!-- =====================================================
+       ITEM MASTER PROFESSIONAL HEADER
+       ===================================================== -->
+
+  <header class="item-master-header">
+
+    <!-- LEFT: MODULE INFORMATION -->
+    <div class="item-master-heading">
+
+      <div
+        class="item-master-icon"
+        aria-hidden="true"
+      >
+
+        <svg
+          viewBox="0 0 48 48"
+          role="img"
+          focusable="false"
+        >
+
+          <path
+            d="M8 15.5 24 7l16 8.5L24 24 8 15.5Z"
+            fill="currentColor"
+            opacity="0.24"
+          />
+
+          <path
+            d="M8 15.5V33l16 8.5V24L8 15.5Z"
+            fill="currentColor"
+            opacity="0.46"
+          />
+
+          <path
+            d="M40 15.5V33l-16 8.5V24l16-8.5Z"
+            fill="currentColor"
+          />
+
+          <path
+            d="M16 11.3 32 20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.4"
+            stroke-linecap="round"
+          />
+
+          <path
+            d="M24 24v17"
+            fill="none"
+            stroke="#ffffff"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            opacity="0.9"
+          />
+
+        </svg>
+
+      </div>
+
+
+      <div class="item-master-copy">
+
+        <span class="item-master-kicker">
+          INVENTORY MANAGEMENT
+        </span>
+
+        <h1>
+          ITEM MASTER
+        </h1>
+
+        <p>
+          Central registry of raw materials, supplies, spare parts,
+          equipment, and company assets.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- RIGHT: SUMMARY CARDS -->
+    <div class="item-master-summary">
+
+      <!-- TOTAL ITEMS -->
+      <article class="summary-card total-items-card">
+
+        <div
+          class="summary-icon"
+          aria-hidden="true"
+        >
+
+          <svg viewBox="0 0 24 24">
+
+            <path
+              d="m4 7 8-4 8 4-8 4-8-4Z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linejoin="round"
+            />
+
+            <path
+              d="M4 7v10l8 4 8-4V7"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linejoin="round"
+            />
+
+            <path
+              d="M12 11v10"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            />
+
+          </svg>
+
+        </div>
+
+
+        <div class="summary-content">
+
+          <span>
+            TOTAL ITEMS
+          </span>
+
+          <strong>
+            {{ totalItemCount() | number }}
+          </strong>
+
+          <small>
+            Currently loaded records
+          </small>
+
+        </div>
+
+      </article>
+
+
+      <!-- ACTIVE ITEMS -->
+      <article class="summary-card active-items-card">
+
+        <div
+          class="summary-icon"
+          aria-hidden="true"
+        >
+
+          <svg viewBox="0 0 24 24">
+
+            <circle
+              cx="12"
+              cy="12"
+              r="9"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            />
+
+            <path
+              d="m8 12 2.6 2.6L16.5 9"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+
+          </svg>
+
+        </div>
+
+
+        <div class="summary-content">
+
+          <span>
+            ACTIVE ITEMS
+          </span>
+
+          <strong>
+            {{ activeItemCount() | number }}
+          </strong>
+
+          <small>
+            Available active records
+          </small>
+
+        </div>
+
+      </article>
+
+
+      <!-- ITEM GROUPS -->
+      <article class="summary-card item-groups-card">
+
+        <div
+          class="summary-icon"
+          aria-hidden="true"
+        >
+
+          <svg viewBox="0 0 24 24">
+
+            <path
+              d="M4 5.5h6v6H4v-6Zm10 0h6v6h-6v-6ZM4 15h6v4H4v-4Zm10 0h6v4h-6v-4Z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linejoin="round"
+            />
+
+          </svg>
+
+        </div>
+
+
+        <div class="summary-content">
+
+          <span>
+            ITEM GROUPS
+          </span>
+
+          <strong>
+            {{ itemGroupCount() | number }}
+          </strong>
+
+          <small>
+            Inventory classifications
+          </small>
+
+        </div>
+
+      </article>
+
+    </div>
+
+  </header>
+
+
+  <!-- =====================================================
+       GRID CARD
+       ===================================================== -->
+
+  <div class="grid-card">
+
+
+    <!-- =====================================================
+         STABLE TOOLBAR
+         IMPORTANT:
+         OUTSIDE THE KENDO GRID SO SEARCH DOES NOT LOSE FOCUS
+         ===================================================== -->
+
+    <div class="master-toolbar server-grid-toolbar">
+
+      <!-- SPACER -->
+      <div class="toolbar-spacer"></div>
+
+
+      <!-- =================================================
+           SERVER-SIDE SEARCH
+           ================================================= -->
+
+      <kendo-textbox
+        class="inventory-search"
+        [formControl]="searchControl"
+        [clearButton]="true"
+        placeholder="Search item code, description, group, type or UM..."
+      >
+      </kendo-textbox>
+
+
+      <!-- =================================================
+           ADD ITEM
+           ================================================= -->
+
+      <button
+        kendoButton
+        type="button"
+        class="add-item-tool"
+        [disabled]="facade.saving()"
+        (click)="addNewItem()"
+      >
+        + Add Item
+      </button>
+
+
+      <!-- =================================================
+           EXCEL EXPORT
+           ================================================= -->
+
+      <button
+        kendoButton
+        type="button"
+        class="export-excel-tool"
+        (click)="itemGrid.saveAsExcel()"
+      >
+        Excel Export
+      </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         ITEM MASTER GRID
+         ===================================================== -->
+
+    <kendo-grid
+      #itemGrid
+      class="inventory-grid"
+
+      [data]="gridView()"
+
+      [skip]="gridSkip"
+
+      [pageSize]="gridPageSize"
+
+      [pageable]="{
+        buttonCount: 5,
+        pageSizes: [10, 20, 50, 100],
+        previousNext: true,
+        info: true
+      }"
+
+      [sortable]="{
+        mode: 'single',
+        allowUnsort: false
+      }"
+
+      [sort]="gridSort"
+
+      [filterable]="false"
+
+      [resizable]="true"
+
+      [selectable]="{
+        enabled: true,
+        mode: 'single'
+      }"
+
+      [loading]="facade.loading()"
+
+      [height]="600"
+
+      (pageChange)="onGridPageChange($event)"
+
+      (sortChange)="onGridSortChange($event)"
+
+      (edit)="editHandler($event)"
+    >
+
+
+      <!-- =====================================================
+           ITEM CODE
+           ===================================================== -->
+
+      <kendo-grid-column
+        field="itemCode"
+        title="ITEM CODE"
+        [width]="140"
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder'
+        }"
+      >
+
+        <ng-template
+          kendoGridCellTemplate
+          let-dataItem
+        >
+
+          <span class="item-code-cell">
+            {{ dataItem.itemCode || "-" }}
+          </span>
+
+        </ng-template>
+
+      </kendo-grid-column>
+
+
+      <!-- =====================================================
+           ITEM DESCRIPTION
+           ===================================================== -->
+
+      <kendo-grid-column
+        field="itemDesc"
+        title="ITEM DESCRIPTION"
+        [width]="300"
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder'
+        }"
+      >
+
+        <ng-template
+          kendoGridCellTemplate
+          let-dataItem
+        >
+
+          <span
+            class="item-description-cell"
+            [title]="dataItem.itemDesc"
+          >
+            {{ dataItem.itemDesc || "-" }}
+          </span>
+
+        </ng-template>
+
+      </kendo-grid-column>
+
+
+      <!-- =====================================================
+           GROUP DESCRIPTION
+           ===================================================== -->
+
+      <kendo-grid-column
+        field="groupDesc"
+        title="GROUP DESCRIPTION"
+        [width]="225"
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder'
+        }"
+      >
+
+        <ng-template
+          kendoGridCellTemplate
+          let-dataItem
+        >
+
+          <div class="group-cell">
+
+            <span class="group-description">
+              {{ dataItem.groupDesc || dataItem.groupCode || "-" }}
+            </span>
+
+
+            @if (dataItem.groupCode) {
+
+              <small>
+                {{ dataItem.groupCode }}
+              </small>
+
+            }
+
+          </div>
+
+        </ng-template>
+
+      </kendo-grid-column>
+
+
+      <!-- =====================================================
+           ITEM TYPE
+           ===================================================== -->
+
+      <kendo-grid-column
+        field="itemType"
+        title="ITEM TYPE"
+        [width]="160"
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder'
+        }"
+      >
+
+        <ng-template
+          kendoGridCellTemplate
+          let-dataItem
+        >
+
+          @if (dataItem.itemType) {
+
+            <span class="item-type-pill">
+
+              {{ getItemTypeDescription(dataItem.itemType) }}
+
+            </span>
+
+          } @else {
+
+            <span class="empty-value">
+              —
+            </span>
+
+          }
+
+        </ng-template>
+
+      </kendo-grid-column>
+
+
+      <!-- =====================================================
+           UNIT OF MEASURE
+           ===================================================== -->
+
+      <kendo-grid-column
+        field="um"
+        title="UM"
+        [width]="90"
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder'
+        }"
+      >
+
+        <ng-template
+          kendoGridCellTemplate
+          let-dataItem
+        >
+
+          <span class="um-cell">
+
+            {{ dataItem.um || "—" }}
+
+          </span>
+
+        </ng-template>
+
+      </kendo-grid-column>
+
+
+      <!-- =====================================================
+           BUFFER QUANTITY
+           ===================================================== -->
+
+      <kendo-grid-column
+        field="bufferQty"
+        title="BUFFER QTY"
+        [width]="110"
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder'
+        }"
+      >
+
+        <ng-template
+          kendoGridCellTemplate
+          let-dataItem
+        >
+
+          <span
+            class="number-cell"
+            [class.low-buffer]="dataItem.bufferQty <= 15"
+          >
+
+            {{ dataItem.bufferQty | number: "1.2-2" }}
+
+          </span>
+
+        </ng-template>
+
+      </kendo-grid-column>
+
+
+      <!-- =====================================================
+           UNIT COST
+           ===================================================== -->
+
+      <kendo-grid-column
+        field="unitCost"
+        title="UNIT COST"
+        [width]="120"
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder'
+        }"
+      >
+
+        <ng-template
+          kendoGridCellTemplate
+          let-dataItem
+        >
+
+          <span class="number-cell cost-cell">
+
+            {{
+              dataItem.unitCost
+                | currency: "PHP" : "symbol" : "1.2-2"
+            }}
+
+          </span>
+
+        </ng-template>
+
+      </kendo-grid-column>
+
+
+      <!-- =====================================================
+           LAST UNIT COST
+           ===================================================== -->
+
+      <kendo-grid-column
+        field="lastUnitCost"
+        title="LAST UNIT COST"
+        [width]="135"
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder'
+        }"
+      >
+
+        <ng-template
+          kendoGridCellTemplate
+          let-dataItem
+        >
+
+          <span class="number-cell cost-cell">
+
+            {{
+              dataItem.lastUnitCost
+                | currency: "PHP" : "symbol" : "1.2-2"
+            }}
+
+          </span>
+
+        </ng-template>
+
+      </kendo-grid-column>
+
+
+      <!-- =====================================================
+           ACTIONS
+           ===================================================== -->
+
+      <kendo-grid-command-column
+        title="ACTIONS"
+        [width]="150"
+        [headerClass]="'headerCustomClass'"
+        [headerStyle]="{
+          'background-color': '#fa8128',
+          'font-weight': 'bolder'
+        }"
+      >
+
+        <ng-template
+          kendoGridCellTemplate
+          let-dataItem
+        >
+
+          <div class="action-buttons">
+
+            <!-- EDIT -->
+            <button
+              kendoGridEditCommand
+              class="cmd-btn cmd-btn-edit"
+              type="button"
+              [disabled]="facade.saving()"
+            >
+              Edit
+            </button>
+
+
+            <!-- WAREHOUSE VIEW -->
+            <button
+              kendoButton
+              class="cmd-btn cmd-btn-view"
+              type="button"
+              size="small"
+              fillMode="solid"
+              rounded="medium"
+              [disabled]="facade.saving()"
+              (click)="openWarehouseDialog(dataItem)"
+            >
+              View
+            </button>
+
+          </div>
+
+        </ng-template>
+
+      </kendo-grid-command-column>
+
+
+      <!-- =====================================================
+           EXCEL CONFIGURATION
+           ===================================================== -->
+
+      <kendo-grid-excel
+        fileName="Inventory_Master_List.xlsx"
+        [fetchData]="allData"
+      >
+      </kendo-grid-excel>
+
+
+    </kendo-grid>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     EXTERNAL ITEM MASTER ADD / EDIT DIALOG
+     ===================================================== -->
+
+@if (isEditDialogOpen) {
+
+  <kendo-dialog
+    class="item-edit-dialog"
+    [width]="800"
+    [minWidth]="360"
+    (close)="closeEditDialog()"
+  >
+
+    <kendo-dialog-titlebar>
+
+      <div class="dialog-title-content">
+
+        <div
+          class="dialog-mode-icon"
+          [class.edit-mode]="!isNew"
+        >
+          {{ isNew ? "+" : "✎" }}
+        </div>
+
+
+        <div class="dialog-title-text">
+
+          <span class="dialog-kicker">
+
+            {{
+              isNew
+                ? "NEW ITEM MASTER"
+                : "UPDATE ITEM MASTER"
+            }}
+
+          </span>
+
+
+          <h2>
+            {{ editDialogTitle }}
+          </h2>
+
+
+          <p>
+            {{ editDialogDescription }}
+          </p>
+
+        </div>
+
+      </div>
+
+    </kendo-dialog-titlebar>
+
+
+    <form
+      id="itemMasterEditForm"
+      novalidate
+      class="item-edit-form"
+      [formGroup]="editForm"
+      (ngSubmit)="saveEditDialog()"
+    >
+
+
+      <!-- =====================================================
+           GENERAL INFORMATION
+           ===================================================== -->
+
+      <section class="form-section">
+
+        <div class="form-section-heading">
+
+          <div>
+
+            <span class="section-kicker">
+              GENERAL INFORMATION
+            </span>
+
+            <h3>
+              Item identification
+            </h3>
+
+            <p>
+              Provide the main code, description, group, and type.
+            </p>
+
+          </div>
+
+
+          <div class="required-note">
+
+            <span>*</span>
+
+            Required fields
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid">
+
+
+          <!-- ITEM CODE -->
+          <kendo-formfield class="form-field">
+
+            <kendo-label
+              [for]="itemCodeInput"
+              text="Item Code"
+              labelCssClass="field-label required-label"
+            >
+            </kendo-label>
+
+
+            <kendo-textbox
+              #itemCodeInput
+              class="form-control"
+              [class.readonly-control]="!isNew"
+              formControlName="itemCode"
+              placeholder="Enter item code"
+              [readonly]="!isNew"
+              required
+            >
+            </kendo-textbox>
+
+
+            @if (isNew) {
+
+              <kendo-formhint>
+                Enter the unique code used to identify the item.
+              </kendo-formhint>
+
+            }
+
+
+            @if (!isNew) {
+
+              <kendo-formhint>
+                Item Code is locked while editing an existing record.
+              </kendo-formhint>
+
+            }
+
+
+            @if (hasControlError('itemCode', 'required')) {
+
+              <kendo-formerror>
+                Item Code is required.
+              </kendo-formerror>
+
+            }
+
+          </kendo-formfield>
+
+
+          <!-- ITEM TYPE -->
+          <kendo-formfield class="form-field">
+
+            <kendo-label
+              [for]="itemTypeInput"
+              text="Item Type"
+              labelCssClass="field-label"
+            >
+            </kendo-label>
+
+
+            <kendo-combobox
+              #itemTypeInput
+              class="form-control"
+              [data]="itemTypeOptions"
+              textField="text"
+              valueField="value"
+              [valuePrimitive]="true"
+              [clearButton]="true"
+              formControlName="itemType"
+              placeholder="Select item type"
+            >
+            </kendo-combobox>
+
+
+            <kendo-formhint>
+              Select F, R, S, P, or U when applicable.
+            </kendo-formhint>
+
+          </kendo-formfield>
+
+
+          <!-- UNIT OF MEASURE -->
+          <kendo-formfield class="form-field">
+
+            <kendo-label
+              [for]="umInput"
+              text="Unit of Measure"
+              labelCssClass="field-label required-label"
+            >
+            </kendo-label>
+
+
+            <kendo-multicolumncombobox
+              #umInput
+              class="form-control"
+              [data]="facade.itemUms()"
+              textField="um"
+              valueField="um"
+              [valuePrimitive]="true"
+              [filterable]="true"
+              [allowCustom]="false"
+              [clearButton]="true"
+              [loading]="facade.itemUmsLoading()"
+              [kendoDropDownFilter]="umFilterSettings"
+              formControlName="um"
+              placeholder="Search or select Unit of Measure"
+              required
+            >
+
+              <kendo-combobox-column
+                field="um"
+                title="U/M"
+                [width]="120"
+              >
+              </kendo-combobox-column>
+
+
+              <kendo-combobox-column
+                field="umDesc"
+                title="Description"
+                [width]="280"
+              >
+              </kendo-combobox-column>
+
+
+              <ng-template
+                kendoMultiColumnComboBoxNoDataTemplate
+              >
+                <div>
+                  No Unit of Measure found.
+                </div>
+              </ng-template>
+
+            </kendo-multicolumncombobox>
+
+
+            <kendo-formhint>
+              Select the inventory Unit of Measure.
+            </kendo-formhint>
+
+
+            @if (hasControlError('um', 'required')) {
+
+              <kendo-formerror>
+                Unit of Measure is required.
+              </kendo-formerror>
+
+            }
+
+          </kendo-formfield>
+
+
+          <!-- ITEM DESCRIPTION -->
+          <kendo-formfield class="form-field span-two">
+
+            <kendo-label
+              [for]="itemDescriptionInput"
+              text="Item Description"
+              labelCssClass="field-label required-label"
+            >
+            </kendo-label>
+
+
+            <kendo-textbox
+              #itemDescriptionInput
+              class="form-control"
+              formControlName="itemDesc"
+              placeholder="Enter the complete item description"
+              required
+            >
+            </kendo-textbox>
+
+
+            <kendo-formhint>
+              Use a clear and recognizable item description.
+            </kendo-formhint>
+
+
+            @if (hasControlError('itemDesc', 'required')) {
+
+              <kendo-formerror>
+                Item Description is required.
+              </kendo-formerror>
+
+            }
+
+          </kendo-formfield>
+
+
+          <!-- GROUP DESCRIPTION -->
+          <kendo-formfield class="form-field span-two">
+
+            <kendo-label
+              [for]="groupCodeInput"
+              text="Group Description"
+              labelCssClass="field-label required-label"
+            >
+            </kendo-label>
+
+
+            <kendo-combobox
+              #groupCodeInput
+              class="form-control"
+              [data]="itemGroupOptions()"
+              textField="groupDesc"
+              valueField="groupCode"
+              [valuePrimitive]="true"
+              [clearButton]="true"
+              [loading]="facade.itemGroupsLoading()"
+              formControlName="groupCode"
+              placeholder="Select group description"
+              required
+            >
+
+              <ng-template
+                kendoComboBoxItemTemplate
+                let-dataItem
+              >
+
+                <div class="combo-option">
+
+                  <span class="combo-option-main">
+                    {{ dataItem.groupDesc }}
+                  </span>
+
+                  <span class="combo-option-sub">
+                    {{ dataItem.groupCode }}
+                  </span>
+
+                </div>
+
+              </ng-template>
+
+            </kendo-combobox>
+
+
+            <kendo-formhint>
+              Select the group where this inventory item belongs.
+            </kendo-formhint>
+
+
+            @if (hasControlError('groupCode', 'required')) {
+
+              <kendo-formerror>
+                Group Description is required.
+              </kendo-formerror>
+
+            }
+
+          </kendo-formfield>
+
+        </div>
+
+      </section>
+
+
+      <!-- =====================================================
+           INVENTORY VALUES
+           ===================================================== -->
+
+      <section class="form-section inventory-values-section">
+
+        <div class="form-section-heading">
+
+          <div>
+
+            <span class="section-kicker">
+              INVENTORY VALUES
+            </span>
+
+            <h3>
+              Quantity and costing
+            </h3>
+
+            <p>
+              Maintain the buffer quantity and corresponding unit costs.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-grid three-columns">
+
+
+          <!-- BUFFER QUANTITY -->
+          <kendo-formfield class="form-field">
+
+            <kendo-label
+              [for]="bufferQtyInput"
+              text="Buffer Quantity"
+              labelCssClass="field-label"
+            >
+            </kendo-label>
+
+
+            <kendo-numerictextbox
+              #bufferQtyInput
+              class="form-control numeric-control"
+              formControlName="bufferQty"
+              [min]="0"
+              [format]="'n2'"
+              [autoCorrect]="true"
+              placeholder="0.00"
+            >
+            </kendo-numerictextbox>
+
+
+            <kendo-formhint>
+              Minimum reserve quantity.
+            </kendo-formhint>
+
+
+            @if (hasControlError('bufferQty', 'min')) {
+
+              <kendo-formerror>
+                Buffer Quantity cannot be negative.
+              </kendo-formerror>
+
+            }
+
+          </kendo-formfield>
+
+
+          <!-- UNIT COST -->
+          <kendo-formfield class="form-field">
+
+            <kendo-label
+              [for]="unitCostInput"
+              text="Unit Cost"
+              labelCssClass="field-label"
+            >
+            </kendo-label>
+
+
+            <kendo-numerictextbox
+              #unitCostInput
+              class="form-control numeric-control"
+              formControlName="unitCost"
+              [min]="0"
+              [format]="'n2'"
+              [autoCorrect]="true"
+              placeholder="0.00"
+            >
+            </kendo-numerictextbox>
+
+
+            <kendo-formhint>
+              Current item unit cost.
+            </kendo-formhint>
+
+
+            @if (hasControlError('unitCost', 'min')) {
+
+              <kendo-formerror>
+                Unit Cost cannot be negative.
+              </kendo-formerror>
+
+            }
+
+          </kendo-formfield>
+
+
+          <!-- LAST UNIT COST -->
+          <kendo-formfield class="form-field">
+
+            <kendo-label
+              [for]="lastUnitCostInput"
+              text="Last Unit Cost"
+              labelCssClass="field-label"
+            >
+            </kendo-label>
+
+
+            <kendo-numerictextbox
+              #lastUnitCostInput
+              class="form-control numeric-control"
+              formControlName="lastUnitCost"
+              [min]="0"
+              [format]="'n2'"
+              [autoCorrect]="true"
+              placeholder="0.00"
+            >
+            </kendo-numerictextbox>
+
+
+            <kendo-formhint>
+              Previous or latest recorded cost.
+            </kendo-formhint>
+
+
+            @if (hasControlError('lastUnitCost', 'min')) {
+
+              <kendo-formerror>
+                Last Unit Cost cannot be negative.
+              </kendo-formerror>
+
+            }
+
+          </kendo-formfield>
+
+        </div>
+
+      </section>
+
+    </form>
+
+
+    <!-- =====================================================
+         DIALOG ACTIONS
+         ===================================================== -->
+
+    <kendo-dialog-actions layout="end">
+
+      <button
+        kendoButton
+        class="dialog-cancel-button"
+        type="button"
+        [svgIcon]="cancelIcon"
+        [disabled]="facade.saving()"
+        (click)="closeEditDialog()"
+      >
+        Cancel
+      </button>
+
+
+      <button
+        kendoButton
+        class="dialog-save-button"
+        type="submit"
+        form="itemMasterEditForm"
+        themeColor="primary"
+        [svgIcon]="saveIcon"
+        [disabled]="facade.saving()"
+      >
+        {{ saveButtonText }}
+      </button>
+
+    </kendo-dialog-actions>
+
+  </kendo-dialog>
+}
+
+
+<!-- =====================================================
+     WAREHOUSE / STORAGE BALANCE VIEW
+     ===================================================== -->
+
+@if (
+  showWarehouseDialog &&
+  selectedViewItem
+) {
+
+  <app-item-warehouse-dialog
+    [itemCode]="selectedViewItem.itemCode"
+    [itemDescription]="selectedViewItem.itemDesc"
+    (closed)="closeWarehouseDialog()"
+  >
+  </app-item-warehouse-dialog>
+
+}

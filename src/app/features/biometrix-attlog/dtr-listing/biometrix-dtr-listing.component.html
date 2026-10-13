@@ -49,17 +49,21 @@
       </div>
     </form>
 
-    <div *ngIf="facade.error() as errorMessage" class="error-banner">
-      {{ errorMessage }}
-    </div>
+    @if (facade.error(); as errorMessage) {
+      <div class="error-banner">
+        {{ errorMessage }}
+      </div>
+    }
 
-    <div class="summary-strip" *ngIf="facade.rows().length > 0">
-      <div><strong>Branch:</strong> {{ facade.filterForm.controls.branchName.value }}</div>
-      <div><strong>Payroll Period:</strong> {{ facade.filterForm.controls.payrollPeriod.value }}</div>
-      <div><strong>Total Records:</strong> {{ facade.totalRows() }}</div>
-      <div><strong>Total Hours:</strong> {{ facade.totalHours() | number:'1.2-2' }}</div>
-      <div><strong>Total OT:</strong> {{ facade.totalOt() | number:'1.2-2' }}</div>
-    </div>
+    @if (facade.rows().length > 0) {
+      <div class="summary-strip">
+        <div><strong>Branch:</strong> {{ facade.filterForm.controls.branchName.value }}</div>
+        <div><strong>Payroll Period:</strong> {{ facade.filterForm.controls.payrollPeriod.value }}</div>
+        <div><strong>Total Records:</strong> {{ facade.totalRows() }}</div>
+        <div><strong>Total Hours:</strong> {{ facade.totalHours() | number:'1.2-2' }}</div>
+        <div><strong>Total OT:</strong> {{ facade.totalOt() | number:'1.2-2' }}</div>
+      </div>
+    }
   </section>
 
   <section class="grid-card">
@@ -75,9 +79,11 @@
         <div class="grid-toolbar">
           <div class="grid-toolbar-left">
             <span class="toolbar-caption">Processed Attendance Records</span>
-            <span class="toolbar-count" *ngIf="facade.rows().length > 0">
-              {{ facade.totalRows() }} row(s)
-            </span>
+            @if (facade.rows().length > 0) {
+              <span class="toolbar-count">
+                {{ facade.totalRows() }} row(s)
+              </span>
+            }
           </div>
 
           <div class="grid-toolbar-right">
@@ -166,98 +172,89 @@
     </kendo-excelexport>
   </section>
 
-  <kendo-dialog
-    *ngIf="exportDialogOpen()"
-    title="Rename Excel File"
-    [width]="480"
-    (close)="closeExportDialog()">
-
-    <form [formGroup]="exportForm" class="export-dialog-form">
-      <div class="field">
-        <kendo-label text="File Name"></kendo-label>
-        <input title="File Name" kendoTextBox formControlName="fileName" />
-      </div>
-
-      <div class="export-hint">
-        .xlsx will be added automatically
-      </div>
-    </form>
-
-    <kendo-dialog-actions>
-      <button
-        kendoButton
-        fillMode="outline"
-        type="button"
-        (click)="closeExportDialog()">
-        Cancel
-      </button>
-
-      <button
-        kendoButton
-        themeColor="primary"
-        type="button"
-        (click)="confirmExport()">
-        Download
-      </button>
-    </kendo-dialog-actions>
-  </kendo-dialog>
-
-  <kendo-dialog
-    *ngIf="facade.editDialogOpen()"
-    title="Edit DTR Record"
-    [minWidth]="520"
-    [width]="520"
-    (close)="facade.closeEditDialog()">
-
-    <div class="compact-edit-shell">
-      <div class="compact-edit-note">
-        Review the selected DTR row and update only the computed values below.
-      </div>
-
-      <form [formGroup]="facade.editForm" class="compact-edit-form">
-        <div class="dialog-section-card">
-          <div class="section-heading">
-            <h3>DTR Adjustment</h3>
-            <p>DTR ID is reference only. No. of Hours Work and OT are editable.</p>
-          </div>
-
-          <div class="compact-edit-grid">
-            <div class="field readonly-field">
-              <kendo-label text="DTR ID"></kendo-label>
-              <input title="DTR ID" kendoTextBox formControlName="dtrId" readonly />
-            </div>
-
-            <div class="field">
-              <kendo-label text="No. of Hours Work"></kendo-label>
-              <input title="No. of Hours Work" kendoTextBox formControlName="noOfHoursWork" />
-            </div>
-
-            <div class="field">
-              <kendo-label text="OT"></kendo-label>
-              <input title="OT" kendoTextBox formControlName="otHours" />
-            </div>
-          </div>
+  @if (exportDialogOpen()) {
+    <kendo-dialog
+      title="Rename Excel File"
+      [width]="480"
+      (close)="closeExportDialog()">
+      <form [formGroup]="exportForm" class="export-dialog-form">
+        <div class="field">
+          <kendo-label text="File Name"></kendo-label>
+          <input title="File Name" kendoTextBox formControlName="fileName" />
+        </div>
+        <div class="export-hint">
+          .xlsx will be added automatically
         </div>
       </form>
-    </div>
+      <kendo-dialog-actions>
+        <button
+          kendoButton
+          fillMode="outline"
+          type="button"
+          (click)="closeExportDialog()">
+          Cancel
+        </button>
+        <button
+          kendoButton
+          themeColor="primary"
+          type="button"
+          (click)="confirmExport()">
+          Download
+        </button>
+      </kendo-dialog-actions>
+    </kendo-dialog>
+  }
 
-    <kendo-dialog-actions class="dtr-dialog-actions">
-      <button
-        kendoButton
-        fillMode="outline"
-        type="button"
-        (click)="facade.closeEditDialog()">
-        Cancel
-      </button>
-
-      <button
-        kendoButton
-        themeColor="primary"
-        type="button"
-        [disabled]="facade.saving()"
-        (click)="facade.saveEdit()">
-        {{ facade.saving() ? 'Saving...' : 'Save Changes' }}
-      </button>
-    </kendo-dialog-actions>
-  </kendo-dialog>
+  @if (facade.editDialogOpen()) {
+    <kendo-dialog
+      title="Edit DTR Record"
+      [minWidth]="520"
+      [width]="520"
+      (close)="facade.closeEditDialog()">
+      <div class="compact-edit-shell">
+        <div class="compact-edit-note">
+          Review the selected DTR row and update only the computed values below.
+        </div>
+        <form [formGroup]="facade.editForm" class="compact-edit-form">
+          <div class="dialog-section-card">
+            <div class="section-heading">
+              <h3>DTR Adjustment</h3>
+              <p>DTR ID is reference only. No. of Hours Work and OT are editable.</p>
+            </div>
+            <div class="compact-edit-grid">
+              <div class="field readonly-field">
+                <kendo-label text="DTR ID"></kendo-label>
+                <input title="DTR ID" kendoTextBox formControlName="dtrId" readonly />
+              </div>
+              <div class="field">
+                <kendo-label text="No. of Hours Work"></kendo-label>
+                <input title="No. of Hours Work" kendoTextBox formControlName="noOfHoursWork" />
+              </div>
+              <div class="field">
+                <kendo-label text="OT"></kendo-label>
+                <input title="OT" kendoTextBox formControlName="otHours" />
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <kendo-dialog-actions class="dtr-dialog-actions">
+        <button
+          kendoButton
+          fillMode="outline"
+          type="button"
+          (click)="facade.closeEditDialog()">
+          Cancel
+        </button>
+        <button
+          kendoButton
+          themeColor="primary"
+          type="button"
+          [disabled]="facade.saving()"
+          (click)="facade.saveEdit()">
+          {{ facade.saving() ? 'Saving...' : 'Save Changes' }}
+        </button>
+      </kendo-dialog-actions>
+    </kendo-dialog>
+  }
 </div>

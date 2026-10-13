@@ -1,0 +1,366 @@
+<section class="receiving-list-page">
+  <app-toolbar
+    [config]="toolbarService.config()"
+    [formValid]="true"
+    title="Receiving Register"
+    subtitle="Server-paged receiving documents with date shortcuts."
+    (onNew)="newReceiving()"
+    (onRefresh)="refresh()"
+    (onToday)="applyQuickDate('TODAY')"
+    (onYesterday)="applyQuickDate('YESTERDAY')"
+    (onThisMonth)="applyQuickDate('THIS_MONTH')"
+    (onLastMonth)="applyQuickDate('LAST_MONTH')"
+    (onThisYear)="applyQuickDate('THIS_YEAR')"
+    (onLastYear)="applyQuickDate('LAST_YEAR')"
+  >
+  </app-toolbar>
+
+  <form [formGroup]="filterForm" class="filter-band">
+    <kendo-formfield>
+      <kendo-label text="From"></kendo-label>
+      <kendo-datepicker formControlName="fromDate"></kendo-datepicker>
+    </kendo-formfield>
+
+    <kendo-formfield>
+      <kendo-label text="To"></kendo-label>
+      <kendo-datepicker formControlName="toDate"></kendo-datepicker>
+    </kendo-formfield>
+
+    <kendo-formfield>
+      <kendo-label text="Status"></kendo-label>
+      <kendo-dropdownlist
+        formControlName="status"
+        [data]="[
+          { value: 'ALL', text: 'All' },
+          { value: 'N', text: 'Draft' },
+          { value: 'U', text: 'Approved' },
+          { value: 'R', text: 'Reversed' },
+          { value: 'C', text: 'Cancelled' },
+        ]"
+        textField="text"
+        valueField="value"
+        [valuePrimitive]="true"
+      >
+      </kendo-dropdownlist>
+    </kendo-formfield>
+
+    <kendo-formfield>
+      <kendo-label text="Type"></kendo-label>
+      <kendo-dropdownlist
+        formControlName="transType"
+        [data]="[
+          { value: 'ALL', text: 'All' },
+          { value: 'RPO', text: 'RPO' },
+          { value: 'RWP', text: 'RWP' },
+        ]"
+        textField="text"
+        valueField="value"
+        [valuePrimitive]="true"
+      >
+      </kendo-dropdownlist>
+    </kendo-formfield>
+
+    <kendo-formfield>
+      <kendo-label text="Branch"></kendo-label>
+      <kendo-dropdownlist
+        formControlName="branchname"
+        [data]="facade.branches()"
+        textField="branchname"
+        valueField="branchname"
+        [valuePrimitive]="true"
+      ></kendo-dropdownlist>
+    </kendo-formfield>
+
+    <kendo-formfield>
+      <kendo-label text="Storage"></kendo-label>
+      <kendo-dropdownlist
+        formControlName="whseCode"
+        [data]="facade.warehouses()"
+        textField="whseDesc"
+        valueField="whseCode"
+        [valuePrimitive]="true"
+      ></kendo-dropdownlist>
+    </kendo-formfield>
+
+    <kendo-formfield>
+      <kendo-label text="Supplier"></kendo-label>
+      <kendo-combobox
+        formControlName="suppCode"
+        [data]="facade.suppliers()"
+        textField="suppName"
+        valueField="suppCode"
+        [valuePrimitive]="true"
+        [filterable]="true"
+        [allowCustom]="false"
+      ></kendo-combobox>
+    </kendo-formfield>
+
+    <kendo-formfield class="search-field">
+      <kendo-label text="Search"></kendo-label>
+      <input
+        kendoTextBox
+        formControlName="search"
+        placeholder="RR no, reference, supplier, remarks"
+      />
+    </kendo-formfield>
+
+    <div class="filter-actions">
+      <button
+        kendoButton
+        type="button"
+        themeColor="primary"
+        [svgIcon]="searchIcon"
+        (click)="applyFilters()"
+      >
+        Search
+      </button>
+      <button
+        kendoButton
+        type="button"
+        fillMode="outline"
+        [svgIcon]="filterClearIcon"
+        (click)="clearFilters()"
+      >
+        Clear
+      </button>
+    </div>
+  </form>
+
+  <div class="grid-meta">
+    <span
+      >Total Records:
+      <strong>{{ facade.receivingTotal() | number }}</strong></span
+    >
+    @if (facade.receivingListLoading()) {
+      <span>Loading...</span>
+    }
+  </div>
+
+  <kendo-grid
+    class="register-grid"
+    [data]="gridData()"
+    [height]="585"
+    [pageable]="{
+      buttonCount: 5,
+      info: true,
+      type: 'numeric',
+      pageSizes: [25, 50, 100, 250],
+      previousNext: true,
+      responsive: true,
+    }"
+    [sortable]="true"
+    [resizable]="true"
+    [skip]="gridState().skip || 0"
+    [pageSize]="gridState().take || 50"
+    [sort]="gridState().sort || []"
+    [selectable]="{ mode: 'single' }"
+    [loading]="facade.receivingListLoading()"
+    (dataStateChange)="dataStateChange($event)"
+    (selectionChange)="onSelectionChange($event)"
+  >
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      field="rrNo"
+      title="RR No."
+      [width]="115"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <button
+          kendoButton
+          type="button"
+          fillMode="link"
+          (click)="selected.set(dataItem); openSelected()"
+        >
+          {{ dataItem.rrNo }}
+        </button>
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      field="poNo"
+      title="PO No."
+      [width]="115"
+    >
+    </kendo-grid-column>
+
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      field="rrDate"
+      title="Date"
+      [width]="105"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem>{{
+        dataItem.rrDate | date: "MM/dd/yyyy"
+      }}</ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      field="statusName"
+      title="Status"
+      [width]="115"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <span class="status-pill" [ngClass]="statusClass(dataItem.status)">{{
+          dataItem.statusName
+        }}</span>
+      </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      field="transType"
+      title="Type"
+      [width]="85"
+    ></kendo-grid-column>
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      field="branchname"
+      title="Branch"
+      [width]="120"
+    ></kendo-grid-column>
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      field="whseDesc"
+      title="Storage"
+      [width]="145"
+    ></kendo-grid-column>
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      field="reference"
+      title="Reference"
+      [width]="145"
+    ></kendo-grid-column>
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      field="suppName"
+      title="Supplier"
+      [width]="260"
+    ></kendo-grid-column>
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      field="lineCount"
+      title="Lines"
+      [width]="80"
+    ></kendo-grid-column>
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      field="totalQty"
+      title="Total Qty"
+      [width]="110"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem>{{
+        dataItem.totalQty | number: "1.2-2"
+      }}</ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      field="totalAmount"
+      title="Amount"
+      [width]="125"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem
+        ><strong>{{
+          dataItem.totalAmount | number: "1.2-2"
+        }}</strong></ng-template
+      >
+    </kendo-grid-column>
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      field="userId"
+      title="User"
+      [width]="120"
+    ></kendo-grid-column>
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      field="remarks"
+      title="Remarks"
+      [width]="220"
+    ></kendo-grid-column>
+    <kendo-grid-column
+      [headerClass]="'headerCustomClass'"
+      [headerStyle]="{
+        'background-color': '#fa8128',
+        'font-weight': 'bolder',
+      }"
+      title="Actions"
+      [width]="135"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <button
+          kendoButton
+          type="button"
+          size="small"
+          fillMode="outline"
+          (click)="selected.set(dataItem); openSelected()"
+        >
+          Open
+        </button>
+        <!-- <button
+          title="Print"
+          kendoButton
+          type="button"
+          size="small"
+          fillMode="flat"
+          [svgIcon]="printIcon"
+          (click)="selected.set(dataItem); printSelected()"
+        ></button> -->
+      </ng-template>
+    </kendo-grid-column>
+  </kendo-grid>
+</section>
